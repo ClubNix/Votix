@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row marketing">
+        Oops {{ voter.firstname }}, tu as déjà voté !<br />
+
+        Si tu penses qu'il s'agit d'une erreur, contacte philippe.lewin at gmail.com.
+
+        <a href="{{ path('homepage') }}" class="btn btn-success">
+            {% trans %}Back to homepage{% endtrans %}
+        </a>
+    </div>
+{% endblock %}

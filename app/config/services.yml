@@ -1,0 +1,57 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+#    parameter_name: value
+
+services:
+#    service_name:
+#        class: AppBundle\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+  votix.status:
+    class: AppBundle\Service\StatusService
+    arguments: ["%votix_start%", "%votix_end%"]
+
+  votix.filesystem:
+    class: Symfony\Component\Filesystem\Filesystem
+
+  votix.encryption:
+    class: AppBundle\Service\EncryptionService
+    arguments: ["@event_dispatcher", "%kernel.root_dir%/../var", "%votix_key_secret%", "@votix.filesystem"]
+
+  votix.stats:
+    class: AppBundle\Service\StatsService
+    arguments: [ "@doctrine.orm.entity_manager" ]
+
+  votix.counter:
+    class: AppBundle\Service\VoteCounterService
+    arguments: [ "@votix.candidate_repository",  "@votix.voter_repository", "@event_dispatcher", "@votix.encryption", "%votix_result_password%"]
+
+  votix.archives:
+    class: AppBundle\Service\ArchivesService
+    arguments: [ "%kernel.root_dir%/../var/halloffame.yml" ]
+
+  votix.token:
+    class: AppBundle\Service\TokenService
+    arguments: [ "%votix_secret%", "%votix_link_base%"]
+
+  votix.service:
+    class: AppBundle\Service\VotingService
+    arguments: [ "@votix.encryption", "@votix.voter_repository"]
+
+  votix.voter_repository:
+    class: AppBundle\Repository\VoterRepository
+    factory: ["@doctrine", getRepository]
+    arguments:
+      - "AppBundle:Voter"
+
+  votix.candidate_repository:
+    class: AppBundle\Repository\CandidateRepository
+    factory: ["@doctrine", getRepository]
+    arguments:
+      - "AppBundle:Candidate"
+
+# Subscribers
+  votix.notify_administrators_subscriber:
+    class: AppBundle\EventSubscriber\NotifyAdministratorsSubscriber
+    tags:
+      - { name: kernel.event_subscriber }

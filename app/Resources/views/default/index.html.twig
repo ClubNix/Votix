@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block scripts %}
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+    </script>
+{% endblock %}
+
+{% block body %}
+<div class="row marketing">
+    <div class="col-lg-6">
+        <h2>Progression</h2>
+
+        <div class="row">
+        {% for progress in all_progress %}
+            <div class="col-lg-3">
+                {{ progress.promotion |slice(3) }}
+            </div>
+            <div class="col-lg-9" style="height: 25px">
+                    <div class="progress">
+                        <div class="progress-bar" role="progressbar" aria-valuenow="{{ progress.ratio_int }}"
+                             aria-valuemin="0" aria-valuemax="100" style="width:{{ progress.ratio_int }}%">
+                            {{ progress.ratio_int }}%
+                        </div>
+                    </div>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <table style="width: 100%;">
+            <tr>
+                <td>{% trans %}Vote opening date{% endtrans %}</td>
+                <td>{{ start|date("d/m/Y H:i:s", "Europe/Paris") }}</td>
+            </tr>
+            <tr>
+                <td>{% trans %}Vote closing date{% endtrans %}</td>
+                <td>{{ end|date("d/m/Y H:i:s", "Europe/Paris") }}</td>
+            </tr>
+            <tr>
+                <td>{% trans %}Server date{% endtrans %}</td>
+                <td>{{ now|date("d/m/Y H:i:s", "Europe/Paris") }}</td>
+            </tr>
+            <tr>
+                <td>{% trans %}Vote status{% endtrans %} : <b>{{ status|trans }}</b></td>
+                <td>À l'heure de Paris</td>
+            </tr>
+        </table>
+        <h2>{% trans %}Real time feed{% endtrans %}</h2>
+        <div id="realtime">Finalement pas cette année. C'est trop stressant pour les listes et le stress c'est très mauvais pour la santé.</div>
+    </div>
+</div>
+
+{% endblock %}

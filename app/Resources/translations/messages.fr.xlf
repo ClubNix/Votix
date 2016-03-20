@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="symfony_is_great">
+                <source>Symfony is great</source>
+                <target>J'aime Symfony</target>
+            </trans-unit>
+            <trans-unit id="homepage">
+                <source>Homepage</source>
+                <target>Accueil</target>
+            </trans-unit>
+            <trans-unit id="hall_of_fame">
+                <source>Hall of Fame</source>
+                <target>Panthéon</target>
+            </trans-unit>
+            <trans-unit id="faq">
+                <source>F.A.Q.</source>
+                <target>F.A.Q.</target>
+            </trans-unit>
+            <trans-unit id="back_to_homepage">
+                <source>Back to homepage</source>
+                <target>Retour à l'accueil</target>
+            </trans-unit>
+            <trans-unit id="vote_opening_date">
+                <source>Vote opening date</source>
+                <target>Heure d'ouverture du vote</target>
+            </trans-unit>
+            <trans-unit id="vote_closing_date">
+                <source>Vote closing date</source>
+                <target>Heure de fermeture du vote</target>
+            </trans-unit>
+            <trans-unit id="server_date">
+                <source>Server date</source>
+                <target>Heure du serveur</target>
+            </trans-unit>
+            <trans-unit id="real_time_feed">
+                <source>Real time feed</source>
+                <target>Flux temps réel</target>
+            </trans-unit>
+            <trans-unit id="vote_status">
+                <source>Vote status</source>
+                <target>Statut du vote</target>
+            </trans-unit>
+            <trans-unit id="closed">
+                <source>CLOSED</source>
+                <target>FERMÉ</target>
+            </trans-unit>
+            <trans-unit id="open">
+                <source>OPEN</source>
+                <target>OUVERT</target>
+            </trans-unit>
+            <trans-unit id="waiting">
+                <source>WAITING</source>
+                <target>ATTENTE</target>
+            </trans-unit>
+            <trans-unit id="percentage">
+                <source>Percentage</source>
+                <target>Pourcentage</target>
+            </trans-unit>
+            <trans-unit id="vote_count">
+                <source>Vote count</source>
+                <target>Nombre de voix</target>
+            </trans-unit>
+            <trans-unit id="candidate">
+                <source>Candidate</source>
+                <target>Candidat</target>
+            </trans-unit>
+            <trans-unit id="year">
+                <source>Year</source>
+                <target>Année</target>
+            </trans-unit>
+            <trans-unit id="voters_in_total">
+                <source>voters in total</source>
+                <target>votants au total</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

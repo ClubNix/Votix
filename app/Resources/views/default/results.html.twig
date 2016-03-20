@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="row marketing">
+        <h3>Les résultats</h3>
+
+        <div class="col-lg-6">
+            <h4>Voix exprimées et % par liste</h4>
+
+            <p>Attention, la liste n'est pas triée. Le pourcentage est le nombre de voix exprimées pour cette liste sur le nombre de votants (et non pas d'invités).</p>
+
+            <table style="width: 100%">
+                <thead>
+                <tr><th>Candidat</th><th>Voix</th><th>Pourcentage</th></tr>
+                </thead>
+                <tbody>
+                {% for key,value in results %}
+                    <tr>
+                        <td>{{ value.candidate.name  }}</td>
+                        <td>{{ value.count  }}</td>
+                        <td>{{ value.count*100.0 / stats.nb_votants  }}</td>
+                    </tr>
+
+
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+        <div class="col-lg-6">
+            <h4>Statistiques</h4>
+
+            <dl>
+                <dt>Nombre de votants</dt>
+                <dd>{{ stats.nb_votants }}</dd>
+            </dl>
+            <dl>
+                <dt>Nombre d'invités</dt>
+                <dd>{{ stats.nb_invites }}</dd>
+            </dl>
+            <dl>
+                <dt>Pourcentage de participation</dt>
+                <dd>{{ stats.ratio_float }}</dd>
+            </dl>
+        </div>
+    </div>
+{% endblock %}

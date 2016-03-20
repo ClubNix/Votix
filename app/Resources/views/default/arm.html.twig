@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+
+{% block scripts %}
+    <script>
+    $(function() {
+        $('#dl_link').click(function() {
+            $('#dl_link').attr('disabled', true);
+        });
+    })
+    </script>
+{% endblock %}
+
+
+{% block body %}
+
+    <h2>Procédure d'armement</h2>
+
+    <h3>Génération de la clef</h3>
+    <p>Cliquez sur le bouton pour générer une paire clef privée / publique qui servira à chiffrer et déchiffrer le vote. La clef privée vous sera envoyée et servira au déchiffrement. Elle n'est pas conservée par le système et vous aurez la seule copie. Attention, il n'est pas possible de télécharger une deuxième fois la clef et la perte de la clef signifie l'impossibilité à déchiffrer le résultat.</p>
+
+    <a id="dl_link" href="{{ path('arm_download') }}" {% if armed %}disabled{% endif %} class="btn btn-primary" download>
+        Génération et téléchargement de la clef privée
+    </a>
+
+    <h3>Protection de la clef</h3>
+
+    <p>Une fois la clef téléchargée sur votre poste, copiez là sur les deux supports de stockage prévus à cet effet.</p>
+
+    <p>Vérifiez que la clef a été correctement sauvegardée sur les deux supports de stockage puis effacer toute trace de la clef sur le poste que vous utilisez (supprimez-la du dossier des téléchargements).</p>
+
+    <p>Passez ensuite à la procédure de test de la clef.</p>
+
+    <a href="{{ path('check') }}" class="btn btn-primary">
+        Passer à la procédure de test de la clef
+    </a>
+    <hr>
+    <p>Désolé pour le côté un peu stressant mais ne t'inquiète pas, tout va bien se passer.</p>
+{% endblock %}
