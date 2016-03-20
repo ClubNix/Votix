@@ -36,7 +36,7 @@ class AdminController extends Controller
 
         $voters = $voterRepository->findAllSortedByPromotion();
 
-        return $this->render('default/nix-list.html.twig', [
+        return $this->render('default/admin-voters-list.html.twig', [
             'voters' => $voters,
         ]);
     }
