@@ -34,7 +34,7 @@ services:
     class: AppBundle\Service\TokenService
     arguments: [ "%votix_secret%", "%votix_link_base%"]
 
-  votix.service:
+  votix.voting:
     class: AppBundle\Service\VotingService
     arguments: [ "@votix.encryption", "@votix.voter_repository"]
 
