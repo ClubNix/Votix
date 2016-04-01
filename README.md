@@ -6,7 +6,7 @@ Votix is an advanded and secure online voting platform.
 
 ## License
 
-Piwik is released under the MIT license.
+Votix is released under the MIT license.
 
 ## Requirements
 
