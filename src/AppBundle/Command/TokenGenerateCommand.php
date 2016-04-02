@@ -6,7 +6,7 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace AppBundle\Console\Command;
+namespace AppBundle\Command;
 
 use AppBundle\Entity\Voter;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class VotixTokenGenerateCommand
  * @package AppBundle\Console\Command
  */
-class VotixTokenGenerateCommand extends VotixAbstractCommand
+class TokenGenerateCommand extends AbstractCommand
 {
     protected function configure()
     {

@@ -6,7 +6,7 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace AppBundle\Console\Command;
+namespace AppBundle\Command;
 
 use AppBundle\Entity\Voter;
 use Doctrine\ORM\EntityManager;
@@ -20,7 +20,7 @@ use Symfony\Component\Finder\Finder;
  * Class VotixImportCommand
  * @package AppBundle\Console\Command
  */
-class VotixImportCommand extends VotixAbstractCommand
+class ImportCommand extends AbstractCommand
 {
     protected function configure()
     {

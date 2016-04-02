@@ -6,7 +6,7 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace AppBundle\Console\Command;
+namespace AppBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +15,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class VotixDropVotersCommand
  * @package AppBundle\Console\Command
  */
-class VotixDropVotersCommand extends VotixAbstractCommand
+class DropVotersCommand extends AbstractCommand
 {
     protected function configure()
     {

@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-use AppBundle\Console\Command;
+use AppBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Debug\Debug;
@@ -27,11 +27,10 @@ if ($debug) {
 
 $kernel = new AppKernel($env, $debug);
 $application = new Application($kernel);
-$application->add(new Command\VotixImportCommand());
-$application->add(new Command\VotixMailSendCommand());
-$application->add(new Command\VotixTokenGenerateCommand());
-$application->add(new Command\VotixCandidatesResetCommand());
-$application->add(new Command\VotixDropVotersCommand());
-$application->add(new Command\VotixMailSendCommand());
+$application->add(new Command\ImportCommand());
+$application->add(new Command\MailSendCommand());
+$application->add(new Command\TokenGenerateCommand());
+$application->add(new Command\CandidatesResetCommand());
+$application->add(new Command\DropVotersCommand());
 $application->run($input);
 

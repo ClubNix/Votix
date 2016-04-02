@@ -6,7 +6,7 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace AppBundle\Console\Command;
+namespace AppBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  * Class VotixAbstractCommand
  * @package AppBundle\Console\Command
  */
-abstract class VotixAbstractCommand extends ContainerAwareCommand {
+abstract class AbstractCommand extends ContainerAwareCommand {
     /**
      * Returns true if the service id is defined.
      *

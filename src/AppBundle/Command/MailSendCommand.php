@@ -6,10 +6,9 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace AppBundle\Console\Command;
+namespace AppBundle\Command;
 
 use AppBundle\Entity\Voter;
-use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,7 +21,7 @@ use Aws\Ses\SesClient;
  * Class VotixMailSendCommand
  * @package AppBundle\Console\Command
  */
-class VotixMailSendCommand extends VotixAbstractCommand
+class MailSendCommand extends AbstractCommand
 {
     protected function configure()
     {
@@ -97,7 +96,6 @@ class VotixMailSendCommand extends VotixAbstractCommand
             }
 
             $counter++;
-            break; // protec
         }
     }
 
@@ -120,14 +118,22 @@ class VotixMailSendCommand extends VotixAbstractCommand
         $html  = $templateEngine->render('mails/' . $template . '.html.twig',  $vars);
         $title = $templateEngine->render('mails/' . $template . '.title.twig', $vars);
 
-        return $email = $this->getEmailForVoter($voter, $title, $html, $text);
+        return $email = $this->getEmailForVoter($voter, $title, $html);
     }
 
-    private function getEmailForVoter($voter, $title, $html, $text) {
+    /**
+     * @param Voter $voter
+     * @param $title
+     * @param $html
+     * @return array
+     */
+    private function getEmailForVoter($voter, $title, $html) {
+        $to = $voter->getFirstname() . ' ' . $voter->getLastname() . '<' . $voter->getEmail() . '>';
+
         $email = [
             'Source' => 'Votix <votix@clubnix.fr>',
             'Destination' => [
-                'ToAddresses' => ['Philippe Lewin <philippe.lewin@gmail.com>']
+                'ToAddresses' => [$to]
             ],
             'Message' => [
                 'Subject' => ['Data' => $title, 'Charset' => 'UTF-8'],
