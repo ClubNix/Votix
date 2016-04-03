@@ -151,6 +151,21 @@ class EncryptionService implements EncryptionServiceInterface {
         $this->eventDispatcher->dispatch(KeysGeneratedEvent::NAME, new KeysGeneratedEvent());
     }
 
+    public function encryptSignature($signature) {
+        $rsaOptions = new RsaOptions([
+            'pass_phrase' => $this->secretKey,
+        ]);
+
+        $rsaOptions->generateKeys(['private_key_bits' => self::PRIVATE_KEY_BITS]);
+
+        $rsa = new Rsa($rsaOptions);
+
+        return [
+            'encrypted'   => $rsa->encrypt($signature),
+            'private_key' => $rsaOptions->getPrivateKey(),
+        ];
+    }
+
     /**
      * Get the private key previously generated.
      * @return string Private key path in the filesystem.

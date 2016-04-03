@@ -24,4 +24,6 @@ interface EncryptionServiceInterface {
     public function generateKeys();
 
     public function getGeneratedKeyFilePath();
+
+    public function encryptSignature($signature);
 }

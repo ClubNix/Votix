@@ -36,7 +36,7 @@ services:
 
   votix.voting:
     class: AppBundle\Service\VotingService
-    arguments: [ "@votix.encryption", "@votix.voter_repository"]
+    arguments: [ "@event_dispatcher", "@votix.encryption", "@votix.voter_repository"]
 
   votix.voter_repository:
     class: AppBundle\Repository\VoterRepository
