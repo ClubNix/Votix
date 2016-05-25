@@ -15,7 +15,7 @@ use Symfony\Component\EventDispatcher\Event;
  * Class VoteCastEvent
  * @package AppBundle\Event
  */
-class VoteCast extends Event {
+class VoteCastEvent extends Event {
 
     const NAME = 'vote.cast';
 

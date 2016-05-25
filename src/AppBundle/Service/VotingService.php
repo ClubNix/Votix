@@ -10,7 +10,7 @@ namespace AppBundle\Service;
 
 use AppBundle\Entity\Candidate;
 use AppBundle\Entity\Voter;
-use AppBundle\Event\VoteCast;
+use AppBundle\Event\VoteCastEvent;
 use AppBundle\Repository\VoterRepository;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -62,7 +62,7 @@ class VotingService implements VotingServiceInterface {
 
         $this->voterRepository->save($voter);
 
-        $this->dispatcher->dispatch(VoteCast::NAME, new VoteCast($voter, $signature['private_key']));
+        $this->dispatcher->dispatch(VoteCastEvent::NAME, new VoteCastEvent($voter, $signature['private_key']));
     }
 
     private function signBallot($plaintext, $ballot) {
