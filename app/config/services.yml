@@ -55,3 +55,8 @@ services:
     class: AppBundle\EventSubscriber\NotifyAdministratorsSubscriber
     tags:
       - { name: kernel.event_subscriber }
+
+  votix.publish_vote_casts_on_redis_subscriber:
+    class: AppBundle\EventSubscriber\PublishVoteCastsOnRedisSubscriber
+    tags:
+      - { name: kernel.event_subscriber }
