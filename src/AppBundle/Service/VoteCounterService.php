@@ -19,7 +19,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Class VoteCounterService
  * @package AppBundle\Service
  */
-class VoteCounterService implements VoteCounterServiceInterface {
+class VoteCounterService implements VoteCounterServiceInterface
+{
 
     /** @var CandidateRepository  */
     private $candidateRepository;
@@ -69,7 +70,8 @@ class VoteCounterService implements VoteCounterServiceInterface {
      * @param $privateKey
      * @return array List of ['candidate' => Candidate, 'count' => int ]
      */
-    public function countEncryptedVotes($privateKey) {
+    public function countEncryptedVotes($privateKey)
+    {
         /** @var Candidate[] $candidates */
         $candidates = $this->candidateRepository->findAll();
         /** @var Voter[] $voters */

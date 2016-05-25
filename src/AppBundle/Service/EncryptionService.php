@@ -21,7 +21,8 @@ use Zend\Crypt\PublicKey\RsaOptions;
  * Class EncryptionService
  * @package AppBundle\Service
  */
-class EncryptionService implements EncryptionServiceInterface {
+class EncryptionService implements EncryptionServiceInterface
+{
     /** Number of bits for the RSA key pair */
     const PRIVATE_KEY_BITS = 2048;
 
@@ -61,7 +62,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * Check if the keys have already been generated
      * @return bool true if the application public key is detected
      */
-    public function isArmed() {
+    public function isArmed()
+    {
         return $this->filesystem->exists($this->keysDirectory . '/public_key.pub');
     }
 
@@ -72,7 +74,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * @param string $key Private key to test with the stored public key.
      * @return array First element boolean $success, second element string message.
      */
-    public function verifyKey($key) {
+    public function verifyKey($key)
+    {
         $success = false;
         $message = 'ERROR';
 
@@ -103,7 +106,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * @param string $key Private key to use to decrypt the ballot.
      * @return string Decrypted vote.
      */
-    public function decryptVote($vote, $key) {
+    public function decryptVote($vote, $key)
+    {
 
         try {
             $decrypted = $this->getRsa($key)->decrypt($vote);
@@ -120,7 +124,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * @param string $vote Vote to encrypt.
      * @return string Encrypted vote.
      */
-    public function encryptVote($vote) {
+    public function encryptVote($vote)
+    {
         try {
             $encrypted = $this->getRsa()->encrypt($vote);
         } catch(ZendCryptExceptionInterface $exception) {
@@ -138,7 +143,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * @see AppBundle\Event\KeysGeneratedEvent
      * @see getGeneratedKeyFilePath
      */
-    public function generateKeys() {
+    public function generateKeys()
+    {
         $rsaOptions = new RsaOptions([
             'pass_phrase' => $this->secretKey,
         ]);
@@ -151,7 +157,8 @@ class EncryptionService implements EncryptionServiceInterface {
         $this->eventDispatcher->dispatch(KeysGeneratedEvent::NAME, new KeysGeneratedEvent());
     }
 
-    public function encryptSignature($signature) {
+    public function encryptSignature($signature)
+    {
         $rsaOptions = new RsaOptions([
             'pass_phrase' => $this->secretKey,
         ]);
@@ -170,7 +177,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * Get the private key previously generated.
      * @return string Private key path in the filesystem.
      */
-    public function getGeneratedKeyFilePath() {
+    public function getGeneratedKeyFilePath()
+    {
         return $this->keysDirectory . '/private_key.pem';
     }
 
@@ -180,7 +188,8 @@ class EncryptionService implements EncryptionServiceInterface {
      * @param string|null $key Private key to use. null if the Rsa instance will only encrypt.
      * @return Rsa
      */
-    private function getRsa($key = null) {
+    private function getRsa($key = null)
+    {
         $options = [
             'public_key'    => $this->keysDirectory . '/public_key.pub',
             'pass_phrase'   => $this->secretKey,

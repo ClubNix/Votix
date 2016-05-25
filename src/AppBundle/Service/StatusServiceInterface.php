@@ -12,7 +12,8 @@ namespace AppBundle\Service;
  * Interface StatusServiceInterface
  * @package AppBundle\Service
  */
-interface StatusServiceInterface {
+interface StatusServiceInterface
+{
     const OPEN    = 'OPEN';
     const CLOSED  = 'CLOSED';
     const WAITING = 'WAITING';

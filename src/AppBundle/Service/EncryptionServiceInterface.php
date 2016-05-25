@@ -12,7 +12,8 @@ namespace AppBundle\Service;
  * Interface EncryptionServiceInterface
  * @package AppBundle\Service
  */
-interface EncryptionServiceInterface {
+interface EncryptionServiceInterface
+{
     public function isArmed();
 
     public function verifyKey($key);

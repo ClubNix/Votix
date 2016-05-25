@@ -15,12 +15,14 @@ use Doctrine\ORM\EntityRepository;
  * Class VoterRepository
  * @package AppBundle\Repository
  */
-class VoterRepository extends EntityRepository {
+class VoterRepository extends EntityRepository
+{
 
     /**
      * @return Voter[]
      */
-    public function findAllSortedByPromotion() {
+    public function findAllSortedByPromotion()
+    {
         $qb = $this->getEntityManager()->createQueryBuilder();
 
         $qb ->select('v')
@@ -33,7 +35,8 @@ class VoterRepository extends EntityRepository {
     /**
      * @param Voter $voter
      */
-    public function save($voter) {
+    public function save($voter)
+    {
         $this->_em->persist($voter);
         $this->_em->flush();
     }
@@ -41,9 +44,9 @@ class VoterRepository extends EntityRepository {
     /**
      *
      */
-    public function deleteAll() {
+    public function deleteAll()
+    {
         $this->_em->createQuery('DELETE FROM AppBundle:Voter')->execute();
-
         $this->_em->flush();
     }
 }

@@ -12,7 +12,9 @@ namespace AppBundle\Service;
  * Interface VoteCounterServiceInterface
  * @package AppBundle\Service
  */
-interface VoteCounterServiceInterface {
+interface VoteCounterServiceInterface
+{
     public function countEncryptedVotes($privateKey);
+
     public function verifyPassword($password);
 }

@@ -10,6 +10,7 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\Voter;
 use Doctrine\ORM\EntityManager;
+use Sabre\Xml\LibXMLException;
 use Sabre\Xml\Reader as XmlReader;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +40,7 @@ class ImportCommand extends AbstractCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @throws \Sabre\Xml\LibXMLException
+     * @throws LibXMLException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

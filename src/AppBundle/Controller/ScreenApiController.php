@@ -29,7 +29,8 @@ class ScreenApiController extends Controller
      *
      * @return JsonResponse
      */
-    public function liveJsonAction() {
+    public function liveJsonAction()
+    {
         $globalStats = $this->get('votix.stats')->getStats();
         $statsPromos = $this->get('votix.stats')->getStatsByPromotion();
 
@@ -84,7 +85,8 @@ class ScreenApiController extends Controller
         return new JsonResponse($data);
     }
 
-    private function getGroupRatio($promotions, $stats) {
+    private function getGroupRatio($promotions, $stats)
+    {
 
         $total_votants = 0;
         $total_invites = 0;
@@ -105,7 +107,8 @@ class ScreenApiController extends Controller
         }
     }
 
-    protected function truncatedFloat($number) {
+    protected function truncatedFloat($number)
+    {
         return floor($number * 100) / 100;
     }
 }

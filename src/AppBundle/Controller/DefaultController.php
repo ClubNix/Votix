@@ -49,7 +49,8 @@ class DefaultController extends Controller
      *
      * @return Response
      */
-    public function faqAction() {
+    public function faqAction()
+    {
         return $this->render('default/faq.html.twig');
     }
 
@@ -59,7 +60,8 @@ class DefaultController extends Controller
      *
      * @return Response
      */
-    public function historyAction() {
+    public function historyAction()
+    {
         $data = $this->get('votix.archives')->getArchive();
 
         return $this->render('default/history.html.twig', [

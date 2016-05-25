@@ -103,7 +103,8 @@ class EncryptionServiceTest extends WebTestCase
         $this->assertEquals($this->fakevote, $decrypted);
     }
 
-    public function testGeneratekeys() {
+    public function testGeneratekeys()
+    {
         $eventDispatcher = $this->getEventDispatcherMock();
         $filesystem      = $this->getArmedFilesystemMock();
 
@@ -134,7 +135,8 @@ class EncryptionServiceTest extends WebTestCase
         return file_get_contents(__DIR__ . '/../../fixtures/votix_secret_key.txt');
     }
 
-    private function getArmedFilesystemMock() {
+    private function getArmedFilesystemMock()
+    {
         $filesystem = $this
             ->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
             ->getMock();
@@ -146,7 +148,8 @@ class EncryptionServiceTest extends WebTestCase
         return $filesystem;
     }
 
-    private function getDisarmedFilesystemMock() {
+    private function getDisarmedFilesystemMock()
+    {
         $filesystem = $this
             ->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
             ->getMock();

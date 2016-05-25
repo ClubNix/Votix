@@ -14,7 +14,8 @@ use Symfony\Component\EventDispatcher\Event;
  * Class HackingAttemptDetectedEvent
  * @package AppBundle\Event
  */
-class HackingAttemptDetectedEvent extends Event {
+class HackingAttemptDetectedEvent extends Event
+{
 
     const NAME = 'hacking_attempt.detected';
 

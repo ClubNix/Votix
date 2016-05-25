@@ -15,6 +15,7 @@ use AppBundle\Entity\Voter;
  * Interface VotingServiceInterface
  * @package AppBundle\Service
  */
-interface VotingServiceInterface {
+interface VotingServiceInterface
+{
     public function makeVoterVoteFor(Voter $voter, Candidate $choosenCandidate);
 }

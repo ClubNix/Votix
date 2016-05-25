@@ -17,14 +17,18 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Class NotifyAdministratorsSubscriber
  * @package AppBundle\EventSubscriber
  */
-class NotifyAdministratorsSubscriber implements EventSubscriberInterface {
-    public function onKeysGenerated(KeysGeneratedEvent $event) {
+class NotifyAdministratorsSubscriber implements EventSubscriberInterface
+{
+    public function onKeysGenerated(KeysGeneratedEvent $event)
+    {
     }
 
-    public function onKeysVerified(KeysVerifiedEvent $event) {
+    public function onKeysVerified(KeysVerifiedEvent $event)
+    {
     }
 
-    public function onVotesCounted(VotesCountedEvent $event) {
+    public function onVotesCounted(VotesCountedEvent $event)
+    {
     }
 
     public static function getSubscribedEvents()

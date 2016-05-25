@@ -14,8 +14,8 @@ use Symfony\Component\EventDispatcher\Event;
  * Class VoteVoidedEvent
  * @package AppBundle\Event
  */
-class VoteVoidedEvent extends Event {
-
+class VoteVoidedEvent extends Event
+{
     const NAME = 'vote.voided';
 
     public function __construct()

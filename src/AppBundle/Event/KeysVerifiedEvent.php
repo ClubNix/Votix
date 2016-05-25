@@ -14,7 +14,8 @@ use Symfony\Component\EventDispatcher\Event;
  * Class KeysVerifiedEvent
  * @package AppBundle\Event
  */
-class KeysVerifiedEvent extends Event {
+class KeysVerifiedEvent extends Event
+{
     const NAME = 'keys.verified';
 
     private $message;

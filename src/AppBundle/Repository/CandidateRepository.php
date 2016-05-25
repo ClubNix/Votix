@@ -20,7 +20,8 @@ class CandidateRepository extends EntityRepository {
     /**
      * @return Candidate[]
      */
-    public function findAllShuffled() {
+    public function findAllShuffled()
+    {
         $candidates = $this->findAll();
 
         shuffle($candidates);
@@ -31,7 +32,8 @@ class CandidateRepository extends EntityRepository {
     /**
      * @param array $candidates
      */
-    public function import($candidates) {
+    public function import($candidates)
+    {
         $this->_em->createQuery('DELETE FROM AppBundle:Candidate')->execute();
 
         foreach($candidates as $info) {

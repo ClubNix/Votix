@@ -133,7 +133,8 @@ class ProcessController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function checkProcessAction(Request $request) {
+    public function checkProcessAction(Request $request)
+    {
         $key = $request->request->get('key');
 
         list($success, $message) = $this->get('votix.encryption')->verifyKey($key);
@@ -149,7 +150,8 @@ class ProcessController extends Controller
      * @param $filename
      * @return BinaryFileResponse
      */
-    private function sendTemporaryFileResponse($file, $filename) {
+    private function sendTemporaryFileResponse($file, $filename)
+    {
         // dit à PHP d'oublier tout ce qu'il sait sur ce fichier au cas où
         clearstatcache(true, $file);
 

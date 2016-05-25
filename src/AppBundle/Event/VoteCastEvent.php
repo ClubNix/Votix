@@ -15,7 +15,8 @@ use Symfony\Component\EventDispatcher\Event;
  * Class VoteCastEvent
  * @package AppBundle\Event
  */
-class VoteCastEvent extends Event {
+class VoteCastEvent extends Event
+{
 
     const NAME = 'vote.cast';
 
@@ -31,11 +32,13 @@ class VoteCastEvent extends Event {
         $this->privateKey = $privateKey;
     }
 
-    public function getVoter() {
+    public function getVoter()
+    {
         return $this->voter;
     }
 
-    public function getPrivateKey() {
+    public function getPrivateKey()
+    {
         return $this->privateKey;
     }
 }

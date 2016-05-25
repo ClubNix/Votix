@@ -92,7 +92,8 @@ class VotingController extends Controller
      * @param $voter
      * @return Response
      */
-    private function renderVotingPage($voter) {
+    private function renderVotingPage($voter)
+    {
         $candidateRepository = $this->get('votix.candidate_repository');
 
         $candidates = $candidateRepository->findAllShuffled();

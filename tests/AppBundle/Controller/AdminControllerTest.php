@@ -20,9 +20,8 @@ class AdminControllerTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $crawler = $client->request('GET', '/admin/voters-list');
+        $client->request('GET', '/admin/voters-list');
 
         $this->assertTrue($client->getResponse()->isSuccessful());
-
     }
 }

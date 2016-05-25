@@ -14,7 +14,8 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  * Class VotixAbstractCommand
  * @package AppBundle\Console\Command
  */
-abstract class AbstractCommand extends ContainerAwareCommand {
+abstract class AbstractCommand extends ContainerAwareCommand
+{
     /**
      * Returns true if the service id is defined.
      *

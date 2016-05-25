@@ -14,7 +14,8 @@ use Symfony\Component\EventDispatcher\Event;
  * Class KeysGeneratedEvent
  * @package AppBundle\Event
  */
-class KeysGeneratedEvent extends Event {
+class KeysGeneratedEvent extends Event
+{
 
     const NAME = 'keys.generated';
 

@@ -34,7 +34,8 @@ class StatsService implements StatsServiceInterface
         return $this->getStatsQuery($grouped = true)->getResult();
     }
 
-    private function getStatsQuery($grouped = false) {
+    private function getStatsQuery($grouped = false)
+    {
         $qb = $this->entityManager->createQueryBuilder();
 
         $qb->select(

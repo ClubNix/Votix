@@ -14,7 +14,8 @@ use Symfony\Component\Yaml\Parser as YamlParser;
  * Class ArchivesService
  * @package AppBundle\Service
  */
-class ArchivesService {
+class ArchivesService
+{
     private $archiveFile;
 
     /**
@@ -29,7 +30,8 @@ class ArchivesService {
     /**
      * @return array
      */
-    public function getArchive() {
+    public function getArchive()
+    {
         $yaml = new YamlParser();
 
         $value = $yaml->parse(file_get_contents($this->archiveFile));

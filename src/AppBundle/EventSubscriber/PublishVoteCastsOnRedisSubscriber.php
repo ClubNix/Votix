@@ -17,7 +17,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class PublishVoteCastsOnRedisSubscriber implements EventSubscriberInterface
 {
-
     public function onVoteCasted(VoteCastEvent $event)
     {
         throw new \Exception("votecasted");

@@ -14,7 +14,8 @@ use Symfony\Component\EventDispatcher\Event;
  * Class VotesCountedEvent
  * @package AppBundle\Event
  */
-class VotesCountedEvent extends Event {
+class VotesCountedEvent extends Event
+{
 
     const NAME = 'votes.counted';
 

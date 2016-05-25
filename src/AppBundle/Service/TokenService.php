@@ -14,7 +14,8 @@ use AppBundle\Entity\Voter;
  * Class TokenService
  * @package AppBundle\Service
  */
-class TokenService implements TokenServiceInterface {
+class TokenService implements TokenServiceInterface
+{
     private $salt;
     private $linkBase;
 
@@ -37,7 +38,8 @@ class TokenService implements TokenServiceInterface {
      * @param string $token
      * @return bool true if the token is matching else false
      */
-    public function verifyVoterToken($voter, $token) {
+    public function verifyVoterToken($voter, $token)
+    {
         $expectedToken = $this->getTokenForVoter($voter);
 
         return hash_equals($expectedToken, $token);
@@ -51,7 +53,8 @@ class TokenService implements TokenServiceInterface {
      * @param string $code
      * @return bool true if the code is matching else false
      */
-    public function verifyVoterCode($voter, $code) {
+    public function verifyVoterCode($voter, $code)
+    {
         $expectedCode = $this->getCodeForVoter($voter);
 
         return hash_equals($expectedCode, $code);
@@ -63,7 +66,8 @@ class TokenService implements TokenServiceInterface {
      * @param Voter $voter
      * @return string
      */
-    public function getTokenForVoter($voter) {
+    public function getTokenForVoter($voter)
+    {
         return hash('sha256', 'votix-' . $voter->getEmail() . '-' . $this->salt);
     }
 
@@ -73,7 +77,8 @@ class TokenService implements TokenServiceInterface {
      * @param Voter $voter
      * @return string Number composed of 4 digits.
      */
-    public function getCodeForVoter($voter) {
+    public function getCodeForVoter($voter)
+    {
         $code = strval(crc32('votix-' . $voter->getEmail() . '-' . $this->salt));
         return substr($code, 0, 4);
     }
@@ -84,7 +89,8 @@ class TokenService implements TokenServiceInterface {
      * @param Voter $voter
      * @return string
      */
-    public function getLinkForVoter($voter) {
+    public function getLinkForVoter($voter)
+    {
         $token = $this->getTokenForVoter($voter);
         return $this->linkBase . $voter->getLogin() . '/' . $token;
     }

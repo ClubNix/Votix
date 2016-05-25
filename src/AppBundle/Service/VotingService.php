@@ -18,7 +18,8 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * Class VotingService
  * @package AppBundle\Service
  */
-class VotingService implements VotingServiceInterface {
+class VotingService implements VotingServiceInterface
+{
     /** @var EncryptionServiceInterface */
     private $encryptionService;
 
@@ -49,7 +50,8 @@ class VotingService implements VotingServiceInterface {
      * @param Voter $voter
      * @param Candidate $choosenCandidate
      */
-    public function makeVoterVoteFor(Voter $voter, Candidate $choosenCandidate) {
+    public function makeVoterVoteFor(Voter $voter, Candidate $choosenCandidate)
+    {
         $candidateId = (string) $choosenCandidate->getId();
 
         $ballot = $this->encryptionService->encryptVote($candidateId);
@@ -65,7 +67,8 @@ class VotingService implements VotingServiceInterface {
         $this->dispatcher->dispatch(VoteCastEvent::NAME, new VoteCastEvent($voter, $signature['private_key']));
     }
 
-    private function signBallot($plaintext, $ballot) {
+    private function signBallot($plaintext, $ballot)
+    {
         $hash = hash('sha512', $ballot);
 
         $payload = [

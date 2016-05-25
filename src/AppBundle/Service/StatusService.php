@@ -12,7 +12,8 @@ namespace AppBundle\Service;
  * Class StatusService
  * @package AppBundle\Service
  */
-class StatusService implements StatusServiceInterface {
+class StatusService implements StatusServiceInterface
+{
     private $start;
     private $end;
 
@@ -44,7 +45,8 @@ class StatusService implements StatusServiceInterface {
         return self::CLOSED;
     }
 
-    public function getCurrentStatusMessage() {
+    public function getCurrentStatusMessage()
+    {
         switch($this->getCurrentStatus()) {
             case self::OPEN:
                 return 'Les votes sont ouverts jusqu\'à 17h13.';
