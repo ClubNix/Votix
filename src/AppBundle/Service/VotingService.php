@@ -60,9 +60,9 @@ class VotingService implements VotingServiceInterface {
 
         $voter->setSignature($signature['encrypted']);
 
-        $this->dispatcher->dispatch(VoteCast::NAME, new VoteCast($voter, $signature['private_key']));
-
         $this->voterRepository->save($voter);
+
+        $this->dispatcher->dispatch(VoteCast::NAME, new VoteCast($voter, $signature['private_key']));
     }
 
     private function signBallot($plaintext, $ballot) {
