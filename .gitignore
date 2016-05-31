@@ -4,6 +4,9 @@
 /var/*
 !/var/cache
 /var/cache/*
+!/var/user_keys
+/var/user_keys/*
+!var/user_keys/.gitkeep
 !var/cache/.gitkeep
 !/var/logs
 /var/logs/*
@@ -11,6 +14,7 @@
 !/var/sessions
 /var/sessions/*
 !var/sessions/.gitkeep
+
 !var/SymfonyRequirements.php
 /vendor/
 /web/bundles/
