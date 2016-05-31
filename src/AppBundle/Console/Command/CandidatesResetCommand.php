@@ -8,6 +8,7 @@
  */
 namespace AppBundle\Console\Command;
 
+use AppBundle\Command\ResetCandidatesCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -44,7 +45,11 @@ class CandidatesResetCommand extends AbstractCommand
 
         $parsed = Yaml::parse(file_get_contents($filepath));
 
-        $this->get('votix.candidate_repository')->import($parsed['candidates']);
+        $command = new ResetCandidatesCommand($parsed['candidates']);
+
+        $response = $this->send($command);
+
+        echo $response->getBody($asString = true);
 
         return 0;
     }

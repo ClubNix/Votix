@@ -8,6 +8,9 @@
  */
 namespace AppBundle\Console\Command;
 
+use Broadway\Serializer\SerializableInterface;
+use Broadway\Serializer\SimpleInterfaceSerializer;
+use Guzzle\Http\Client;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 /**
@@ -38,5 +41,18 @@ abstract class AbstractCommand extends ContainerAwareCommand
     protected function get($id)
     {
         return $this->getContainer()->get($id);
+    }
+
+    protected function send(SerializableInterface $command)
+    {
+        $serializer = new SimpleInterfaceSerializer();
+        // Serialize
+        $serialized = $serializer->serialize($command);
+
+        $client = new Client();
+
+        $request = $client->post('http://localhost:8000/command', null, $serialized);
+
+        return $request->send();
     }
 }

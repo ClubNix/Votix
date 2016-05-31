@@ -30,7 +30,7 @@ class CandidateRepository extends EntityRepository {
     }
 
     /**
-     * @param array $candidates
+     * @param array $candidates [ ['name' => string, 'eligible' => true] ... ]
      */
     public function import($candidates)
     {

@@ -8,7 +8,7 @@
  */
 namespace AppBundle\Console\Command;
 
-use AppBundle\Entity\Voter;
+use AppBundle\Command\GenerateTokenCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -42,26 +42,12 @@ class TokenGenerateCommand extends AbstractCommand
     {
         $email = $input->getArgument('email');
 
-        /** @var Voter $voter */
-        $voter = $this->get('votix.voter_repository')
-                      ->findOneBy(['email' => $email]);
+        $command = new GenerateTokenCommand($email);
 
-        if($voter == NULL) {
-            $output->writeln("<error>L'addresse email n'a pas été trouvé chez les votants !</error>");
-            return;
-        }
+        $response = $this->send($command);
 
-        if($voter->hasVoted()) {
-            $output->writeln("<warning>Ce votant a déjà voté !</warning>");
-            return;
-        }
+        echo $response->getBody($asString = true);
 
-        $tokenService = $this->get('votix.token');
-
-        $token = $tokenService->getTokenForVoter($voter);
-        $code  = $tokenService->getCodeForVoter($voter);
-
-        var_dump($token);
-        var_dump($code);
+        return 0;
     }
 }

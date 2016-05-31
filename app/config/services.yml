@@ -50,6 +50,12 @@ services:
     arguments:
       - "AppBundle:Candidate"
 
+  votix.mailer:
+    class: AppBundle\Service\MailerService
+    arguments:
+      - "@votix.token"
+      - "@twig"
+
 # Subscribers
   votix.notify_administrators_subscriber:
     class: AppBundle\EventSubscriber\NotifyAdministratorsSubscriber
@@ -60,3 +66,12 @@ services:
     class: AppBundle\EventSubscriber\PublishVoteCastsOnRedisSubscriber
     tags:
       - { name: kernel.event_subscriber }
+
+  votix.command_handler:
+    class: AppBundle\CommandHandler\VotixCommandHandler
+    arguments:
+     - "@votix.candidate_repository"
+     - "@votix.voter_repository"
+     - "@votix.token"
+     - "@votix.mailer"
+     - "@votix.stats"

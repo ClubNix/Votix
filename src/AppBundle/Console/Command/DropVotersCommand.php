@@ -8,6 +8,7 @@
  */
 namespace AppBundle\Console\Command;
 
+use Broadway\CommandHandling\SimpleCommandBus;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -33,7 +34,11 @@ class DropVotersCommand extends AbstractCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->get('votix.voter_repository')->deleteAll();
+        $command = new \AppBundle\Command\DropVotersCommand();
+
+        $response = $this->send($command);
+
+        echo $response->getBody($asString = true);
 
         return 0;
     }
