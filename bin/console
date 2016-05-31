@@ -32,5 +32,6 @@ $application->add(new Command\MailSendCommand());
 $application->add(new Command\TokenGenerateCommand());
 $application->add(new Command\CandidatesResetCommand());
 $application->add(new Command\DropVotersCommand());
+$application->add(new Command\CheckStatusCommand());
 $application->run($input);
 

@@ -75,3 +75,4 @@ services:
      - "@votix.token"
      - "@votix.mailer"
      - "@votix.stats"
+     - "@votix.status"

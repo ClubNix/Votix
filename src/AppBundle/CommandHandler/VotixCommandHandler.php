@@ -12,6 +12,7 @@ use AppBundle\Repository\CandidateRepository;
 use AppBundle\Repository\VoterRepository;
 use AppBundle\Service\MailerService;
 use AppBundle\Service\StatsService;
+use AppBundle\Service\StatusServiceInterface;
 use AppBundle\Service\TokenServiceInterface;
 use Aws\Ses\SesClient;
 use Broadway\CommandHandling\CommandHandler;
@@ -40,18 +41,23 @@ class VotixCommandHandler extends CommandHandler
     /** @var StatsService */
     private $statsService;
 
+    /** @var StatusServiceInterface */
+    private $statusService;
+
     public function __construct(
         CandidateRepository $candidateRepository,
         VoterRepository $voterRepository,
         TokenServiceInterface $tokenService,
         MailerService $mailerService,
-        StatsService $statsService
+        StatsService $statsService,
+        StatusServiceInterface $statusService
     ) {
         $this->candidateRepository = $candidateRepository;
         $this->voterRepository = $voterRepository;
         $this->tokenService = $tokenService;
         $this->mailerService = $mailerService;
         $this->statsService = $statsService;
+        $this->statusService = $statusService;
     }
 
     public function setLogger(LoggerInterface $logger)
@@ -78,7 +84,11 @@ class VotixCommandHandler extends CommandHandler
 
     public function handleCheckStatusCommand(CheckStatusCommand $command)
     {
-        $this->logger->info('status', ['code' => 42]);
+        $this->logger->info('Current status details', [
+            'status'         => $this->statusService->getCurrentStatus(),
+            'status_message' => $this->statusService->getCurrentStatusMessage(),
+            'stats'          => $this->statsService->getStats(),
+        ]);
     }
 
     public function handleGenerateTokenCommand(GenerateTokenCommand $command)

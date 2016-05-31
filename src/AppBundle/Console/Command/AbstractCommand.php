@@ -50,6 +50,7 @@ abstract class AbstractCommand extends ContainerAwareCommand
         $serialized = $serializer->serialize($command);
 
         $client = new Client();
+        $serialized['payload'] += ['life' => 42]; // hack, when payload is an empty array Broadway throws an exception
 
         $request = $client->post('http://localhost:8000/command', null, $serialized);
 
