@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Entity\Voter;
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -31,14 +32,14 @@ class VotingController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function voteAction(Voter $voter, $receivedToken, Request $request)
+    public function voteAction(Voter $voter, $receivedToken, LoggerInterface $logger, Request $request)
     {
         $encryptionService = $this->get('votix.encryption');
         $statusService     = $this->get('votix.status');
         $tokenService      = $this->get('votix.token');
 
         if(!$statusService->isVoteOpen()) {
-            $this->get('logger')->notice('Vote link accessed but vote is closed');
+            $logger->notice('Vote link accessed but vote is closed');
 
             return $this->render('default/bad-timing.html.twig');
         }
@@ -48,7 +49,7 @@ class VotingController extends Controller
         }
 
         if(!$encryptionService->isArmed()) {
-            $this->get('logger')->emergency('Votix is not armed');
+            $logger->emergency('Votix is not armed');
 
             throw new AccessDeniedHttpException('Votix n\'est pas encore armé');
         }
@@ -71,7 +72,7 @@ class VotingController extends Controller
         $choosenCandidate = $this->get('votix.candidate_repository')->findOneBy(['id' => $choice]);
 
         if($choosenCandidate === null) {
-            $this->get('logger')->warning('Hacking attempt');
+            $logger->warning('Hacking attempt');
 
             throw new AccessDeniedHttpException('Le candidat n\'existe pas');
         }

@@ -6,14 +6,14 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace Tests\AppBundle\Entity;
 
-use AppBundle\Entity\Candidate;
+namespace App\Tests\Unit\Entity;
+
+use App\Entity\Candidate;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Class CandidateTest
- * @package Tests\AppBundle\Entity
  */
 class CandidateTest extends WebTestCase
 {

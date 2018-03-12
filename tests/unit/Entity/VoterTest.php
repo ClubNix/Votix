@@ -6,14 +6,14 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace Tests\AppBundle\Entity;
 
-use AppBundle\Entity\Voter;
+namespace App\Tests\Unit\Entity;
+
+use App\Entity\Voter;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Class VoterTest
- * @package Tests\AppBundle\Entity
  */
 class VoterTest extends WebTestCase
 {

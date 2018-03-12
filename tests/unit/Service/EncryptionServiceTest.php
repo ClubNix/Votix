@@ -6,12 +6,11 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace Tests\AppBundle\Entity;
+namespace App\Tests\Unit\Service;
 
-use AppBundle\Service\EncryptionService;
+use App\Service\EncryptionService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Zend\Crypt\PublicKey\Rsa;
 
 /**
  * Class EncryptionServiceTest
@@ -19,7 +18,7 @@ use Zend\Crypt\PublicKey\Rsa;
  */
 class EncryptionServiceTest extends WebTestCase
 {
-    private $goodKeysDirectory = __DIR__ . '/../../fixtures';
+    private $goodKeysDirectory = __DIR__ . '/../../_data/fixtures';
     private $secretKey         = 'testsecret';
     private $fakevote          = '42';
 
@@ -131,8 +130,9 @@ class EncryptionServiceTest extends WebTestCase
         return $eventDispatcher;
     }
 
-    private function getPrivateKeyFixture() {
-        return file_get_contents(__DIR__ . '/../../fixtures/votix_secret_key.txt');
+    private function getPrivateKeyFixture()
+    {
+        return file_get_contents($this->goodKeysDirectory . '/votix_secret_key.txt');
     }
 
     private function getArmedFilesystemMock()

@@ -6,13 +6,12 @@
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
-namespace Tests\AppBundle\Controller;
+namespace App\Tests\Acceptance;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Class ScreenApiControllerTest
- * @package Tests\AppBundle\Controller
  */
 class ScreenApiControllerTest extends WebTestCase
 {

@@ -19,7 +19,8 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "Tests\\": "tests/"
+      "App\\Tests\\Unit\\": "tests/unit",
+      "App\\Tests\\Acceptance\\": "tests/acceptance"
     }
   },
   "require": {
@@ -37,11 +38,13 @@
     "predis/predis": "^1.1",
     "sabre/xml": "^1.4",
     "aws/aws-sdk-php": "2.*",
-    "zendframework/zend-crypt": "^3.2",
+    "zendframework/zend-crypt": "^2.6",
     "jms/serializer-bundle": "^2.3",
     "broadway/broadway": "^0.9.0"
   },
   "require-dev": {
-    "symfony/phpunit-bridge": "^4.0"
+    "phpunit/phpunit": "^5",
+    "symfony/phpunit-bridge": "^4.0",
+    "codeception/codeception": "^2.4"
   }
 }

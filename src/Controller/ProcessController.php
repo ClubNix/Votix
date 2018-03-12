@@ -8,6 +8,7 @@
  */
 namespace App\Controller;
 
+use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -38,16 +39,17 @@ class ProcessController extends Controller
      * @Route("/no/stress", name="no_stress_process")
      * @Method({"POST"})
      *
+     * @param LoggerInterface $logger
      * @param Request $request
      * @return Response
      */
-    public function voteCountingProcessAction(Request $request)
+    public function voteCountingProcessAction(LoggerInterface $logger, Request $request)
     {
         $status = $this->get('votix.status');
 
         // Prevent vote counting if votes are not closed
         if(!$status->isVoteClosed()) {
-            $this->get('logger')->notice('les votes ne sont pas clos');
+            $logger->notice('les votes ne sont pas clos');
 
             return new Response('Les votes ne sont pas encore clos.');
         }
@@ -96,12 +98,12 @@ class ProcessController extends Controller
      *
      * @return BinaryFileResponse
      */
-    public function armDownloadAction()
+    public function armDownloadAction(LoggerInterface $logger)
     {
         $encryption = $this->get('votix.encryption');
 
         if($encryption->isArmed()) {
-            $this->get('logger')->notice('Tentative de régénération de clef');
+            $logger->notice('Tentative de régénération de clef');
 
             throw new AccessDeniedHttpException('Votix est déjà armé, impossible de créer une nouvelle clef.');
         }
