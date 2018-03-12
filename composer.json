@@ -39,7 +39,6 @@
     "sabre/xml": "^1.4",
     "aws/aws-sdk-php": "2.*",
     "zendframework/zend-crypt": "^2.6",
-    "friendsofsymfony/rest-bundle": "^1.7",
     "jms/serializer-bundle": "^1.1",
     "broadway/broadway": "^0.9.0"
   },

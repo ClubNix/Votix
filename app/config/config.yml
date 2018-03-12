@@ -63,11 +63,6 @@ twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
 
-
-fos_rest:
-    routing_loader:
-        default_format: json
-
 swiftmailer:
     transport:  '%mailer_transport%'
     host:       '%mailer_host%'
