@@ -1,0 +1,82 @@
+<?php
+/**
+ * Votix. The advanded and secure online voting platform.
+ *
+ * @author Philippe Lewin <philippe.lewin@gmail.com>
+ * @author Club*Nix <club.nix@edu.esiee.fr>
+ * @license MIT
+ */
+namespace App\Service;
+
+use App\Entity\Candidate;
+use App\Entity\Voter;
+use App\Event\VoteCastEvent;
+use App\Repository\VoterRepository;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+
+/**
+ * Class VotingService
+ */
+class VotingService implements VotingServiceInterface
+{
+    /** @var EncryptionServiceInterface */
+    private $encryptionService;
+
+    /** @var VoterRepository  */
+    private $voterRepository;
+
+    /** @var EventDispatcherInterface */
+    private $dispatcher;
+
+    /**
+     * VotingService constructor.
+     * @param EncryptionServiceInterface $encryptionService
+     * @param VoterRepository $voterRepository
+     */
+    public function __construct(
+        EventDispatcherInterface   $dispatcher,
+        EncryptionServiceInterface $encryptionService,
+        VoterRepository            $voterRepository
+    ) {
+        $this->dispatcher        = $dispatcher;
+        $this->encryptionService = $encryptionService;
+        $this->voterRepository   = $voterRepository;
+    }
+
+    /**
+     * Make a Voter vote for a Candidate.
+     *
+     * @param Voter $voter
+     * @param Candidate $choosenCandidate
+     */
+    public function makeVoterVoteFor(Voter $voter, Candidate $choosenCandidate)
+    {
+        $candidateId = (string) $choosenCandidate->getId();
+
+        $ballot = $this->encryptionService->encryptVote($candidateId);
+
+        $voter->setBallot($ballot);
+
+        $signature = $this->signBallot($candidateId, $ballot);
+
+        $voter->setSignature($signature['encrypted']);
+
+        $this->voterRepository->save($voter);
+
+        $this->dispatcher->dispatch(VoteCastEvent::NAME, new VoteCastEvent($voter, $signature['private_key']));
+    }
+
+    private function signBallot($plaintext, $ballot)
+    {
+        $hash = hash('sha512', $ballot);
+
+        $payload = [
+            'plaintext'   => $plaintext,
+            'ballot_hash' => $hash,
+        ];
+
+        $signature = json_encode($payload);
+
+        return $this->encryptionService->encryptSignature($signature);
+    }
+}

@@ -1,0 +1,98 @@
+# Learn more about services, parameters and containers at
+# http://symfony.com/doc/current/book/service_container.html
+parameters:
+  locale: 'en'
+
+  votix_secret:          ThisTokenIsNotSoSecretChangeIt
+  votix_key_secret:      ThisTokenIsNotSoSecretChangeIt
+  votix_result_password: ThisTokenIsNotSoSecretChangeIt
+  votix_link_base:       https://yourvotix/vote/
+
+  votix_start:   1458255600
+  votix_end:     1558317580
+  votix_support: votix@domain.tld
+
+services:
+#    service_name:
+#        class: App\Directory\ClassName
+#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+  votix.status:
+    class: App\Service\StatusService
+    arguments: ["%votix_start%", "%votix_end%"]
+    public: true
+
+  votix.filesystem:
+    class: Symfony\Component\Filesystem\Filesystem
+    public: true
+
+  votix.encryption:
+    class: App\Service\EncryptionService
+    arguments: ["@event_dispatcher", "%kernel.root_dir%/../var", "%votix_key_secret%", "@votix.filesystem"]
+    public: true
+
+  votix.stats:
+    class: App\Service\StatsService
+    arguments: [ "@doctrine.orm.entity_manager" ]
+    public: true
+
+  votix.counter:
+    class: App\Service\VoteCounterService
+    arguments: [ "@votix.candidate_repository",  "@votix.voter_repository", "@event_dispatcher", "@votix.encryption", "%votix_result_password%"]
+    public: true
+
+  votix.archives:
+    class: App\Service\ArchivesService
+    arguments: [ "%kernel.root_dir%/../var/halloffame.yml" ]
+    public: true
+
+  votix.token:
+    class: App\Service\TokenService
+    arguments: [ "%votix_secret%", "%votix_link_base%"]
+    public: true
+
+  votix.voting:
+    class: App\Service\VotingService
+    arguments: [ "@event_dispatcher", "@votix.encryption", "@votix.voter_repository"]
+    public: true
+
+  votix.voter_repository:
+    class: App\Repository\VoterRepository
+    factory: ["@doctrine", getRepository]
+    arguments:
+      - "App:Voter"
+    public: true
+
+  votix.candidate_repository:
+    class: App\Repository\CandidateRepository
+    factory: ["@doctrine", getRepository]
+    arguments:
+      - "App:Candidate"
+    public: true
+
+  votix.mailer:
+    class: App\Service\MailerService
+    arguments:
+      - "@votix.token"
+      - "@twig"
+    public: true
+
+# Subscribers
+  votix.notify_administrators_subscriber:
+    class: App\EventSubscriber\NotifyAdministratorsSubscriber
+    tags:
+      - { name: kernel.event_subscriber }
+
+  votix.publish_vote_casts_on_redis_subscriber:
+    class: App\EventSubscriber\PublishVoteCastsOnRedisSubscriber
+    tags:
+      - { name: kernel.event_subscriber }
+
+  votix.command_handler:
+    class: App\CommandHandler\VotixCommandHandler
+    arguments:
+     - "@votix.candidate_repository"
+     - "@votix.voter_repository"
+     - "@votix.token"
+     - "@votix.mailer"
+     - "@votix.stats"
+     - "@votix.status"
