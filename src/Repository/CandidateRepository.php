@@ -1,25 +1,31 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Repository;
 
 use App\Entity\Candidate;
-use Doctrine\ORM\EntityRepository;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 /**
  * Class CandidateRepository
  */
-class CandidateRepository extends EntityRepository {
+class CandidateRepository extends ServiceEntityRepository
+{
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Candidate::class);
+    }
 
     /**
      * @return Candidate[]
      */
-    public function findAllShuffled()
+    public function findAllShuffled(): array
     {
         $candidates = $this->findAll();
 
@@ -30,15 +36,19 @@ class CandidateRepository extends EntityRepository {
 
     /**
      * @param array $candidates [ ['name' => string, 'eligible' => true] ... ]
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function import($candidates)
+    public function import($candidates): void
     {
         $this->_em->createQuery('DELETE FROM App:Candidate')->execute();
 
-        foreach($candidates as $info) {
+        foreach ($candidates as $info) {
             $candidate = new Candidate();
             $candidate->setName($info['name']);
             $candidate->setEligible($info['eligible']);
+
             $this->_em->persist($candidate);
         }
 

@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -16,14 +16,16 @@ use App\Entity\Voter;
 class TokenService implements TokenServiceInterface
 {
     private $salt;
+
     private $linkBase;
 
     /**
      * TokenService constructor.
-     * @param $salt
-     * @param $linkBase
+     *
+     * @param string $salt
+     * @param string $linkBase
      */
-    public function __construct($salt, $linkBase)
+    public function __construct(string $salt, string $linkBase)
     {
         $this->salt     = $salt;
         $this->linkBase = $linkBase;
@@ -31,31 +33,33 @@ class TokenService implements TokenServiceInterface
 
     /**
      * Verify if the token provided is matching the one from the voter.
-     * Uses hash_equals to prevent timing attacks.
      *
      * @param Voter $voter
      * @param string $token
+     *
      * @return bool true if the token is matching else false
      */
-    public function verifyVoterToken($voter, $token)
+    public function verifyVoterToken(Voter $voter, string $token): bool
     {
         $expectedToken = $this->getTokenForVoter($voter);
 
+        // Uses hash_equals to prevent timing attacks.
         return hash_equals($expectedToken, $token);
     }
 
     /**
      * Verify if the code provided is matching the one from the voter.
-     * Uses hash_equals to prevent timing attacks.
      *
      * @param Voter $voter
      * @param string $code
+     *
      * @return bool true if the code is matching else false
      */
-    public function verifyVoterCode($voter, $code)
+    public function verifyVoterCode(Voter $voter, string $code): bool
     {
         $expectedCode = $this->getCodeForVoter($voter);
 
+        // Uses hash_equals to prevent timing attacks.
         return hash_equals($expectedCode, $code);
     }
 
@@ -63,9 +67,10 @@ class TokenService implements TokenServiceInterface
      * Get the token for a voter.
      *
      * @param Voter $voter
+     *
      * @return string
      */
-    public function getTokenForVoter($voter)
+    public function getTokenForVoter(Voter $voter): string
     {
         return hash('sha256', 'votix-' . $voter->getEmail() . '-' . $this->salt);
     }
@@ -74,11 +79,13 @@ class TokenService implements TokenServiceInterface
      * Get the code for a voter.
      *
      * @param Voter $voter
+     *
      * @return string Number composed of 4 digits.
      */
-    public function getCodeForVoter($voter)
+    public function getCodeForVoter(Voter $voter): string
     {
-        $code = strval(crc32('votix-' . $voter->getEmail() . '-' . $this->salt));
+        $code = (string) crc32('votix-' . $voter->getEmail() . '-' . $this->salt);
+
         return substr($code, 0, 4);
     }
 
@@ -86,11 +93,13 @@ class TokenService implements TokenServiceInterface
      * Get the secret voting link for a voter.
      *
      * @param Voter $voter
+     *
      * @return string
      */
-    public function getLinkForVoter($voter)
+    public function getLinkForVoter(Voter $voter): string
     {
         $token = $this->getTokenForVoter($voter);
+
         return $this->linkBase . $voter->getLogin() . '/' . $token;
     }
 }

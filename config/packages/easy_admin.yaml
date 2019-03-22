@@ -1,0 +1,5 @@
+easy_admin:
+    entities:
+        # List the entity class name you want to manage
+        - App\Entity\Candidate
+        - App\Entity\Voter

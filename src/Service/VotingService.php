@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -30,6 +30,8 @@ class VotingService implements VotingServiceInterface
 
     /**
      * VotingService constructor.
+     *
+     * @param EventDispatcherInterface $dispatcher
      * @param EncryptionServiceInterface $encryptionService
      * @param VoterRepository $voterRepository
      */
@@ -47,18 +49,18 @@ class VotingService implements VotingServiceInterface
      * Make a Voter vote for a Candidate.
      *
      * @param Voter $voter
-     * @param Candidate $choosenCandidate
+     * @param Candidate $chosenCandidate
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function makeVoterVoteFor(Voter $voter, Candidate $choosenCandidate)
+    public function makeVoterVoteFor(Voter $voter, Candidate $chosenCandidate): void
     {
-        $candidateId = (string) $choosenCandidate->getId();
+        $candidateId = (string) $chosenCandidate->getId();
 
         $ballot = $this->encryptionService->encryptVote($candidateId);
-
         $voter->setBallot($ballot);
 
         $signature = $this->signBallot($candidateId, $ballot);
-
         $voter->setSignature($signature['encrypted']);
 
         $this->voterRepository->save($voter);
@@ -66,7 +68,7 @@ class VotingService implements VotingServiceInterface
         $this->dispatcher->dispatch(VoteCastEvent::NAME, new VoteCastEvent($voter, $signature['private_key']));
     }
 
-    private function signBallot($plaintext, $ballot)
+    private function signBallot(string $plaintext, string $ballot): array
     {
         $hash = hash('sha512', $ballot);
 

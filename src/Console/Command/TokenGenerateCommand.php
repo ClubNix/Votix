@@ -1,14 +1,13 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Console\Command;
 
-use App\Command\GenerateTokenCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -18,7 +17,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TokenGenerateCommand extends AbstractCommand
 {
-    protected function configure()
+    public function __construct(?string $name = null)
+    {
+        parent::__construct($name);
+    }
+
+    protected function configure(): void
     {
         $this
             ->setName('votix:token:generate')
@@ -37,15 +41,29 @@ class TokenGenerateCommand extends AbstractCommand
      *
      * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $email = $input->getArgument('email');
 
-        $command = new GenerateTokenCommand($email);
+        $voter = $this->voterRepository->findOneBy(['email' => $email]);
 
-        $response = $this->send($command);
+        if ($voter === NULL) {
+            $this->logger->error("L'addresse email n'a pas été trouvé chez les votants !");
+            return 1;
+        }
 
-        echo $response->getBody($asString = true);
+        if ($voter->hasVoted()) {
+            $this->logger->warning('Ce votant a déjà voté !');
+            return 1;
+        }
+
+        $token = $this->tokenService->getTokenForVoter($voter);
+        $code  = $this->tokenService->getCodeForVoter($voter);
+
+        $this->logger->info($token);
+        $this->logger->info($code);
+
+        $this->logger->info('hello world2');
 
         return 0;
     }

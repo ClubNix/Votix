@@ -1,34 +1,23 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Console\Command;
 
-use Broadway\Serializer\SerializableInterface;
-use Broadway\Serializer\SimpleInterfaceSerializer;
-use Guzzle\Http\Client;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 
 /**
  * Class VotixAbstractCommand
  */
-abstract class AbstractCommand extends ContainerAwareCommand
+abstract class AbstractCommand extends Command implements ContainerAwareInterface
 {
-    /**
-     * Returns true if the service id is defined.
-     *
-     * @param string $id The service id
-     *
-     * @return bool true if the service id is defined, false otherwise
-     */
-    protected function has($id)
-    {
-        return $this->getContainer()->has($id);
-    }
+    use ContainerAwareTrait;
 
     /**
      * Gets a container service by its id.
@@ -39,20 +28,6 @@ abstract class AbstractCommand extends ContainerAwareCommand
      */
     protected function get($id)
     {
-        return $this->getContainer()->get($id);
-    }
-
-    protected function send(SerializableInterface $command)
-    {
-        $serializer = new SimpleInterfaceSerializer();
-        // Serialize
-        $serialized = $serializer->serialize($command);
-
-        $client = new Client();
-        $serialized['payload'] += ['life' => 42]; // hack, when payload is an empty array Broadway throws an exception
-
-        $request = $client->post('http://localhost:8000/command', null, $serialized);
-
-        return $request->send();
+        return $this->container->get($id);
     }
 }

@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -15,7 +15,6 @@ use Doctrine\ORM\EntityManagerInterface;
  */
 class StatsService implements StatsServiceInterface
 {
-
     private $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -23,6 +22,12 @@ class StatsService implements StatsServiceInterface
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @return mixed
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
     public function getStats()
     {
         return $this->getStatsQuery($grouped = false)->getSingleResult();
@@ -47,7 +52,7 @@ class StatsService implements StatsServiceInterface
             ]
         );
 
-        $qb ->from('App:Voter', 'v');
+        $qb->from('App:Voter', 'v');
 
         if($grouped) {
             $qb ->groupBy('v.promotion')

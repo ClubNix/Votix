@@ -1,24 +1,37 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-
+use App\Service\StatsServiceInterface;
+use App\Service\StatusServiceInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class ScreenApiController
  */
-class ScreenApiController extends Controller
+class ScreenApiController extends AbstractController
 {
+    private $statsService;
+
+    private $statusService;
+
+    public function __construct(
+        StatsServiceInterface $statsService,
+        StatusServiceInterface $statusService
+    ) {
+        $this->statsService = $statsService;
+        $this->statusService = $statusService;
+    }
 
     /**
      * API json pour les écrans du smig
@@ -28,13 +41,13 @@ class ScreenApiController extends Controller
      *
      * @return JsonResponse
      */
-    public function liveJsonAction()
+    public function liveJsonAction(): Response
     {
-        $globalStats = $this->get('votix.stats')->getStats();
-        $statsPromos = $this->get('votix.stats')->getStatsByPromotion();
+        $globalStats = $this->statsService->getStats();
+        $statsPromos = $this->statsService->getStatsByPromotion();
 
         $perPromo = [];
-        foreach($statsPromos as $key => $value) {
+        foreach ($statsPromos as $key => $value) {
             $perPromo[$value['promotion']] = $value;
         }
 
@@ -55,8 +68,8 @@ class ScreenApiController extends Controller
         $AUTRES  = ['15_MOTIS'];
 
         $data = [
-            'status'   => $this->get('votix.status')->getCurrentStatus(),
-            'message'  => $this->get('votix.status')->getCurrentStatusMessage(),
+            'status'   => $this->statusService->getCurrentStatus(),
+            'message'  => $this->statusService->getCurrentStatusMessage(),
             'total'    => (int) $globalStats['nb_votants'],
             'ratio'    => $this->truncatedFloat($globalStats['ratio_float']),
 
@@ -86,7 +99,6 @@ class ScreenApiController extends Controller
 
     private function getGroupRatio($promotions, $stats)
     {
-
         $total_votants = 0;
         $total_invites = 0;
 
@@ -99,11 +111,11 @@ class ScreenApiController extends Controller
             $total_invites += $stats[$promotion]['nb_invites'];
         }
 
-        if($total_invites == 0) {
+        if ($total_invites === 0) {
             return 0;
-        } else {
-            return round( ($total_votants * 100) / $total_invites);
         }
+
+        return round( ($total_votants * 100) / $total_invites);
     }
 
     protected function truncatedFloat($number)

@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -16,21 +16,24 @@ class StatusService implements StatusServiceInterface
     private $start;
     private $end;
 
-    public function __construct($start, $end)
+    public function __construct($votixStart, $votixEnd)
     {
-        $this->start = $start;
-        $this->end   = $end;
+        $this->start = $votixStart;
+        $this->end = $votixEnd;
     }
 
-    public function isVoteOpen() {
-        return $this->getCurrentStatus() == self::OPEN;
+    public function isVoteOpen(): bool
+    {
+        return $this->getCurrentStatus() === self::OPEN;
     }
 
-    public function isVoteClosed() {
-        return $this->getCurrentStatus() == self::CLOSED;
+    public function isVoteClosed(): bool
+    {
+        return $this->getCurrentStatus() === self::CLOSED;
     }
 
-    public function getCurrentStatus() {
+    public function getCurrentStatus(): string
+    {
         $now = time();
 
         if($now < $this->start) {
@@ -44,9 +47,9 @@ class StatusService implements StatusServiceInterface
         return self::CLOSED;
     }
 
-    public function getCurrentStatusMessage()
+    public function getCurrentStatusMessage(): string
     {
-        switch($this->getCurrentStatus()) {
+        switch ($this->getCurrentStatus()) {
             case self::OPEN:
                 return 'Les votes sont ouverts jusqu\'à 17h13.';
             case self::WAITING:

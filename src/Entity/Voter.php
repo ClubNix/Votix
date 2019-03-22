@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Entity;
@@ -52,12 +52,12 @@ class Voter implements JsonSerializable {
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    protected $ballot = null;
+    protected $ballot;
 
     /**
      * @ORM\Column(type="text", nullable=true)
      */
-    protected $signature = null;
+    protected $signature;
 
     /**
      * Get id
@@ -242,7 +242,7 @@ class Voter implements JsonSerializable {
         return $this->signature;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'id'        => $this->id,

@@ -1,8 +1,7 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
@@ -11,6 +10,8 @@ namespace App\Tests\Unit\Service;
 use App\Service\EncryptionService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
  * Class EncryptionServiceTest
@@ -50,11 +51,11 @@ class EncryptionServiceTest extends WebTestCase
         $filesystem      = $this->getArmedFilesystemMock();
 
         $encryptionService = new EncryptionService($eventDispatcher, $this->goodKeysDirectory, $this->secretKey, $filesystem);
-        list($success) = $encryptionService->verifyKey('tapz');
+        [$success] = $encryptionService->verifyKey('tapz');
         $this->assertFalse($success);
 
         $encryptionService = new EncryptionService($eventDispatcher, $this->goodKeysDirectory, 'bad key', $filesystem);
-        list($success) = $encryptionService->verifyKey($this->getPrivateKeyFixture());
+        [$success] = $encryptionService->verifyKey($this->getPrivateKeyFixture());
         $this->assertFalse($success);
     }
 
@@ -65,7 +66,7 @@ class EncryptionServiceTest extends WebTestCase
      */
     public function testVerifyKeyWithValidKeyAndPassphrase($encryptionService)
     {
-        list($success) = $encryptionService->verifyKey($this->getPrivateKeyFixture());
+        [$success] = $encryptionService->verifyKey($this->getPrivateKeyFixture());
         $this->assertTrue($success);
     }
 
@@ -124,7 +125,7 @@ class EncryptionServiceTest extends WebTestCase
     {
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $this
-            ->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcher')
+            ->getMockBuilder(EventDispatcher::class)
             ->getMock();
 
         return $eventDispatcher;
@@ -138,26 +139,28 @@ class EncryptionServiceTest extends WebTestCase
     private function getArmedFilesystemMock()
     {
         $filesystem = $this
-            ->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
+            ->getMockBuilder(Filesystem::class)
             ->getMock();
 
         $filesystem->method('exists')
             ->with($this->goodKeysDirectory . '/public_key.pub')
             ->willReturn(true);
 
+        /** @var Filesystem $filesystem */
         return $filesystem;
     }
 
     private function getDisarmedFilesystemMock()
     {
         $filesystem = $this
-            ->getMockBuilder('Symfony\Component\Filesystem\Filesystem')
+            ->getMockBuilder(Filesystem::class)
             ->getMock();
 
         $filesystem->method('exists')
             ->with($this->goodKeysDirectory . '/public_key.pub')
             ->willReturn(false);
 
+        /** @var Filesystem $filesystem */
         return $filesystem;
     }
 }

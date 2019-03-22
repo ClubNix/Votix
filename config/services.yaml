@@ -5,94 +5,45 @@ parameters:
 
   votix_secret:          ThisTokenIsNotSoSecretChangeIt
   votix_key_secret:      ThisTokenIsNotSoSecretChangeIt
+
+  # celui là sera transmis au BDE
   votix_result_password: ThisTokenIsNotSoSecretChangeIt
+
   votix_link_base:       https://yourvotix/vote/
 
+  # http://www.timestamp.fr/
   votix_start:   1458255600
   votix_end:     1558317580
   votix_support: votix@domain.tld
 
 services:
-#    service_name:
-#        class: App\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
-  votix.status:
-    class: App\Service\StatusService
-    arguments: ["%votix_start%", "%votix_end%"]
-    public: true
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    bind:
+      $votixStart: '%votix_start%'
+      $votixEnd: '%votix_end%'
+      $archiveFile: '../var/archives.yaml'
+      $keysDirectory: '%kernel.root_dir%/../var'
+      $secretKey: '%votix_key_secret%'
+      $salt: '%votix_secret%'
+      $linkBase: '%votix_link_base%'
 
-  votix.filesystem:
-    class: Symfony\Component\Filesystem\Filesystem
-    public: true
+  # makes classes in src/ available to be used as services
+  # this creates a service per class whose id is the fully-qualified class name
+  App\:
+    resource: '../src/*'
+    exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
 
-  votix.encryption:
-    class: App\Service\EncryptionService
-    arguments: ["@event_dispatcher", "%kernel.root_dir%/../var", "%votix_key_secret%", "@votix.filesystem"]
-    public: true
+  App\Controller\:
+    resource: '../src/Controller'
+    tags: ['controller.service_arguments']
 
-  votix.stats:
-    class: App\Service\StatsService
-    arguments: [ "@doctrine.orm.entity_manager" ]
-    public: true
-
-  votix.counter:
-    class: App\Service\VoteCounterService
-    arguments: [ "@votix.candidate_repository",  "@votix.voter_repository", "@event_dispatcher", "@votix.encryption", "%votix_result_password%"]
-    public: true
-
-  votix.archives:
-    class: App\Service\ArchivesService
-    arguments: [ "%kernel.root_dir%/../var/halloffame.yml" ]
-    public: true
-
-  votix.token:
-    class: App\Service\TokenService
-    arguments: [ "%votix_secret%", "%votix_link_base%"]
-    public: true
-
-  votix.voting:
-    class: App\Service\VotingService
-    arguments: [ "@event_dispatcher", "@votix.encryption", "@votix.voter_repository"]
-    public: true
-
-  votix.voter_repository:
-    class: App\Repository\VoterRepository
-    factory: ["@doctrine", getRepository]
+  Aws\Ses\SesClient:
     arguments:
-      - "App:Voter"
-    public: true
-
-  votix.candidate_repository:
-    class: App\Repository\CandidateRepository
-    factory: ["@doctrine", getRepository]
-    arguments:
-      - "App:Candidate"
-    public: true
-
-  votix.mailer:
-    class: App\Service\MailerService
-    arguments:
-      - "@votix.token"
-      - "@twig"
-    public: true
-
-# Subscribers
-  votix.notify_administrators_subscriber:
-    class: App\EventSubscriber\NotifyAdministratorsSubscriber
-    tags:
-      - { name: kernel.event_subscriber }
-
-  votix.publish_vote_casts_on_redis_subscriber:
-    class: App\EventSubscriber\PublishVoteCastsOnRedisSubscriber
-    tags:
-      - { name: kernel.event_subscriber }
-
-  votix.command_handler:
-    class: App\CommandHandler\VotixCommandHandler
-    arguments:
-     - "@votix.candidate_repository"
-     - "@votix.voter_repository"
-     - "@votix.token"
-     - "@votix.mailer"
-     - "@votix.stats"
-     - "@votix.status"
+      $args:
+        key: 'dwe'
+        secret: 'dwewd'
+        region: 'eu-west-1'
+        # https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.Ses.SesClient.html
+        version: '2010-12-01'

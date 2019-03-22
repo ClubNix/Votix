@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -13,10 +13,10 @@ namespace App\Service;
  */
 interface StatusServiceInterface
 {
-    const OPEN    = 'OPEN';
-    const CLOSED  = 'CLOSED';
-    const WAITING = 'WAITING';
+    public const OPEN    = 'OPEN';
+    public const CLOSED  = 'CLOSED';
+    public const WAITING = 'WAITING';
 
-    public function getCurrentStatus();
-    public function getCurrentStatusMessage();
+    public function getCurrentStatus(): string;
+    public function getCurrentStatusMessage(): string;
 }

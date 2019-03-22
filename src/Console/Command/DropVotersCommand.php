@@ -1,14 +1,14 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Console\Command;
 
-use Broadway\CommandHandling\SimpleCommandBus;
+use App\Repository\VoterRepository;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -17,7 +17,15 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DropVotersCommand extends AbstractCommand
 {
-    protected function configure()
+    public $voterRepository;
+
+    public function __construct(VoterRepository $voterRepository)
+    {
+        $this->voterRepository = $voterRepository;
+        parent::__construct();
+    }
+
+    protected function configure(): void
     {
         $this
             ->setName('votix:drop')
@@ -30,14 +38,12 @@ class DropVotersCommand extends AbstractCommand
      * @param OutputInterface $output
      *
      * @return int
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $command = new \App\Command\DropVotersCommand();
-
-        $response = $this->send($command);
-
-        echo $response->getBody($asString = true);
+        $this->voterRepository->deleteAll();
 
         return 0;
     }

@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Console\Command;
@@ -22,7 +22,7 @@ use Symfony\Component\Finder\Finder;
  */
 class ImportCommand extends AbstractCommand
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('votix:import')
@@ -40,11 +40,13 @@ class ImportCommand extends AbstractCommand
      * @param OutputInterface $output
      *
      * @throws LibXMLException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $filepath = $input->getArgument('filepath');
-        if($filepath[0] == '.') {
+        if (strpos($filepath, '.') === 0) {
             return;
         }
 
@@ -58,7 +60,7 @@ class ImportCommand extends AbstractCommand
 
         foreach ($finder as $file) {
             $reader = new XmlReader();
-            $reader->xml(file_get_contents($file->getRealpath()));
+            $reader->XML(file_get_contents($file->getRealPath()));
             $result = $reader->parse();
 
             $entries = $result['value'][0]['value'];
@@ -74,7 +76,7 @@ class ImportCommand extends AbstractCommand
             unset($entries[0]);
 
             foreach($entries as $entry) {
-                if($entry['name'] == '{urn:oasis:names:tc:DSML:2:0:core}searchResultDone') {
+                if($entry['name'] === '{urn:oasis:names:tc:DSML:2:0:core}searchResultDone') {
                     // ignore
                     continue;
                 }

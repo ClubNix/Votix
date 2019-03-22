@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Entity;
@@ -15,8 +15,8 @@ use JsonSerializable;
  * @ORM\Entity(repositoryClass="App\Repository\CandidateRepository")
  * @ORM\Table(name="candidates")
  */
-class Candidate implements JsonSerializable {
-
+class Candidate implements JsonSerializable
+{
     /**
      * @ORM\Column(type="integer")
      * @ORM\Id
@@ -25,6 +25,8 @@ class Candidate implements JsonSerializable {
     protected $id;
 
     /**
+     * Exact name of the candidate that will be shown to
+     *
      * @ORM\Column(type="string", length=100)
      */
     protected $name;
@@ -92,7 +94,7 @@ class Candidate implements JsonSerializable {
         return $this->eligible;
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'id'         => $this->id,

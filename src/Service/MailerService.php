@@ -1,15 +1,15 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
 
 use App\Entity\Voter;
-use Twig_Environment;
+use Twig\Environment;
 
 /**
  * Class MailerService
@@ -17,24 +17,30 @@ use Twig_Environment;
 class MailerService
 {
 
-    private $token;
+    private $tokenService;
 
-    /** @var Twig_Environment */
-    private $templating;
+    /** @var Environment */
+    private $templateEngine;
 
-    public function __construct(TokenService $token, $templating)
+    public function __construct(TokenService $tokenService, Environment $templating)
     {
-        $this->token      = $token;
-        $this->templating = $templating;
+        $this->tokenService   = $tokenService;
+        $this->templateEngine = $templating;
     }
 
     /**
      * @param Voter $voter
-     * @param $template
+     * @param string $template
+     *
      * @return array
+     *
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
-    public function getTemplatedEmail($voter, $template) {
-        $tokenService = $this->token;
+    public function getTemplatedEmail(Voter $voter, string $template): array
+    {
+        $tokenService = $this->tokenService;
 
         $vars = [
             'voter' => $voter,
@@ -42,21 +48,21 @@ class MailerService
             'code'  => $tokenService->getCodeForVoter($voter),
         ];
 
-        $templateEngine = $this->templating;
+        $html  = $this->templateEngine->render('mails/' . $template . '.html.twig',  $vars);
+        $title = $this->templateEngine->render('mails/' . $template . '.title.twig', $vars);
 
-        $html  = $templateEngine->render('mails/' . $template . '.html.twig',  $vars);
-        $title = $templateEngine->render('mails/' . $template . '.title.twig', $vars);
-
-        return $email = $this->getEmailForVoter($voter, $title, $html);
+        return $this->getEmailForVoter($voter, $title, $html);
     }
 
     /**
      * @param Voter $voter
-     * @param $title
-     * @param $html
+     * @param string $title
+     * @param string $html
+     *
      * @return array
      */
-    private function getEmailForVoter($voter, $title, $html) {
+    private function getEmailForVoter(Voter $voter, string $title, string $html): array
+    {
         $to = $voter->getFirstname() . ' ' . $voter->getLastname() . '<' . $voter->getEmail() . '>';
 
         $email = [

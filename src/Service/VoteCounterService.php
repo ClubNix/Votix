@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -38,6 +38,7 @@ class VoteCounterService implements VoteCounterServiceInterface
 
     /**
      * VoteCounterService constructor.
+     *
      * @param CandidateRepository $candidateRepository
      * @param VoterRepository $voterRepository
      * @param EventDispatcherInterface $eventDispatcher
@@ -49,8 +50,8 @@ class VoteCounterService implements VoteCounterServiceInterface
         VoterRepository            $voterRepository,
         EventDispatcherInterface   $eventDispatcher,
         EncryptionServiceInterface $encryption,
-        $password)
-    {
+        $password
+    ) {
         $this->candidateRepository = $candidateRepository;
         $this->voterRepository     = $voterRepository;
         $this->eventDispatcher     = $eventDispatcher;
@@ -63,33 +64,39 @@ class VoteCounterService implements VoteCounterServiceInterface
      *
      * Dispatches an App\Event\VotesCountedEvent after counting.
      *
-     * @see App\Event\VotesCountedEvent
-     * @see verifyPassword
+     * @see VotesCountedEvent
+     * @see verifyVoteCountingPassword
      *
      * @param $privateKey
+     *
      * @return array List of ['candidate' => Candidate, 'count' => int ]
      */
-    public function countEncryptedVotes($privateKey)
+    public function countEncryptedVotes(string $privateKey): array
     {
         /** @var Candidate[] $candidates */
         $candidates = $this->candidateRepository->findAll();
+
         /** @var Voter[] $voters */
-        $voters     = $this->voterRepository->findAll();
+        $voters = $this->voterRepository->findAll();
 
         $results = [];
-        foreach($candidates as $candidate) {
+        foreach ($candidates as $candidate) {
             $results[$candidate->getId()] = [
                 'candidate' => $candidate,
                 'count'     => 0,
             ];
         }
 
-        foreach($voters as $voter) {
-            if(!$voter->hasVoted()) continue;
+        // For each voters
+        foreach ($voters as $voter) {
+            // We skip people who have not voted.
+            if (!$voter->hasVoted()) {
+                continue;
+            }
 
-            $id = $this->encryption->decryptVote($voter->getBallot(), $privateKey);
+            $candidateId = $this->encryption->decryptVote($voter->getBallot(), $privateKey);
 
-            $results[$id]['count']++;
+            $results[$candidateId]['count']++;
         }
 
         $this->eventDispatcher->dispatch(VotesCountedEvent::NAME, new VotesCountedEvent($results));
@@ -102,10 +109,11 @@ class VoteCounterService implements VoteCounterServiceInterface
      *
      * Uses hash_equals to prevent timing attacks.
      *
-     * @param $password
+     * @param string $password
+     *
      * @return bool
      */
-    public function verifyPassword($password)
+    public function verifyVoteCountingPassword($password): bool
     {
         return hash_equals($this->password, $password);
     }

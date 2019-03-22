@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@symfony/webpack-encore": "^0.9.1"
+    "@symfony/webpack-encore": "^0.24"
   },
   "scripts": {
     "dev-server": "./node_modules/.bin/encore dev-server",

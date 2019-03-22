@@ -1,8 +1,7 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
  * @license MIT
  */
@@ -17,7 +16,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class VoterTest extends WebTestCase
 {
-    public function testGettersAndSetters() {
+    public function testGettersAndSetters()
+    {
         $candidate = new Voter();
 
         $candidate
@@ -35,7 +35,8 @@ class VoterTest extends WebTestCase
         $this->assertEquals('promotion', $candidate->getPromotion());
     }
 
-    public function testHasVoted() {
+    public function testHasVoted()
+    {
         $candidate = new Voter();
 
         $this->assertFalse($candidate->hasVoted());

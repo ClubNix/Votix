@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -13,7 +13,7 @@ namespace App\Service;
  */
 interface VoteCounterServiceInterface
 {
-    public function countEncryptedVotes($privateKey);
+    public function countEncryptedVotes(string $privateKey): array;
 
-    public function verifyPassword($password);
+    public function verifyVoteCountingPassword($password): bool;
 }

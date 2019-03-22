@@ -1,14 +1,14 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Console\Command;
 
-use App\Command\ResetCandidatesCommand;
+use App\Repository\CandidateRepository;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +19,19 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CandidatesResetCommand extends AbstractCommand
 {
-    protected function configure()
+    /**
+     * @var CandidateRepository
+     */
+    private $candidateRepository;
+
+    public function __construct(CandidateRepository $candidateRepository)
+    {
+        $this->candidateRepository = $candidateRepository;
+
+        parent::__construct();
+    }
+
+    protected function configure(): void
     {
         $this
             ->setName('votix:candidates:reset')
@@ -37,18 +49,16 @@ class CandidatesResetCommand extends AbstractCommand
      * @param OutputInterface $output
      *
      * @return int
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $filepath = $input->getArgument('filepath');
 
         $parsed = Yaml::parse(file_get_contents($filepath));
 
-        $command = new ResetCandidatesCommand($parsed['candidates']);
-
-        $response = $this->send($command);
-
-        echo $response->getBody($asString = true);
+        $this->candidateRepository->import($parsed['candidates']);
 
         return 0;
     }

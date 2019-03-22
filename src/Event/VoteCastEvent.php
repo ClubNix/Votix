@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Event;
@@ -17,7 +17,7 @@ use Symfony\Component\EventDispatcher\Event;
 class VoteCastEvent extends Event
 {
 
-    const NAME = 'vote.cast';
+    public const NAME = 'vote.cast';
 
     /** @var Voter */
     private $voter;

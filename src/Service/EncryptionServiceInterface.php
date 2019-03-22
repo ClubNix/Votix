@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -13,17 +13,17 @@ namespace App\Service;
  */
 interface EncryptionServiceInterface
 {
-    public function isArmed();
+    public function isArmed(): bool;
 
-    public function verifyKey($key);
+    public function verifyKey($key): array;
 
-    public function decryptVote($vote, $key);
+    public function decryptVote($vote, $key): string;
 
-    public function encryptVote($vote);
+    public function encryptVote(string $vote): string;
 
-    public function generateKeys();
+    public function generateKeys(): void;
 
-    public function getGeneratedKeyFilePath();
+    public function getGeneratedKeyFilePath(): string;
 
-    public function encryptSignature($signature);
+    public function encryptSignature($signature): array;
 }

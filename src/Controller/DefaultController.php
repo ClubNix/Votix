@@ -1,41 +1,54 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Controller;
 
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use App\Service\ArchivesService;
+use App\Service\StatsService;
+use App\Service\StatusService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class DefaultController
  */
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
+    private $votixStart;
+    private $votixEnd;
+
+    public function __construct($votixStart, $votixEnd)
+    {
+        $this->votixStart = $votixStart;
+        $this->votixEnd = $votixEnd;
+    }
+
     /**
      * @Route("/", name="root")
      * @Route("/{_locale}/index", name="homepage")
      *
+     * @param StatsService $statsService
+     * @param StatusService $statusService
+     *
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(StatsService $statsService, StatusService $statusService): Response
     {
-        $start = $this->getParameter('votix_start');
-        $end   = $this->getParameter('votix_end');
-        $now   = time();
+        $now = time();
 
-        $progress = $this->get('votix.stats')->getStatsByPromotion();
-        $status   = $this->get('votix.status')->getCurrentStatus();
+        $progress = $statsService->getStatsByPromotion();
+        $status   = $statusService->getCurrentStatus();
 
         return $this->render('default/index.html.twig', [
-            'start'        => $start,
-            'end'          => $end,
+            'start'        => $this->votixStart,
+            'end'          => $this->votixEnd,
             'now'          => $now,
             'all_progress' => $progress,
             'status'       => $status,
@@ -48,7 +61,7 @@ class DefaultController extends Controller
      *
      * @return Response
      */
-    public function faqAction()
+    public function faqAction(): Response
     {
         return $this->render('default/faq.html.twig');
     }
@@ -57,11 +70,13 @@ class DefaultController extends Controller
      * @Route("/{_locale}/hall-of-fame", name="hall-of-fame")
      * @Cache(expires="tomorrow", public=true)
      *
+     * @param ArchivesService $archivesService
+     *
      * @return Response
      */
-    public function historyAction()
+    public function historyAction(ArchivesService $archivesService): Response
     {
-        $data = $this->get('votix.archives')->getArchive();
+        $data = $archivesService->getArchive();
 
         return $this->render('default/history.html.twig', [
             'archive' => $data['archives'],

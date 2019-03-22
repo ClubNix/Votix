@@ -1,25 +1,27 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
+
+use App\Entity\Voter;
 
 /**
  * Interface TokenServiceInterface
  */
 interface TokenServiceInterface
 {
-    public function verifyVoterToken($voter, $token);
+    public function verifyVoterToken(Voter $voter, string $token): bool;
 
-    public function verifyVoterCode($voter, $code);
+    public function verifyVoterCode(Voter $voter, string $code): bool;
 
-    public function getTokenForVoter($voter);
+    public function getTokenForVoter(Voter $voter): string;
 
-    public function getCodeForVoter($voter);
+    public function getCodeForVoter(Voter $voter): string;
 
-    public function getLinkForVoter($voter);
+    public function getLinkForVoter(Voter $voter): string;
 }

@@ -1,54 +1,78 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Controller;
 
+use App\Entity\Candidate;
 use App\Entity\Voter;
+use App\Repository\CandidateRepository;
+use App\Service\EncryptionServiceInterface;
+use App\Service\StatusService;
+use App\Service\TokenServiceInterface;
+use App\Service\VotingService;
 use Psr\Log\LoggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class VotingController
  */
-class VotingController extends Controller
+class VotingController extends AbstractController
 {
+    private $candidateRepository;
+
+    public function __construct(CandidateRepository $candidateRepository)
+    {
+        $this->candidateRepository = $candidateRepository;
+    }
+
     /**
      * @Route("/vote/{login}/{receivedToken}", name="vote")
      * @ParamConverter("voter", class="App:Voter", options={"login" = "login"})
      *
      * @param Voter $voter
      * @param string $receivedToken
+     * @param LoggerInterface $logger
      * @param Request $request
+     * @param EncryptionServiceInterface $encryptionService
+     * @param StatusService $statusService
+     * @param TokenServiceInterface $tokenService
+     * @param VotingService $votingService
+     *
      * @return Response
+     *
+     * @throws \Doctrine\ORM\ORMException
      */
-    public function voteAction(Voter $voter, $receivedToken, LoggerInterface $logger, Request $request)
-    {
-        $encryptionService = $this->get('votix.encryption');
-        $statusService     = $this->get('votix.status');
-        $tokenService      = $this->get('votix.token');
-
-        if(!$statusService->isVoteOpen()) {
+    public function voteAction(
+        Voter $voter,
+        string $receivedToken,
+        LoggerInterface $logger,
+        Request $request,
+        EncryptionServiceInterface $encryptionService,
+        StatusService $statusService,
+        TokenServiceInterface $tokenService,
+        VotingService $votingService
+    ): Response {
+        if (!$statusService->isVoteOpen()) {
             $logger->notice('Vote link accessed but vote is closed');
 
             return $this->render('default/bad-timing.html.twig');
         }
 
-        if(!$tokenService->verifyVoterToken($voter, $receivedToken)) {
+        if (!$tokenService->verifyVoterToken($voter, $receivedToken)) {
             throw new AccessDeniedHttpException('Token Invalide');
         }
 
-        if(!$encryptionService->isArmed()) {
+        if (!$encryptionService->isArmed()) {
             $logger->emergency('Votix is not armed');
 
             throw new AccessDeniedHttpException('Votix n\'est pas encore armé');
@@ -58,45 +82,44 @@ class VotingController extends Controller
             return $this->render('default/already-voted.html.twig', ['voter' => $voter]);
         }
 
-        if(!$request->request->has('security') or !$request->request->has('choice')) {
+        if (!$request->request->has('security') || !$request->request->has('choice')) {
             return $this->renderVotingPage($voter);
         }
 
         $security = $request->request->get('security');
-        $choice   = $request->request->get('choice');
 
-        if(!$tokenService->verifyVoterCode($voter, $security)) {
+        if (!$tokenService->verifyVoterCode($voter, $security)) {
             throw new AccessDeniedHttpException('Le code de sécurité est incorrect');
         }
 
-        $choosenCandidate = $this->get('votix.candidate_repository')->findOneBy(['id' => $choice]);
+        $choice = $request->request->get('choice');
 
-        if($choosenCandidate === null) {
+        /** @var Candidate|null $chosenCandidate */
+        $chosenCandidate = $this->candidateRepository->findOneBy(['id' => $choice]);
+
+        if ($chosenCandidate === null) {
             $logger->warning('Hacking attempt');
 
             throw new AccessDeniedHttpException('Le candidat n\'existe pas');
         }
 
-        if($choosenCandidate->getEligible() === false) {
+        if ($chosenCandidate->getEligible() === false) {
             throw new AccessDeniedHttpException('Le candidat n\'est pas éligible');
         }
 
-        $votingService = $this->get('votix.voting');
-
-        $votingService->makeVoterVoteFor($voter, $choosenCandidate);
+        $votingService->makeVoterVoteFor($voter, $chosenCandidate);
 
         return $this->render('default/thank-you.html.twig', ['voter' => $voter]);
     }
 
     /**
-     * @param $voter
+     * @param Voter $voter
+     *
      * @return Response
      */
-    private function renderVotingPage($voter)
+    private function renderVotingPage(Voter $voter): Response
     {
-        $candidateRepository = $this->get('votix.candidate_repository');
-
-        $candidates = $candidateRepository->findAllShuffled();
+        $candidates = $this->candidateRepository->findAllShuffled();
 
         return $this->render('default/vote.html.twig', [
             'voter'      => $voter,

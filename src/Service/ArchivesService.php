@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Service;
@@ -19,9 +19,10 @@ class ArchivesService
 
     /**
      * ArchivesService constructor.
-     * @param $archiveFile
+     *
+     * @param string $archiveFile
      */
-    public function __construct($archiveFile)
+    public function __construct(string $archiveFile)
     {
         $this->archiveFile = $archiveFile;
     }
@@ -29,13 +30,11 @@ class ArchivesService
     /**
      * @return array
      */
-    public function getArchive()
+    public function getArchive(): array
     {
         $yaml = new YamlParser();
 
-        $value = $yaml->parse(file_get_contents($this->archiveFile));
-
-        return $value;
+        return $yaml->parse(file_get_contents($this->archiveFile));
     }
 
 }

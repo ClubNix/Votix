@@ -1,9 +1,9 @@
 <?php
 /**
- * Votix. The advanded and secure online voting platform.
+ * Votix. The advanced and secure online voting platform.
  *
- * @author Philippe Lewin <philippe.lewin@gmail.com>
  * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
  * @license MIT
  */
 namespace App\Event;
@@ -16,7 +16,7 @@ use Symfony\Component\EventDispatcher\Event;
 class HackingAttemptDetectedEvent extends Event
 {
 
-    const NAME = 'hacking_attempt.detected';
+    public const NAME = 'hacking_attempt.detected';
 
     public function __construct()
     {

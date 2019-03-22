@@ -2,7 +2,7 @@
 
 ## Description
 
-Votix is an advanded and secure online voting platform.
+Votix is an advanced and secure online voting platform.
 
 ## License
 
@@ -10,7 +10,9 @@ Votix is released under the MIT license.
 
 ## Requirements
 
- * PHP 5.5.9 or greater
+ * PHP 7.1 or greater
  * PHP extensions curl, openssl, sqlite
 
+
+php bin/console assets:install public --symlink
 
