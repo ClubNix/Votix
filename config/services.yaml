@@ -26,6 +26,7 @@ services:
       $archiveFile: '%kernel.root_dir%/../var/halloffame.yml'
       $keysDirectory: '%kernel.root_dir%/../var'
       $secretKey: '%votix_key_secret%'
+      $secret: '%votix_secret%'
       $salt: '%votix_secret%'
       $linkBase: '%votix_link_base%'
 

@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,7 +19,6 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class MonitoringController extends AbstractController
 {
-
     /**
      * @Route("/healthz", name="healthz")
      *
@@ -26,13 +26,12 @@ class MonitoringController extends AbstractController
      *
      * @return Response
      *
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
-    public function indexAction(Connection $connection): Response
+    public function index(Connection $connection): Response
     {
         $dbPing = $connection->query("select datetime('now', 'localtime')")->fetchColumn();
         var_dump($dbPing);
-
 
         return new Response('OK');
     }

@@ -12,7 +12,7 @@ use App\Tests\AcceptanceTester;
 
 class AdminCest
 {
-    public function testIndex(AcceptanceTester $I) :void
+    public function testIndex(AcceptanceTester $I): void
     {
         $I->amOnPage('/admin/voters-list');
         $I->see('Votix');

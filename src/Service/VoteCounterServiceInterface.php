@@ -15,5 +15,7 @@ interface VoteCounterServiceInterface
 {
     public function countEncryptedVotes(string $privateKey): array;
 
-    public function verifyVoteCountingPassword($password): bool;
+    public function verifyVoteCountingPassword(string $password): bool;
+
+    public function hashResults(array $results, string $secret): string;
 }

@@ -190,8 +190,9 @@ class Voter implements JsonSerializable {
     }
 
 
-    public function hasVoted() {
-        return ! is_null($this->ballot);
+    public function hasVoted()
+    {
+        return $this->ballot !== null;
     }
 
     /**
@@ -250,7 +251,7 @@ class Voter implements JsonSerializable {
             'lastname'  => $this->lastname,
             'login'     => $this->login,
             'email'     => $this->email,
-            'hasVoted'  => !is_null($this->ballot),
+            'hasVoted'  => $this->ballot !== null,
             'ballot'    => $this->ballot,
         ];
     }

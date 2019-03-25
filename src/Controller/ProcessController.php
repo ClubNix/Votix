@@ -12,6 +12,8 @@ use App\Service\EncryptionServiceInterface;
 use App\Service\StatsService;
 use App\Service\StatusService;
 use App\Service\VoteCounterServiceInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -27,12 +29,19 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProcessController extends AbstractController
 {
+    private $secret;
+
+    public function __construct(string $secret)
+    {
+        $this->secret = $secret;
+    }
+
     /**
      * @Route("/no/stress", name="no_stress", methods={"GET"})
      *
      * @return Response
      */
-    public function voteCountingAction(): Response
+    public function voteCounting(): Response
     {
         return $this->render('default/no-stress.html.twig');
     }
@@ -48,10 +57,10 @@ class ProcessController extends AbstractController
      *
      * @return Response
      *
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
-    public function voteCountingProcessAction(
+    public function voteCountingProcess(
         LoggerInterface $logger,
         Request $request,
         VoteCounterServiceInterface $counterService,
@@ -79,11 +88,13 @@ class ProcessController extends AbstractController
 
         $results = $counterService->countEncryptedVotes($privateKey);
         $stats   = $statsService->getStats();
+        $hash    = $counterService->hashResults($results, $this->secret);
 
         return $this->render('default/results.html.twig', [
             'message' => '',
             'results' => $results,
             'stats'   => $stats,
+            'hash'    => $hash,
         ]);
     }
 
@@ -94,7 +105,7 @@ class ProcessController extends AbstractController
      *
      * @return Response
      */
-    public function armAction(EncryptionServiceInterface $encryptionService): Response
+    public function arm(EncryptionServiceInterface $encryptionService): Response
     {
         $armed = $encryptionService->isArmed();
 
@@ -111,7 +122,7 @@ class ProcessController extends AbstractController
      *
      * @return BinaryFileResponse
      */
-    public function armDownloadAction(EncryptionServiceInterface $encryptionService, LoggerInterface $logger): Response
+    public function armDownload(EncryptionServiceInterface $encryptionService, LoggerInterface $logger): Response
     {
         if ($encryptionService->isArmed()) {
             $logger->notice('Tentative de régénération de clef');
@@ -131,7 +142,7 @@ class ProcessController extends AbstractController
      *
      * @return Response
      */
-    public function checkAction(): Response
+    public function check(): Response
     {
         return $this->render('default/check.html.twig', ['message' => '']);
     }
@@ -144,7 +155,7 @@ class ProcessController extends AbstractController
      *
      * @return Response
      */
-    public function checkProcessAction(EncryptionServiceInterface $encryptionService, Request $request): Response
+    public function checkProcess(EncryptionServiceInterface $encryptionService, Request $request): Response
     {
         $key = $request->request->get('key');
 

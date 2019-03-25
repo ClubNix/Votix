@@ -14,6 +14,7 @@ use App\Service\MailerService;
 use App\Service\StatsService;
 use Aws\Ses\SesClient;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -22,7 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class VotixMailSendCommand
  */
-class MailSendCommand extends AbstractCommand
+class MailSendCommand extends Command
 {
     private $logger;
 

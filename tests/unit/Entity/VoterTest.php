@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class VoterTest extends WebTestCase
 {
-    public function testGettersAndSetters()
+    public function testGettersAndSetters(): void
     {
         $candidate = new Voter();
 
@@ -35,7 +35,7 @@ class VoterTest extends WebTestCase
         $this->assertEquals('promotion', $candidate->getPromotion());
     }
 
-    public function testHasVoted()
+    public function testHasVoted(): void
     {
         $candidate = new Voter();
 

@@ -104,6 +104,27 @@ class VoteCounterService implements VoteCounterServiceInterface
         return $results;
     }
 
+    public function hashResults(array $results, string $secret): string
+    {
+        $chain = $secret;
+
+        // Sort candidates by name
+        usort($results, static function($a, $b) {
+            /** @var Candidate $candidateA */
+            $candidateA = $a['candidate'];
+            /** @var Candidate $candidateB */
+            $candidateB = $b['candidate'];
+
+            return strcmp($candidateA->getName(), $candidateB->getName());
+        });
+
+        foreach ($results as $result) {
+            $chain .= '-' . $result['count'];
+        }
+
+        return crc32($chain);
+    }
+
     /**
      * Verify if the password provided is equals to the password required to do the vote count.
      *
@@ -113,7 +134,7 @@ class VoteCounterService implements VoteCounterServiceInterface
      *
      * @return bool
      */
-    public function verifyVoteCountingPassword($password): bool
+    public function verifyVoteCountingPassword(string $password): bool
     {
         return hash_equals($this->password, $password);
     }

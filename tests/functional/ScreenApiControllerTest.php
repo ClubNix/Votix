@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class ScreenApiControllerTest extends WebTestCase
 {
-    public function testLiveApi()
+    public function testLiveApi(): void
     {
         $client = static::createClient();
 
@@ -31,16 +31,16 @@ class ScreenApiControllerTest extends WebTestCase
         $response = json_decode($responseContent, $assoc = true);
 
         $this->assertArrayHasKey('status', $response);
-        $this->assertInternalType('string', $response['status']);
+        $this->assertIsString($response['status']);
         $this->assertArrayHasKey('message', $response);
-        $this->assertInternalType('string', $response['message']);
+        $this->assertIsString($response['message']);
         $this->assertArrayHasKey('total', $response);
-        $this->assertInternalType('int', $response['total']);
+        $this->assertIsInt($response['total']);
         $this->assertArrayHasKey('ratio', $response);
 
         for($i = 1; $i < 10; $i++) {
             $this->assertArrayHasKey("progress_${i}_label", $response);
-            $this->assertInternalType('string', $response["progress_${i}_label"]);
+            $this->assertIsString($response["progress_${i}_label"]);
 
             $this->assertArrayHasKey("progress_${i}_ratio", $response);
         }

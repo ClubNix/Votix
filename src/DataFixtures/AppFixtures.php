@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * Votix. The advanced and secure online voting platform.
+ *
+ * @author Club*Nix <club.nix@edu.esiee.fr>
+ *
+ * @license MIT
+ */
 namespace App\DataFixtures;
 
 use App\Entity\Candidate;
@@ -18,11 +24,15 @@ class AppFixtures extends Fixture
         $candidate2->setName('candidate2');
         $candidate2->setEligible(true);
         $candidate3 = new Candidate();
-        $candidate3->setName('candidate3');
+        $candidate3->setName('candidate3 (non éligible)');
         $candidate3->setEligible(false);
+        $candidate4 = new Candidate();
+        $candidate4->setName('blanc');
+        $candidate4->setEligible(true);
         $manager->persist($candidate1);
         $manager->persist($candidate2);
         $manager->persist($candidate3);
+        $manager->persist($candidate4);
 
         $voter1 = new Voter();
         $voter1->setEmail('plop@edu.fr');

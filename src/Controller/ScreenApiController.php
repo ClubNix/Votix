@@ -41,7 +41,7 @@ class ScreenApiController extends AbstractController
      *
      * @return JsonResponse
      */
-    public function liveJsonAction(): Response
+    public function liveJson(): Response
     {
         $globalStats = $this->statsService->getStats();
         $statsPromos = $this->statsService->getStatsByPromotion();

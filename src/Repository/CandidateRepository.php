@@ -29,7 +29,12 @@ class CandidateRepository extends ServiceEntityRepository
     {
         $candidates = $this->findAll();
 
+        // Shuffle the candidates except "blank" that stays at the end
+        $blank = array_pop($candidates);
+
         shuffle($candidates);
+
+        $candidates[] = $blank;
 
         return $candidates;
     }

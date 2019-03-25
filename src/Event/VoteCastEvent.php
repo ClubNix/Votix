@@ -25,18 +25,18 @@ class VoteCastEvent extends Event
     /** @var string */
     private $privateKey;
 
-    public function __construct(Voter $voter, $privateKey)
+    public function __construct(Voter $voter, string $privateKey)
     {
         $this->voter      = $voter;
         $this->privateKey = $privateKey;
     }
 
-    public function getVoter()
+    public function getVoter(): Voter
     {
         return $this->voter;
     }
 
-    public function getPrivateKey()
+    public function getPrivateKey(): string
     {
         return $this->privateKey;
     }

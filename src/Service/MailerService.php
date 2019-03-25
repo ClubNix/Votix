@@ -66,7 +66,7 @@ class MailerService
         $to = $voter->getFirstname() . ' ' . $voter->getLastname() . '<' . $voter->getEmail() . '>';
 
         $email = [
-            'Source' => 'Votix <votix@clubnix.fr>',
+            'Source' => 'Votix <votix@votix.clubnix.fr>',
             'Destination' => [
                 'ToAddresses' => [$to]
             ],

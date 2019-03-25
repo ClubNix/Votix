@@ -9,6 +9,9 @@
 namespace App\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\ORM\Query;
 
 /**
  * Class StatsService
@@ -25,8 +28,8 @@ class StatsService implements StatsServiceInterface
     /**
      * @return mixed
      *
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function getStats()
     {
@@ -38,7 +41,7 @@ class StatsService implements StatsServiceInterface
         return $this->getStatsQuery($grouped = true)->getResult();
     }
 
-    private function getStatsQuery($grouped = false)
+    private function getStatsQuery($grouped = false): Query
     {
         $qb = $this->entityManager->createQueryBuilder();
 

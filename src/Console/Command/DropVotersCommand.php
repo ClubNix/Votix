@@ -9,13 +9,14 @@
 namespace App\Console\Command;
 
 use App\Repository\VoterRepository;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class VotixDropVotersCommand
  */
-class DropVotersCommand extends AbstractCommand
+class DropVotersCommand extends Command
 {
     public $voterRepository;
 

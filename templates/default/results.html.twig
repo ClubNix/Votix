@@ -7,7 +7,7 @@
         <div class="col-lg-6">
             <h4>Voix exprimées et % par liste</h4>
 
-            <p>Attention, la liste n'est pas triée. Le pourcentage est le nombre de voix exprimées pour cette liste sur le nombre de votants (et non pas d'invités).</p>
+            <p>Attention, la liste suivante n'est pas triée. Le pourcentage est le nombre de voix exprimées pour cette liste sur le nombre de votants (et non pas d'invités).</p>
 
             <table style="width: 100%">
                 <thead>
@@ -20,12 +20,12 @@
                         <td>{{ value.count  }}</td>
                         <td>{{ value.count*100.0 / stats.nb_votants  }} des votants</td>
                     </tr>
-
-
                 {% endfor %}
                 </tbody>
-
             </table>
+            <h4>Code de vérification</h4>
+            <p><center><b>{{ hash }}</b></center></p>
+            <p>Attention: à transmettre avec les résultats (noms + nb de voix) au responsable de l'intégrité.</p>
 
         </div>
         <div class="col-lg-6">

@@ -20,7 +20,7 @@ if (!isset($_SERVER['APP_ENV'])) {
 }
 
 if (isset($_SERVER['APP_ENV']) && $_SERVER['APP_ENV'] == 'test') {
-    (new Dotenv())->load(__DIR__.'/../.env.testing');
+    (new Dotenv())->load(__DIR__ . '/../.env.test');
 }
 
 $input = new ArgvInput();

@@ -11,13 +11,14 @@ namespace App\Console\Command;
 use App\Service\StatsServiceInterface;
 use App\Service\StatusServiceInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Class CheckStatusCommand
  */
-class CheckStatusCommand extends AbstractCommand
+class CheckStatusCommand extends Command
 {
     /**
      * @var LoggerInterface

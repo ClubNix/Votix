@@ -9,6 +9,7 @@
 namespace App\Console\Command;
 
 use App\Repository\CandidateRepository;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,7 +18,7 @@ use Symfony\Component\Yaml\Yaml;
 /**
  * Class VotixCandidatesResetCommand
  */
-class CandidatesResetCommand extends AbstractCommand
+class CandidatesResetCommand extends Command
 {
     /**
      * @var CandidateRepository

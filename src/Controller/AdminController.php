@@ -25,7 +25,7 @@ class AdminController extends AbstractController
      *
      * @return Response
      */
-    public function votersListAction(VoterRepository $voterRepository): Response
+    public function votersList(VoterRepository $voterRepository): Response
     {
         $voters = $voterRepository->findAllSortedByPromotion();
 

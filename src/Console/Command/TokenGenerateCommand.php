@@ -8,6 +8,11 @@
  */
 namespace App\Console\Command;
 
+use App\Entity\Voter;
+use App\Repository\VoterRepository;
+use App\Service\TokenService;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,11 +20,33 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Class VotixTokenGenerateCommand
  */
-class TokenGenerateCommand extends AbstractCommand
+class TokenGenerateCommand extends Command
 {
-    public function __construct(?string $name = null)
-    {
-        parent::__construct($name);
+    /**
+     * @var VoterRepository
+     */
+    private $voterRepository;
+
+    /**
+     * @var TokenService
+     */
+    private $tokenService;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(
+        VoterRepository $voterRepository,
+        TokenService $tokenService,
+        LoggerInterface $logger
+    ) {
+        parent::__construct();
+
+        $this->voterRepository = $voterRepository;
+        $this->tokenService = $tokenService;
+        $this->logger = $logger;
     }
 
     protected function configure(): void
@@ -45,6 +72,7 @@ class TokenGenerateCommand extends AbstractCommand
     {
         $email = $input->getArgument('email');
 
+        /** @var Voter $voter */
         $voter = $this->voterRepository->findOneBy(['email' => $email]);
 
         if ($voter === NULL) {
@@ -62,8 +90,6 @@ class TokenGenerateCommand extends AbstractCommand
 
         $this->logger->info($token);
         $this->logger->info($code);
-
-        $this->logger->info('hello world2');
 
         return 0;
     }

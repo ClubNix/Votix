@@ -39,7 +39,7 @@ class DefaultController extends AbstractController
      *
      * @return Response
      */
-    public function indexAction(StatsService $statsService, StatusService $statusService): Response
+    public function index(StatsService $statsService, StatusService $statusService): Response
     {
         $now = time();
 
@@ -61,7 +61,7 @@ class DefaultController extends AbstractController
      *
      * @return Response
      */
-    public function faqAction(): Response
+    public function faq(): Response
     {
         return $this->render('default/faq.html.twig');
     }
@@ -74,7 +74,7 @@ class DefaultController extends AbstractController
      *
      * @return Response
      */
-    public function historyAction(ArchivesService $archivesService): Response
+    public function history(ArchivesService $archivesService): Response
     {
         $data = $archivesService->getArchive();
 

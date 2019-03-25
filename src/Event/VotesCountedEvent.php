@@ -21,6 +21,5 @@ class VotesCountedEvent extends Event
 
     public function __construct($results)
     {
-        $this->results = $results;
     }
 }

@@ -16,7 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  */
 class CandidateTest extends WebTestCase
 {
-    public function testGettersAndSetters()
+    public function testGettersAndSetters(): void
     {
         $candidate = new Candidate();
 

@@ -23,7 +23,7 @@ class EncryptionServiceTest extends WebTestCase
     private $secretKey         = 'testsecret';
     private $fakevote          = '42';
 
-    public function testIsArmedWithArmedFilesystem()
+    public function testIsArmedWithArmedFilesystem(): EncryptionService
     {
         $eventDispatcher = $this->getEventDispatcherMock();
         $filesystem      = $this->getArmedFilesystemMock();
@@ -35,7 +35,7 @@ class EncryptionServiceTest extends WebTestCase
         return $encryptionService;
     }
 
-    public function testIsArmedWithDisarmedFilesystem()
+    public function testIsArmedWithDisarmedFilesystem(): void
     {
         $eventDispatcher = $this->getEventDispatcherMock();
         $filesystem      = $this->getDisarmedFilesystemMock();
@@ -45,7 +45,7 @@ class EncryptionServiceTest extends WebTestCase
         $this->assertFalse($encryptionService->isArmed());
     }
 
-    public function testVerifyKeyWithInvalidKeyOrPassphrase()
+    public function testVerifyKeyWithInvalidKeyOrPassphrase(): void
     {
         $eventDispatcher = $this->getEventDispatcherMock();
         $filesystem      = $this->getArmedFilesystemMock();
@@ -64,7 +64,7 @@ class EncryptionServiceTest extends WebTestCase
      *
      * @param EncryptionService $encryptionService
      */
-    public function testVerifyKeyWithValidKeyAndPassphrase($encryptionService)
+    public function testVerifyKeyWithValidKeyAndPassphrase($encryptionService): void
     {
         [$success] = $encryptionService->verifyKey($this->getPrivateKeyFixture());
         $this->assertTrue($success);
@@ -74,9 +74,10 @@ class EncryptionServiceTest extends WebTestCase
      * @depends testIsArmedWithArmedFilesystem
      *
      * @param EncryptionService $encryptionService
+     *
      * @return string
      */
-    public function testEncryption($encryptionService)
+    public function testEncryption($encryptionService): string
     {
         $encrypted = $encryptionService->encryptVote($this->fakevote);
 
@@ -93,7 +94,7 @@ class EncryptionServiceTest extends WebTestCase
      * @param EncryptionService $encryptionService
      * @param $encrypted
      */
-    public function testDecryption($encryptionService, $encrypted)
+    public function testDecryption(EncryptionService $encryptionService, $encrypted): void
     {
         $decrypted = $encryptionService->decryptVote($encrypted, $this->getPrivateKeyFixture());
 
@@ -103,7 +104,7 @@ class EncryptionServiceTest extends WebTestCase
         $this->assertEquals($this->fakevote, $decrypted);
     }
 
-    public function testGeneratekeys()
+    public function testGeneratekeys(): void
     {
         $eventDispatcher = $this->getEventDispatcherMock();
         $filesystem      = $this->getArmedFilesystemMock();

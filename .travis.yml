@@ -1,4 +1,9 @@
 language: php
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 
 php:
   - '7.2'
@@ -9,6 +14,21 @@ before_install:
 
 install:
   - composer install
+  - php ./bin/console doctrine:database:drop --force
+  - php ./bin/console doctrine:database:create
+  - php ./bin/console doctrine:schema:update --force
+  - php ./bin/console doctrine:fixtures:load --no-interaction
 
 script:
+  # this run tests
   - php "./vendor/codeception/codeception/codecept" run --steps
+  # this checks that the YAML config files contain no syntax errors
+  - php ./bin/console lint:yaml config
+  # this checks that the Twig template files contain no syntax errors
+  - php ./bin/console lint:twig templates
+  # this checks that the XLIFF translations contain no syntax errors
+  - php ./bin/console lint:xliff translations
+  # this checks that the application doesn't use dependencies with known security vulnerabilities
+  - ./bin/console security:check
+  # this checks that Doctrine's mapping configurations are valid
+  - ./bin/console doctrine:schema:validate --skip-sync -vvv --no-interaction

@@ -15,6 +15,7 @@ use App\Service\EncryptionServiceInterface;
 use App\Service\StatusService;
 use App\Service\TokenServiceInterface;
 use App\Service\VotingService;
+use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -50,9 +51,9 @@ class VotingController extends AbstractController
      *
      * @return Response
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
-    public function voteAction(
+    public function vote(
         Voter $voter,
         string $receivedToken,
         LoggerInterface $logger,
