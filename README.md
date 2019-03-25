@@ -1,5 +1,5 @@
 <h1 align="center">
-  <a href="#user-content-------votix--"><img src="https://raw.githubusercontent.com/ClubNix/Votix/master/public/logovotix.jpg" alt="Logo Votix" width="120" height="120"></a>
+  <a href="#user-content-------votix--"><img src="https://raw.githubusercontent.com/ClubNix/Votix/master/public/logovotix.jpg" alt="Logo Votix" width="150" height="150"></a>
   <br>
   Votix by Club*Nix
   <br>

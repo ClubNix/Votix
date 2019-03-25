@@ -255,4 +255,9 @@ class Voter implements JsonSerializable {
             'ballot'    => $this->ballot,
         ];
     }
+
+    public function __toString()
+    {
+        return '#' . $this->id . ' ' . $this->firstname . ' ' . $this->lastname . ' (' . $this->email . ')';
+    }
 }

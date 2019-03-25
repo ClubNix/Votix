@@ -40,11 +40,21 @@ class StatsService implements StatsServiceInterface
         return $this->voterRepository->getStatsByPromotion();
     }
 
-    public function getStatsByYear()
+    public function getStatsByYear(): array
     {
         $statsByPromotion = $this->voterRepository->getStatsByPromotion();
 
-        $perYear = [];
+        $perYear = [
+            'E1'     => [],
+            'E2'     => [],
+            'E3'     => [],
+            'E3A'    => [],
+            'E4'     => [],
+            'E4A'    => [],
+            'E5'     => [],
+            'E5A'    => [],
+            'AUTRES' => [],
+        ];
         foreach ($statsByPromotion as $key => $value) {
             $year = $this->findYear($value['promotion']);
             $perYear[$year][$value['promotion']] = $value;

@@ -31,7 +31,6 @@
     "ext-pdo_sqlite": "*",
     "ext-json": "*",
     "symfony/monolog-bundle": "^3.3",
-    "symfony/swiftmailer-bundle": "^3.2",
     "sensio/framework-extra-bundle": "^5.2",
     "doctrine/orm": "^2.6",
     "doctrine/doctrine-bundle": "^1.8",
@@ -49,7 +48,8 @@
     "symfony/validator": "^4.2",
     "symfony/web-server-bundle": "^4.2",
     "symfony/debug-pack": "^1.0",
-    "symfony/webpack-encore-bundle": "^1.2"
+    "symfony/webpack-encore-bundle": "^1.2",
+    "symfony/serializer-pack": "^1.0"
   },
   "conflict": {
     "symfony/symfony": "*"
