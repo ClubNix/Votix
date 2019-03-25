@@ -49,8 +49,7 @@
     "symfony/validator": "^4.2",
     "symfony/web-server-bundle": "^4.2",
     "symfony/debug-pack": "^1.0",
-    "symfony/webpack-encore-bundle": "^1.2",
-    "easycorp/easyadmin-bundle": "^2.1"
+    "symfony/webpack-encore-bundle": "^1.2"
   },
   "conflict": {
     "symfony/symfony": "*"

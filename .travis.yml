@@ -4,6 +4,8 @@ sudo: false
 cache:
   directories:
     - $HOME/.composer/cache/files
+    - node_modules
+  yarn: true
 
 php:
   - '7.2'
@@ -14,6 +16,8 @@ before_install:
 
 install:
   - composer install
+  - yarn install
+  - npm run build
   - php ./bin/console doctrine:database:drop --force
   - php ./bin/console doctrine:database:create
   - php ./bin/console doctrine:schema:update --force
