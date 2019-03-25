@@ -10,7 +10,7 @@ Votix is released under the MIT license.
 
 ## Requirements
 
- * PHP 7.1 or greater
+ * PHP 7.2 or greater
  * PHP extensions curl, openssl, sqlite
 
 

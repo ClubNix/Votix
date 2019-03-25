@@ -1,5 +1,5 @@
 test:
-	php vendor/bin/codecept run
+	php "./vendor/codeception/codeception/codecept" run
 reset:
 	php bin/console doctrine:database:drop --force
 	php bin/console doctrine:database:create

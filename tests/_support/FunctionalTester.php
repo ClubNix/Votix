@@ -19,7 +19,7 @@ namespace App\Tests;
 */
 class FunctionalTester extends \Codeception\Actor
 {
-    use \_generated\FunctionalTesterActions;
+    use _generated\FunctionalTesterActions;
 
    /**
     * Define custom actions here

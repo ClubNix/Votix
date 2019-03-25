@@ -1,6 +1,7 @@
 /build/
 /node_modules/
 /var/*
+!var/halloffame.yml
 !/var/cache
 /var/cache/*
 !var/cache/.gitkeep
