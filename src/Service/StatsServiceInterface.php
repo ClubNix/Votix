@@ -16,4 +16,6 @@ interface StatsServiceInterface
     public function getStats();
 
     public function getStatsByPromotion();
+
+    public function getStatsByYear();
 }

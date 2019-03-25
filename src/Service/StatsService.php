@@ -8,21 +8,20 @@
  */
 namespace App\Service;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\VoterRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
-use Doctrine\ORM\Query;
 
 /**
  * Class StatsService
  */
 class StatsService implements StatsServiceInterface
 {
-    private $entityManager;
+    private $voterRepository;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(VoterRepository $voterRepository)
     {
-        $this->entityManager = $entityManager;
+        $this->voterRepository = $voterRepository;
     }
 
     /**
@@ -33,35 +32,90 @@ class StatsService implements StatsServiceInterface
      */
     public function getStats()
     {
-        return $this->getStatsQuery($grouped = false)->getSingleResult();
+        return $this->voterRepository->getStats();
     }
 
     public function getStatsByPromotion()
     {
-        return $this->getStatsQuery($grouped = true)->getResult();
+        return $this->voterRepository->getStatsByPromotion();
     }
 
-    private function getStatsQuery($grouped = false): Query
+    public function getStatsByYear()
     {
-        $qb = $this->entityManager->createQueryBuilder();
+        $statsByPromotion = $this->voterRepository->getStatsByPromotion();
 
-        $qb->select(
-            [
-                $grouped ? 'v.promotion     AS promotion' : null,
-                'count(v.ballot) AS nb_votants',
-                'count(v.id)     AS nb_invites',
-                '(count(v.ballot) * 100.0) / count(v.id) AS ratio_float',
-                '(count(v.ballot) * 100)   / count(v.id) AS ratio_int'
-            ]
-        );
-
-        $qb->from('App:Voter', 'v');
-
-        if($grouped) {
-            $qb ->groupBy('v.promotion')
-                ->orderBy('v.promotion');
+        $perYear = [];
+        foreach ($statsByPromotion as $key => $value) {
+            $year = $this->findYear($value['promotion']);
+            $perYear[$year][$value['promotion']] = $value;
         }
 
-        return $qb->getQuery();
+        return [
+            'E1' => $this->getGroupRatio($perYear['E1']),
+            'E2' => $this->getGroupRatio($perYear['E2']),
+            'E3' => $this->getGroupRatio($perYear['E3']),
+            'E3A' => $this->getGroupRatio($perYear['E3A']),
+            'E4' => $this->getGroupRatio($perYear['E4']),
+            'E4A' => $this->getGroupRatio($perYear['E4A']),
+            'E5' => $this->getGroupRatio($perYear['E5']),
+            'E5A' => $this->getGroupRatio($perYear['E5A']),
+            'AUTRES' => $this->getGroupRatio($perYear['AUTRES']),
+        ];
+    }
+
+    private function findYear(string $promotion): string
+    {
+        if (preg_match('/^.._E1.*$/', $promotion)) {
+            return 'E1';
+        }
+
+        if (preg_match('/^.._E2.*$/', $promotion)) {
+            return 'E2';
+        }
+
+        if (preg_match('/^.._E3$|.._E3[^F]+.*$/', $promotion)) {
+            return 'E3';
+        }
+
+        if (preg_match('/^.._E3F.*$/', $promotion)) {
+            return 'E3A';
+        }
+
+        if (preg_match('/^.._E4$|.._E4[^F]+.*$/', $promotion)) {
+            return 'E4';
+        }
+
+        if (preg_match('/^.._E4F.*$/', $promotion)) {
+            return 'E4A';
+        }
+
+        if (preg_match('/^.._E5$|.._E5[^F]+.*$/', $promotion)) {
+            return 'E5';
+        }
+
+        if (preg_match('/^.._E5F.*$/', $promotion)) {
+            return 'E5A';
+        }
+
+        return 'AUTRES';
+    }
+
+    private function getGroupRatio(array $promotions)
+    {
+        $total_votants = 0;
+        $total_invites = 0;
+
+        foreach ($promotions as $promotion) {
+
+            $total_votants += $promotion['nb_votants'];
+            $total_invites += $promotion['nb_invites'];
+        }
+
+        // prevents division per 0
+        if ($total_invites === 0) {
+            return 0;
+        }
+
+        return round( ($total_votants * 100) / $total_invites);
     }
 }

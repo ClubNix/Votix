@@ -21,19 +21,29 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 class VoteCounterService implements VoteCounterServiceInterface
 {
 
-    /** @var CandidateRepository  */
+    /**
+     * @var CandidateRepository
+     */
     private $candidateRepository;
 
-    /** @var VoterRepository  */
+    /**
+     * @var VoterRepository
+     */
     private $voterRepository;
 
-    /** @var EventDispatcherInterface  */
+    /**
+     * @var EventDispatcherInterface
+     */
     private $eventDispatcher;
 
-    /** @var EncryptionServiceInterface */
+    /**
+     * @var EncryptionServiceInterface
+     */
     private $encryption;
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $password;
 
     /**

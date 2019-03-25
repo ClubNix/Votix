@@ -18,5 +18,6 @@ interface StatusServiceInterface
     public const WAITING = 'WAITING';
 
     public function getCurrentStatus(): string;
+
     public function getCurrentStatusMessage(): string;
 }

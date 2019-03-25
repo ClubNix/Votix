@@ -12,6 +12,7 @@ use App\Entity\Candidate;
 use App\Entity\Voter;
 use App\Event\VoteCastEvent;
 use App\Repository\VoterRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -19,13 +20,19 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  */
 class VotingService implements VotingServiceInterface
 {
-    /** @var EncryptionServiceInterface */
+    /**
+     * @var EncryptionServiceInterface
+     */
     private $encryptionService;
 
-    /** @var VoterRepository  */
+    /**
+     * @var VoterRepository
+     */
     private $voterRepository;
 
-    /** @var EventDispatcherInterface */
+    /**
+     * @var EventDispatcherInterface
+     */
     private $dispatcher;
 
     /**
@@ -51,7 +58,7 @@ class VotingService implements VotingServiceInterface
      * @param Voter $voter
      * @param Candidate $chosenCandidate
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     public function makeVoterVoteFor(Voter $voter, Candidate $chosenCandidate): void
     {

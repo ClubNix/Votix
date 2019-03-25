@@ -11,6 +11,8 @@ namespace App\Repository;
 use App\Entity\Candidate;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
 
 /**
  * Class CandidateRepository
@@ -42,10 +44,10 @@ class CandidateRepository extends ServiceEntityRepository
     /**
      * @param array $candidates [ ['name' => string, 'eligible' => true] ... ]
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws ORMException
+     * @throws OptimisticLockException
      */
-    public function import($candidates): void
+    public function import(array $candidates): void
     {
         $this->_em->createQuery('DELETE FROM App:Candidate')->execute();
 
