@@ -47,7 +47,7 @@ class ScreenApiController extends AbstractController
         $statsByYear = $this->statsService->getStatsByYear();
 
         $data = [
-            'status'   => $this->statusService->getCurrentStatus(),
+            'status'   => $this->translateStatus($this->statusService->getCurrentStatus()),
             'message'  => $this->statusService->getCurrentStatusMessage(),
             'total'    => (int) $globalStats['nb_votants'],
             'ratio'    => $this->truncateFloat($globalStats['ratio_float']),
@@ -79,5 +79,19 @@ class ScreenApiController extends AbstractController
     protected function truncateFloat($number)
     {
         return floor($number * 100) / 100;
+    }
+
+    protected function translateStatus(string $status): string
+    {
+        switch ($status) {
+            case StatusServiceInterface::OPEN:
+                return 'OUVERT';
+            case StatusServiceInterface::CLOSED:
+                return 'FERME';
+            case StatusServiceInterface::WAITING:
+                return 'ATTENTE';
+        }
+
+        return '';
     }
 }
