@@ -187,6 +187,33 @@
     "guzzlehttp/psr7": {
         "version": "1.6.1"
     },
+    "hoa/consistency": {
+        "version": "1.17.05.02"
+    },
+    "hoa/console": {
+        "version": "3.17.05.02"
+    },
+    "hoa/event": {
+        "version": "1.17.01.13"
+    },
+    "hoa/exception": {
+        "version": "1.17.01.16"
+    },
+    "hoa/file": {
+        "version": "1.17.07.11"
+    },
+    "hoa/iterator": {
+        "version": "2.17.01.10"
+    },
+    "hoa/protocol": {
+        "version": "1.17.01.14"
+    },
+    "hoa/stream": {
+        "version": "1.17.02.21"
+    },
+    "hoa/ustring": {
+        "version": "4.17.01.16"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
     },
