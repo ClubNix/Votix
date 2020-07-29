@@ -105,7 +105,7 @@ class EncryptionService implements EncryptionServiceInterface
             $message = $e->getMessage();
         }
 
-        $this->eventDispatcher->dispatch(KeysVerifiedEvent::NAME, new KeysVerifiedEvent($success, $message));
+        $this->eventDispatcher->dispatch(new KeysVerifiedEvent($success, $message), KeysVerifiedEvent::NAME);
 
         return [$success, $message];
     }
@@ -169,7 +169,7 @@ class EncryptionService implements EncryptionServiceInterface
         $this->filesystem->dumpFile($this->keysDirectory . '/private_key.pem', $rsaOptions->getPrivateKey());
         $this->filesystem->dumpFile($this->keysDirectory . '/public_key.pub',  $rsaOptions->getPublicKey());
 
-        $this->eventDispatcher->dispatch(KeysGeneratedEvent::NAME, new KeysGeneratedEvent());
+        $this->eventDispatcher->dispatch(new KeysGeneratedEvent(), KeysGeneratedEvent::NAME);
     }
 
     public function encryptSignature($signature): array

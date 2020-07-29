@@ -9,14 +9,13 @@
 namespace App\Event;
 
 use App\Entity\Voter;
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class VoteCastEvent
  */
 class VoteCastEvent extends Event
 {
-
     public const NAME = 'vote.cast';
 
     /** @var Voter */

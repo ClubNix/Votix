@@ -27,6 +27,23 @@ Votix is released under the MIT license.
  * PHP 7.2 or greater
  * PHP extensions curl, openssl, sqlite
 
+## Quickstart
+
+```bash
+# ArchLinux
+pacman -S composer php-sqlite
+yay -S symfony-cli
+# enable extension=pdo_sqlite iconv in /etc/php/php.ini
+
+composer install
+
+# Initialize local database
+make reset
+
+yarn install
+```
 
 php bin/console assets:install public --symlink
 
+# Start application
+symfony server:start --no-tls

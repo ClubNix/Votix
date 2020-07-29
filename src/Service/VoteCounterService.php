@@ -109,7 +109,7 @@ class VoteCounterService implements VoteCounterServiceInterface
             $results[$candidateId]['count']++;
         }
 
-        $this->eventDispatcher->dispatch(VotesCountedEvent::NAME, new VotesCountedEvent($results));
+        $this->eventDispatcher->dispatch(new VotesCountedEvent($results), VotesCountedEvent::NAME);
 
         return $results;
     }

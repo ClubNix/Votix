@@ -8,7 +8,7 @@
  */
 namespace App\Event;
 
-use Symfony\Component\EventDispatcher\Event;
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * Class HackingAttemptDetectedEvent

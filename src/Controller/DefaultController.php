@@ -24,7 +24,7 @@ class DefaultController extends AbstractController
     private $votixStart;
     private $votixEnd;
 
-    public function __construct($votixStart, $votixEnd)
+    public function __construct(int $votixStart, int $votixEnd)
     {
         $this->votixStart = $votixStart;
         $this->votixEnd = $votixEnd;

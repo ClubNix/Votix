@@ -72,7 +72,7 @@ class VotingService implements VotingServiceInterface
 
         $this->voterRepository->save($voter);
 
-        $this->dispatcher->dispatch(VoteCastEvent::NAME, new VoteCastEvent($voter, $signature['private_key']));
+        $this->dispatcher->dispatch(new VoteCastEvent($voter, $signature['private_key']), VoteCastEvent::NAME);
     }
 
     private function signBallot(string $plaintext, string $ballot): array

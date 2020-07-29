@@ -1,51 +1,64 @@
-# Learn more about services, parameters and containers at
-# http://symfony.com/doc/current/book/service_container.html
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-  locale: 'en'
+    locale: 'en'
 
-  votix_secret:          ThisTokenIsNotSoSecretChangeIt
-  votix_key_secret:      ThisTokenIsNotSoSecretChangeIt
-
-  # celui là sera transmis au BDE
-  votix_result_password: ThisTokenIsNotSoSecretChangeIt
-
-  votix_link_base:       https://yourvotix/vote/
-
-  # http://www.timestamp.fr/
-  votix_start:   1458255600
-  votix_end:     1558317580
-  votix_support: votix@domain.tld
+    votix_secret:          ThisTokenIsNotSoSecretChangeIt
+    votix_key_secret:      ThisTokenIsNotSoSecretChangeIt
+  
+    # celui là sera transmis au BDE
+    votix_result_password: ThisTokenIsNotSoSecretChangeIt
+  
+    votix_link_base:       https://yourvotix/vote/
+  
+    # http://www.timestamp.fr/
+    votix_start:   1458255600
+    votix_end:     1558317580
+    votix_support: votix@domain.tld
 
 services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-    bind:
-      $votixStart: '%votix_start%'
-      $votixEnd: '%votix_end%'
-      $archiveFile: '%kernel.root_dir%/../var/halloffame.yml'
-      $keysDirectory: '%kernel.root_dir%/../var'
-      $secretKey: '%votix_key_secret%'
-      $secret: '%votix_secret%'
-      $salt: '%votix_secret%'
-      $linkBase: '%votix_link_base%'
-      $password: '%votix_result_password%'
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind:
+            $votixStart: '%votix_start%'
+            $votixEnd: '%votix_end%'
+            $archiveFile: '%kernel.root_dir%/../var/halloffame.yml'
+            $keysDirectory: '%kernel.root_dir%/../var'
+            $secretKey: '%votix_key_secret%'
+            $secret: '%votix_secret%'
+            $salt: '%votix_secret%'
+            $linkBase: '%votix_link_base%'
+            $password: '%votix_result_password%'
 
-  # makes classes in src/ available to be used as services
-  # this creates a service per class whose id is the fully-qualified class name
-  App\:
-    resource: '../src/*'
-    exclude: '../src/{Entity,Migrations,Tests,Kernel.php}'
+    # makes classes in src/ available to be used as services
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
 
-  App\Controller\:
-    resource: '../src/Controller'
-    tags: ['controller.service_arguments']
+    # controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller/'
+        tags: ['controller.service_arguments']
 
-  Aws\Ses\SesClient:
-    arguments:
-      $args:
-        key: 'dwe'
-        secret: 'dwewd'
-        region: 'eu-west-1'
-        # https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.Ses.SesClient.html
-        version: '2010-12-01'
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+
+    Aws\Ses\SesClient:
+        arguments:
+          $args:
+            key: 'dwe'
+            secret: 'dwewd'
+            region: 'eu-west-1'
+            # https://docs.aws.amazon.com/aws-sdk-php/v3/api/class-Aws.Ses.SesClient.html
+            version: '2010-12-01'

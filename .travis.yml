@@ -17,7 +17,7 @@ before_install:
 install:
   - composer install
   - yarn install
-  - npm run build
+  - yarn run build
   - php ./bin/console doctrine:database:drop --force
   - php ./bin/console doctrine:database:create
   - php ./bin/console doctrine:schema:update --force
