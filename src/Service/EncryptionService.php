@@ -13,9 +13,9 @@ use App\Event\KeysVerifiedEvent;
 use App\Exception\VoteEncryptionException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Zend\Crypt\Exception\ExceptionInterface as ZendCryptExceptionInterface;
-use Zend\Crypt\PublicKey\Rsa;
-use Zend\Crypt\PublicKey\RsaOptions;
+use Laminas\Crypt\Exception\ExceptionInterface as LaminasCryptExceptionInterface;
+use Laminas\Crypt\PublicKey\Rsa;
+use Laminas\Crypt\PublicKey\RsaOptions;
 
 /**
  * Class EncryptionService
@@ -101,7 +101,7 @@ class EncryptionService implements EncryptionServiceInterface
                 $message = 'Encryption and decryption performed successfully!';
                 $success = true;
             }
-        } catch(ZendCryptExceptionInterface $e) {
+        } catch(LaminasCryptExceptionInterface $e) {
             $message = $e->getMessage();
         }
 
@@ -122,7 +122,7 @@ class EncryptionService implements EncryptionServiceInterface
     {
         try {
             $decrypted = $this->getRsa($key)->decrypt($vote);
-        } catch(ZendCryptExceptionInterface $exception) {
+        } catch(LaminasCryptExceptionInterface $exception) {
             throw new VoteEncryptionException('Vote cannot be decrypted', $exception->getCode(), $exception);
         }
 
@@ -142,7 +142,7 @@ class EncryptionService implements EncryptionServiceInterface
     {
         try {
             $encrypted = $this->getRsa()->encrypt($vote);
-        } catch(ZendCryptExceptionInterface $exception) {
+        } catch(LaminasCryptExceptionInterface $exception) {
             throw new VoteEncryptionException('Vote cannot be encrypted', $exception->getCode(), $exception);
         }
 
