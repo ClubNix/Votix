@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="symfony_is_great">
+                <source>Symfony is great</source>
+                <target>J'aime Symfony</target>
+            </trans-unit>
+            <trans-unit id="homepage">
+                <source>Homepage</source>
+                <target>Homepage</target>
+            </trans-unit>
+            <trans-unit id="hall_of_fame">
+                <source>Hall of Fame</source>
+                <target>Hall of Fame</target>
+            </trans-unit>
+            <trans-unit id="faq">
+                <source>F.A.Q.</source>
+                <target>F.A.Q.</target>
+            </trans-unit>
+            <trans-unit id="back_to_homepage">
+                <source>Back to homepage</source>
+                <target>Back to homepage</target>
+            </trans-unit>
+            <trans-unit id="vote_opening_date">
+                <source>Vote opening date</source>
+                <target>Vote opening date</target>
+            </trans-unit>
+            <trans-unit id="vote_closing_date">
+                <source>Vote closing date</source>
+                <target>Vote closing date</target>
+            </trans-unit>
+            <trans-unit id="server_date">
+                <source>Server date</source>
+                <target>Server date</target>
+            </trans-unit>
+            <trans-unit id="real_time_feed">
+                <source>Real time feed</source>
+                <target>Real time feed</target>
+            </trans-unit>
+            <trans-unit id="vote_status">
+                <source>Vote status</source>
+                <target>Vote status</target>
+            </trans-unit>
+            <trans-unit id="closed">
+                <source>CLOSED</source>
+                <target>CLOSED</target>
+            </trans-unit>
+            <trans-unit id="open">
+                <source>OPEN</source>
+                <target>OPEN</target>
+            </trans-unit>
+            <trans-unit id="waiting">
+                <source>WAITING</source>
+                <target>WAITING</target>
+            </trans-unit>
+            <trans-unit id="percentage">
+                <source>Percentage</source>
+                <target>Percentage</target>
+            </trans-unit>
+            <trans-unit id="vote_count">
+                <source>Vote count</source>
+                <target>Vote count</target>
+            </trans-unit>
+            <trans-unit id="candidate">
+                <source>Candidate</source>
+                <target>Candidate</target>
+            </trans-unit>
+            <trans-unit id="year">
+                <source>Year</source>
+                <target>Year</target>
+            </trans-unit>
+            <trans-unit id="voters_in_total">
+                <source>voters in total</source>
+                <target>voters in total</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

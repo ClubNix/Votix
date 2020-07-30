@@ -31,7 +31,7 @@ Votix is released under the MIT license.
 
 ```bash
 # ArchLinux
-pacman -S composer php-sqlite
+pacman -S composer php-sqlite php-intl
 yay -S symfony-cli
 # enable extension=pdo_sqlite iconv in /etc/php/php.ini
 

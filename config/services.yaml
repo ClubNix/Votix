@@ -27,8 +27,8 @@ services:
         bind:
             $votixStart: '%votix_start%'
             $votixEnd: '%votix_end%'
-            $archiveFile: '%kernel.root_dir%/../var/halloffame.yml'
-            $keysDirectory: '%kernel.root_dir%/../var'
+            $archiveFile: '%kernel.project_dir%/var/halloffame.yml'
+            $keysDirectory: '%kernel.project_dir%/var'
             $secretKey: '%votix_key_secret%'
             $secret: '%votix_secret%'
             $salt: '%votix_secret%'
