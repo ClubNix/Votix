@@ -211,9 +211,6 @@
     "laminas/laminas-stdlib": {
         "version": "3.2.1"
     },
-    "laminas/laminas-zendframework-bridge": {
-        "version": "1.0.4"
-    },
     "monolog/monolog": {
         "version": "2.1.1"
     },
@@ -240,9 +237,6 @@
     },
     "pagerfanta/pagerfanta": {
         "version": "v2.1.1"
-    },
-    "paragonie/random_compat": {
-        "version": "v9.99.99"
     },
     "phar-io/manifest": {
         "version": "1.0.3"
@@ -576,9 +570,6 @@
     "symfony/orm-pack": {
         "version": "v1.0.8"
     },
-    "symfony/polyfill-ctype": {
-        "version": "v1.18.0"
-    },
     "symfony/polyfill-iconv": {
         "version": "v1.10.0"
     },
@@ -595,15 +586,6 @@
         "version": "v1.18.0"
     },
     "symfony/polyfill-mbstring": {
-        "version": "v1.18.0"
-    },
-    "symfony/polyfill-php70": {
-        "version": "v1.18.0"
-    },
-    "symfony/polyfill-php72": {
-        "version": "v1.18.0"
-    },
-    "symfony/polyfill-php73": {
         "version": "v1.18.0"
     },
     "symfony/polyfill-php80": {

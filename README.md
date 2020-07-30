@@ -12,8 +12,8 @@
 </p>
 
 <p align="center">
-  <a href="https://secure.php.net/manual/en/intro-whatis.php" alt="PHP 7.2"><img src="https://img.shields.io/badge/PHP-^7.2-787cb4.svg" /></a>
-  <a href="https://symfony.com/what-is-symfony" alt="Symfony 4.1"><img src="https://img.shields.io/badge/Symfony-4.2-7aba20.svg" /></a>
+  <a href="https://secure.php.net/manual/en/intro-whatis.php" alt="PHP 7.4"><img src="https://img.shields.io/badge/PHP-^7.4-787cb4.svg" /></a>
+  <a href="https://symfony.com/what-is-symfony" alt="Symfony 5.1"><img src="https://img.shields.io/badge/Symfony-5.1-7aba20.svg" /></a>
 </p>
 
 <p align="center"><b>Votix is an advanced and secure online voting platform.</b></p>
