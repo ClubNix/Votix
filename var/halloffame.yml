@@ -1,4 +1,28 @@
 archives:
+  2020:
+    winner: Nova
+    voters: 466
+    candidates:
+      - name: Nova
+        votes: 243
+      - name: Funky
+        votes: 212
+      - name: 2jango
+        votes: 0
+      - name: Vote null(vote Blanc)
+        votes: 11
+  2019:
+    winner: DJANGO
+    voters: 1278
+    candidates:
+      - name: DJANGO
+        votes: 718
+      - name: HORUS
+        votes: 507
+      - name: FAKE
+        votes: 0
+      - name: NOIRE
+        votes: 53
   2018:
     winner: FUEGO
     voters: 1052
@@ -29,10 +53,12 @@ archives:
     candidates:
       - name: Lagoon
         votes: 547
-      - name: MOJO
-        votes: 311
-      - name: COPIE BLANCHE
-        votes: 90
+      - name: Helios
+        votes: 438
+      - name: Incloser (non éligible)
+        votes: 0
+      - name: Ivoire (blanc)
+        votes: 61
   2015:
     winner: ZEPHYR
     voters: 1027
