@@ -4,14 +4,14 @@
     <h2>Procédure de déchiffrement</h2>
 
     <form method="post" action="{{ path('no_stress_process') }}">
-        <div class="form-group">
+        <div>
             <label for="">Clef Votix</label>
-            <textarea class="form-control" name="key" placeholder="Collez ici la clef votix"></textarea>
+            <textarea name="key" placeholder="Collez ici la clef votix"></textarea>
         </div>
-        <div class="form-group">
+        <div>
             <label for="">Mot de passe de déchiffrement</label>
-            <input type="password" class="form-control" name="password" placeholder="Mot de passe donné par le responsable de l'intégrité">
+            <input type="password" name="password" placeholder="Mot de passe donné par le responsable de l'intégrité">
         </div>
-        <input type="submit" value="Déchiffrer">
+        <input type="submit" class="button" value="Déchiffrer">
     </form>
 {% endblock %}

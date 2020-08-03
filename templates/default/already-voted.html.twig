@@ -1,10 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row marketing">
-        Oops {{ voter.firstname }}, tu as déjà voté !<br />
+    <div class="callout alert">
+        <h4>Erreur</h4>
+        
+        <p>Oops {{ voter.firstname }}, tu as déjà voté !</p>
 
-        Si tu penses qu'il s'agit d'une erreur, contacte philippe.lewin at gmail.com.
+        <p></p>Si tu penses qu'il s'agit d'une erreur, contacte philippe.lewin at gmail.com.</p>
 
         <a href="{{ path('homepage') }}" class="btn btn-success">
             {% trans %}Back to homepage{% endtrans %}

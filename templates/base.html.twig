@@ -1,55 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ app.request.locale }}">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <meta name="description" content="Votix, voting software">
-    <meta name="author" content="Philippe Lewin">
     <meta name="author" content="https://www.clubnix.fr">
     {% block meta %}{% endblock %}
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 
     <title>{% block title %}Votix{% endblock %}</title>
 
-    <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-    <script src="{{ asset('js/jquery-2.2.1.min.js') }}"></script>
-    {% block stylesheets %}{% endblock %}
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
     {% block scripts %}{% endblock %}
 </head>
 
 <body>
+  <header class="subnav-hero-section">
+    <h1 class="subnav-hero-headline">
+      <a href="{{ path('homepage') }}">Votix</a>
+    </h1>
+    <!-- <small>Élections du BDE</small> -->
 
-<div class="container">
-    <div class="header clearfix">
-        <nav>
-            <ul class="nav nav-pills pull-right">
-                <li role="presentation" class="{{ app.request.attributes.get('_route') == 'homepage' ? 'active' }}">
-                    <a href="{{ path('homepage') }}">{% trans %}Homepage{% endtrans %}</a>
-                </li>
-                <li role="presentation" class="{{ app.request.attributes.get('_route') == 'hall-of-fame' ? 'active' }}">
-                    <a href="{{ path('hall-of-fame') }}">{% trans %}Hall of Fame{% endtrans %}</a>
-                </li>
-                <li role="presentation" class="{{ app.request.attributes.get('_route') == 'faq' ? 'active' }}">
-                    <a href="{{ path('faq') }}">{% trans %}F.A.Q.{% endtrans %}</a>
-                </li>
-            </ul>
-        </nav>
-        <h3 class="text-muted website-title">
-            <a href="{{ path('homepage') }}"><img src="{{ asset('logovotix.jpg') }}" style="width: 80px; height: 80px;"></a>
-            <a href="{{ path('homepage') }}">Élections du BDE</a></h3>
+    <ul class="subnav-hero-subnav">
+      <li>
+        <a class="navbar-item {{ app.request.attributes.get('_route') == 'homepage' ? 'is-active' }}" href="{{ path('homepage') }}">
+          {% trans %}Homepage{% endtrans %}
+        </a>
+      </li>
+      <li>
+        <a class="navbar-item {{ app.request.attributes.get('_route') == 'hall-of-fame' ? 'is-active' }}" href="{{ path('hall-of-fame') }}">
+          {% trans %}Hall of Fame{% endtrans %}
+        </a>
+      </li>
+      <li>
+        <a class="navbar-item {{ app.request.attributes.get('_route') == 'faq' ? 'is-active' }}" href="{{ path('faq') }}">
+          {% trans %}F.A.Q.{% endtrans %}
+        </a>
+      </li>
+    </ul>
+  </header>
+
+
+  <article class="grid-container">
+    <div class="grid-x align-center">
+      <div class="cell medium-8">
+        {% block body %}{% endblock %}
+
+        <footer class="footer">
+          <p><a href="{{ path('demo') }}">demos</a> - &copy; 2006 - {{ "now"|date("Y") }} | <a href="https://github.com/ClubNix/Votix">Votix</a></p>
+        </footer>
+      </div>
     </div>
+  </article>
 
-    {% block body %}{% endblock %}
-
-    <footer class="footer">
-        <p>&copy; 2006 - {{ "now"|date("Y") }} | Votix</p>
-    </footer>
-
-</div>
-
-{% block javascripts %}{% endblock %}
+  {% block javascripts %}
+      {{ encore_entry_script_tags('app') }}
+  {% endblock %}
 </body>
 </html>

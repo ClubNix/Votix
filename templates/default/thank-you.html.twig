@@ -1,9 +1,10 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row marketing">
-        Merci {{ voter.firstname }} ! Ton vote a bien été pris en compte.
-
+    <div class="callout success">
+        <h4>A voté !</h4>
+        
+        <p>Merci {{ voter.firstname }} ! Ton vote a bien été pris en compte.</p>
 
         <a href="{{ path('homepage') }}" class="btn btn-success">Retour à l'accueil</a>
     </div>

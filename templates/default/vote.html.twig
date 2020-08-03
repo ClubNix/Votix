@@ -9,14 +9,15 @@
 {% endblock %}
 
 {% block body %}
-    <div class="row marketing">
+    <div>
+        <h4>Vote</h4>
         Bonjour {{ voter.firstname }}, tu peux à présent voter.<br />
 
         Attention : Tu ne peux voter qu'une seule fois ! Choisis bien.<br /><br />
 
         <form action="" method="post">
             <input type="hidden" name="token" value="{{ token }}">
-            <div class="form-group">
+            <div>
                 <label for="choice">Liste</label>
                 <div>
                 {% for candidate in candidates %}
@@ -28,13 +29,11 @@
                 {% endfor %}
                 </div>
             </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Code de sécurité à 4 chiffres (dans le mail) :</label>
-                <input type="number"  class="form-control" name="security" value="" placeholder="NNNN">
+            <div>
+                <label for="security">Code de sécurité à 4 chiffres (dans le mail) :</label>
+                <input type="number" name="security" value="" placeholder="NNNN">
             </div>
-            <button type="submit" class="btn btn-danger">Valider mon choix (irréversible)</button>
+            <button type="submit" class="button alert">Valider mon choix (irréversible)</button>
         </form>
     </div>
-
-
 {% endblock %}

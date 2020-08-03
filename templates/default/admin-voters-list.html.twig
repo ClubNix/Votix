@@ -5,19 +5,19 @@
         <tbody>
 
         {% for voter in voters %}
-                <tr>
-                    <td>{{ voter.promotion }}</td>
-                    <td>{{ voter.firstname }}</td>
-                    <td>{{ voter.lastname }}</td>
-                    <td>{{ voter.login }}</td>
-                    <td>{{ voter.email }}</td>
+            <tr>
+                <td>{{ voter.promotion }}</td>
+                <td>{{ voter.firstname }}</td>
+                <td>{{ voter.lastname }}</td>
+                <td>{{ voter.login }}</td>
+                <td>{{ voter.email }}</td>
 
-                    {% if voter.hasVoted() %}
-                        <td><button type="button" class="btn btn-success btn-xs disabled">has voted</button></td>
-                    {% else %}
-                        <td><button type="button" class="btn btn-warning btn-xs disabled">not voted</button></td>
-                    {% endif %}
-                </tr>
+                {% if voter.hasVoted() %}
+                    <td><button type="button" class="btn btn-success btn-xs disabled">has voted</button></td>
+                {% else %}
+                    <td><button type="button" class="btn btn-warning btn-xs disabled">not voted</button></td>
+                {% endif %}
+            </tr>
         {% endfor %}
         </tbody>
     </table>

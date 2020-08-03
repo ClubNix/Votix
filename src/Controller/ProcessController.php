@@ -91,7 +91,6 @@ class ProcessController extends AbstractController
         $hash    = $counterService->hashResults($results, $this->secret);
 
         return $this->render('default/results.html.twig', [
-            'message' => '',
             'results' => $results,
             'stats'   => $stats,
             'hash'    => $hash,
@@ -132,9 +131,9 @@ class ProcessController extends AbstractController
 
         $encryptionService->generateKeys();
 
-        $private_key_file = $encryptionService->getGeneratedKeyFilePath();
+        $privateKeyFile = $encryptionService->getGeneratedKeyFilePath();
 
-        return $this->sendTemporaryFileResponse($private_key_file, 'votix_secret_key.txt');
+        return $this->sendTemporaryFileResponse($privateKeyFile, 'votix_secret_key.txt');
     }
 
     /**
@@ -144,7 +143,7 @@ class ProcessController extends AbstractController
      */
     public function check(): Response
     {
-        return $this->render('default/check.html.twig', ['message' => '']);
+        return $this->render('default/check.html.twig');
     }
 
     /**
@@ -162,7 +161,7 @@ class ProcessController extends AbstractController
         [$success, $message] = $encryptionService->verifyKey($key);
 
         return $this->render('default/check.html.twig', [
-            'success' => $success,
+            'success' => $success, // TODO
             'message' => $message,
         ]);
     }

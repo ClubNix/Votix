@@ -1,12 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row marketing">
-        Il est trop tôt ou trop tard pour voter.<br/><br/>
+    <div class="callout alert">
+        <h4>Erreur</h4>
 
+        <p>Il est trop tôt ou trop tard pour voter.</p>
 
         <a href="{{ path('homepage') }}" class="btn btn-success">Retour à l'accueil</a>
     </div>
-
-
 {% endblock %}

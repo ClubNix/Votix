@@ -1,52 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="row marketing">
-        <h3>Les résultats</h3>
+    <h3>Les résultats</h3>
 
-        <div class="col-lg-6">
-            <h4>Voix exprimées et % par liste</h4>
+<div class="grid-x grid-margin-x">
+    <div class="cell large-8">
+        <h4>Voix exprimées et % par liste</h4>
 
-            <p>Attention, la liste suivante n'est pas triée. Le pourcentage est le nombre de voix exprimées pour cette liste sur le nombre de votants (et non pas d'invités).</p>
+        <p>Attention, la liste suivante n'est pas triée. Le pourcentage est le nombre de voix exprimées pour cette liste sur le nombre de votants (et non pas d'invités).</p>
 
-            {% if stats.nb_votants > 0 %}
-                <table style="width: 100%">
-                    <thead>
-                    <tr><th>Candidat</th><th>Voix</th><th>Pourcentage</th></tr>
-                    </thead>
-                    <tbody>
-                    {% for key,value in results %}
-                        <tr>
-                            <td>{{ value.candidate.name  }}</td>
-                            <td>{{ value.count  }}</td>
-                            <td>{{ value.count*100.0 / stats.nb_votants  }} des votants</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>Il n'y a eu aucun votant.</p>
-            {% endif %}
-            <h4>Code de vérification</h4>
-            <p><center><b>{{ hash }}</b></center></p>
-            <p>Attention: à transmettre avec les résultats (noms + nb de voix) au responsable de l'intégrité, par texte ou copie d'écran.</p>
+        {% if stats.nb_votants > 0 %}
+            <table class="unstriped vote-results">
+                <thead>
+                <tr><th>Candidat</th><th>Voix</th><th>Pourcentage</th></tr>
+                </thead>
+                <tbody>
+                {% for key,value in results %}
+                    <tr>
+                        <td>{{ value.candidate.name  }}</td>
+                        <td>{{ value.count  }}</td>
+                        <td>{{ value.count*100.0 / stats.nb_votants  }} % des votants</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Il n'y a eu aucun votant.</p>
+        {% endif %}
+        <h4>Code de vérification</h4>
+        <p><center><b>{{ hash }}</b></center></p>
+        <p>Attention: à transmettre avec les résultats (noms + nb de voix) au responsable de l'intégrité, par texte ou copie d'écran.</p>
 
-        </div>
-        <div class="col-lg-6">
-            <h4>Statistiques</h4>
-
-            <dl>
-                <dt>Nombre de votants</dt>
-                <dd>{{ stats.nb_votants }}</dd>
-            </dl>
-            <dl>
-                <dt>Nombre d'invités</dt>
-                <dd>{{ stats.nb_invites }}</dd>
-            </dl>
-            <dl>
-                <dt>Pourcentage de participation</dt>
-                <dd>{{ stats.ratio_float == 0 ? '0' : stats.ratio_float }} %</dd>
-            </dl>
-        </div>
     </div>
+    <div class="cell large-4">
+        <h4>Statistiques</h4>
+
+        <dl>
+            <dt>Nombre de votants</dt>
+            <dd>{{ stats.nb_votants }}</dd>
+            <dt>Nombre d'invités</dt>
+            <dd>{{ stats.nb_invites }}</dd>
+            <dt>Pourcentage de participation</dt>
+            <dd>{{ stats.ratio_float == 0 ? '0' : stats.ratio_float }} %</dd>
+        </dl>
+    </div>
+</div>
 {% endblock %}
