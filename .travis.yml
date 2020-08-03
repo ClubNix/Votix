@@ -15,11 +15,9 @@ cache:
 php:
   - '7.4'
 
-node_js:
-  - '14'
-
 before_install:
   - composer self-update
+  - nvm install 14
 
 install:
   - composer install
