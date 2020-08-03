@@ -1,14 +1,22 @@
 language: php
 sudo: false
 
+# Travis can cache content between builds. This speeds up the build process and saves resources.
 cache:
-  directories:
-    - $HOME/.composer/cache/files
-    - node_modules
   yarn: true
+  directories:
+    # Cache composer packages so "composer install" is faster.
+    - $HOME/.composer/cache/files
+    # Cache the directory where Symfony stores its slightly modified version of PHPUnit.
+    - ./bin/.phpunit
+    # Cache the Symfony binary's directory so that it does not have to be reinstalled.
+    - $HOME/.symfony
 
 php:
   - '7.4'
+
+node_js:
+  - '14'
 
 before_install:
   - composer self-update
