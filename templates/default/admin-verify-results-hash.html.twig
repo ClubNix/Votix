@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h4>Vérification des résultats proclamés</h4>
+    <form method="post" action="">
+        <table class="unstriped vote-results">
+            <thead>
+            <tr><th>Candidat</th><th>Nombre exact de voix</th></tr>
+            </thead>
+            <tbody>
+                {% for candidate in candidates %}
+                    <tr>
+                        <td>{{ candidate.name }}</td>
+                        <td><input type="number" name="count-{{ candidate.id }}"></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td>Code de vérification</td>
+                    <td><input type="text" name="checksum"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        {% if isChecksumValid is not null %}
+                            {% if isChecksumValid %}
+                                <div class="callout success">Le code est correct</div>
+                            {% else %}
+                                <div class="callout alert">Le code est incorrect</div>
+                            {% endif %}
+                        {% endif %}
+                        <input class="button" type="submit" />
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+{% endblock %}
