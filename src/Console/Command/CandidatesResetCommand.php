@@ -9,6 +9,7 @@
 namespace App\Console\Command;
 
 use App\Repository\CandidateRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -51,7 +52,7 @@ class CandidatesResetCommand extends Command
      *
      * @return int
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

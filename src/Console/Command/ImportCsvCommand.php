@@ -50,7 +50,7 @@ class ImportCsvCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): void
     {
         $filepath = $input->getArgument('filepath');
 

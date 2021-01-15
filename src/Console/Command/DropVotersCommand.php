@@ -9,6 +9,7 @@
 namespace App\Console\Command;
 
 use App\Repository\VoterRepository;
+use Doctrine\ORM\ORMException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +41,7 @@ class DropVotersCommand extends Command
      *
      * @return int
      *
-     * @throws \Doctrine\ORM\ORMException
+     * @throws ORMException
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {

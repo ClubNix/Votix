@@ -8,6 +8,7 @@
  */
 namespace App\Controller;
 
+use App\Entity\Candidate;
 use App\Service\VoteCounterServiceInterface;
 use App\Repository\CandidateRepository;
 use App\Repository\VoterRepository;
@@ -89,7 +90,6 @@ class AdminController extends AbstractController
             $isChecksumValid = hash_equals($hash, $request->request->get('checksum'));
         }
 
-        /** @var Candidate[] $candidates */
         $candidates = $candidateRepository->findAllShuffled();
 
         return $this->render('default/admin-verify-results-hash.html.twig', [
