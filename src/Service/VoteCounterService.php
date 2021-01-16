@@ -77,7 +77,7 @@ class VoteCounterService implements VoteCounterServiceInterface
      * @see VotesCountedEvent
      * @see verifyVoteCountingPassword
      *
-     * @param $privateKey
+     * @param string $privateKey
      *
      * @return array List of ['candidate' => Candidate, 'count' => int ]
      */
@@ -116,7 +116,7 @@ class VoteCounterService implements VoteCounterServiceInterface
 
     public function hashResults(array $results, string $secret): string
     {
-        $chain = $secret;
+        $chain = hash('sha512', $secret);
 
         // Sort candidates by name
         usort($results, static function($a, $b) {
