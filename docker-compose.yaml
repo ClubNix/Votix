@@ -1,0 +1,15 @@
+version: '3'
+services:
+  votix:
+    build:
+      context: docker
+    ports:
+      - "8000:8000"
+    environment:
+      YARN_CACHE_FOLDER: /mnt/cache_yarn
+      COMPOSER_CACHE_DIR: /mnt/cache_composer
+    volumes:
+      - .:/srv
+      - ./var/cache_yarn:/mnt/cache_yarn
+      - ./var/cache_composer:/mnt/cache_composer
+    user: ${CURRENT_UID:-1000}:${CURRENT_GID:-1000}

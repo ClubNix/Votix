@@ -18,32 +18,47 @@
 
 <p align="center"><b>Votix is an advanced and secure online voting platform.</b></p>
 
-## License
-
-Votix is released under the MIT license.
-
-## Requirements
-
- * PHP 7.3 or greater
- * PHP extensions curl, openssl, sqlite
-
 ## Quickstart
 
 ```bash
-# Packages needed for development on ArchLinux
-yay -S composer php-sqlite php-intl symfony-cli
-# enable extension=pdo_sqlite iconv in /etc/php/php.ini
-
-# Install dependencies
-composer install
-yarn install
-
-# Initialize local database
-make reset
-
-# Start dev server
-symfony server:start --no-tls
-
-# Run tests
-make test
+# clone latest version
+git clone git@github.com:ClubNix/Votix.git
+cd Votix
+# install dependencies for development and testing
+docker-compose run --rm votix make install_dev
+# run votix container in background
+docker-compose up -d --force-recreate
+# Votix should be available from now on http://localhost:8000
+# run test suites
+docker-compose exec votix make test
 ```
+
+## Contributing
+
+```bash
+# run a command inside running container
+docker-compose exec votix [command]
+# run a command inside a temporary votix container
+docker-compose run --rm votix [command]
+
+# run tests 
+docker-compose exec votix make test
+# rebuild assets
+docker-compose exec votix yarn build
+# reset database
+docker-compose exec votix make reset
+# updating container
+docker-compose down
+docker-compose up --force-recreate
+
+# bash
+docker-compose exec votix bash
+# composer
+docker-compose exec votix composer
+# yarn
+docker-compose exec votix yarn
+```
+
+## License
+
+Votix is released under the MIT license.
