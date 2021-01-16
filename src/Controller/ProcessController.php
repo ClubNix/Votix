@@ -8,6 +8,7 @@
  */
 namespace App\Controller;
 
+use App\Form\KeyCheckType;
 use App\Service\EncryptionServiceInterface;
 use App\Service\StatsService;
 use App\Service\StatusService;
@@ -17,6 +18,7 @@ use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -143,7 +145,13 @@ class ProcessController extends AbstractController
      */
     public function check(): Response
     {
-        return $this->render('default/check.html.twig');
+        $form = $this->createForm(KeyCheckType::class, [
+            'action' => $this->generateUrl('check_process'),
+        ]);
+
+        return $this->render('default/check.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -156,12 +164,29 @@ class ProcessController extends AbstractController
      */
     public function checkProcess(EncryptionServiceInterface $encryptionService, Request $request): Response
     {
-        $key = $request->request->get('key');
+        $form = $this->createForm(KeyCheckType::class, [
+            'action' => $this->generateUrl('check_process'),
+        ]);
 
-        [$success, $message] = $encryptionService->verifyKey($key);
+        $form->handleRequest($request);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->render('default/check.html.twig', [
+                'form' => $form->createView(),
+                'success' => false,
+                'message' => 'Key is corrupt',
+            ]);
+        }
+
+        /** @var UploadedFile $brochureFile */
+        $keyFile = $form->get('key')->getData();
+        $keyContent = $keyFile->getContent();
+
+        [$success, $message] = $encryptionService->verifyKey($keyContent);
 
         return $this->render('default/check.html.twig', [
-            'success' => $success, // TODO
+            'form' => $form->createView(),
+            'success' => $success,
             'message' => $message,
         ]);
     }

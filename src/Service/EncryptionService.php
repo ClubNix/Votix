@@ -98,7 +98,7 @@ class EncryptionService implements EncryptionServiceInterface
             $decrypt = $rsa->decrypt($encrypt);
 
             if ($text === $decrypt) {
-                $message = 'Encryption and decryption performed successfully!';
+                $message = 'Encryption and decryption performed successfully! Key is valid.';
                 $success = true;
             }
         } catch(LaminasCryptExceptionInterface $e) {

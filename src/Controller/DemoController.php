@@ -8,6 +8,7 @@
  */
 namespace App\Controller;
 
+use App\Form\KeyCheckType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -154,7 +155,12 @@ class DemoController extends AbstractController
      */
     public function check(): Response
     {
-        return $this->render('default/check.html.twig');
+        $form = $this->createForm(KeyCheckType::class, [
+            'action' => $this->generateUrl('demo'),
+        ]);
+        return $this->render('default/check.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

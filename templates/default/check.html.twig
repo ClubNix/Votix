@@ -4,16 +4,13 @@
 
     <h2>Procédure de vérification de la clef</h2>
 
-    <form method="post" action="{{ path('check_process') }}">
-        <div>
-            <label for="">Clef Votix</label>
-            <textarea name="key" placeholder="Collez ici la clef votix"></textarea>
-        </div>
-        <input type="submit" class="button" value="Tester la clef">
-    </form>
+    {{ form_start(form) }}
+    {{ form_row(form.key) }}
+    {{ form_widget(form.submit, { 'label': 'Tester la clef' }) }}
+    {{ form_end(form) }}
 
     {% if message is defined and message is not empty %}
-        <p>{{ message }}</p>
+        <p class="callout {% if success %}success{% else %}alert{% endif %}">{{ message }}</p>
     {% endif %}
 
 {% endblock %}
