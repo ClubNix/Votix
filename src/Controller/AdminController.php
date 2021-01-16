@@ -23,7 +23,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class AdminController extends AbstractController
 {
-    private $secret;
+    private string $secret;
 
     public function __construct(string $secret)
     {

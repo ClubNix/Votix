@@ -21,6 +21,5 @@ class KeysVerifiedEvent extends Event
 
     public function __construct($success, $message)
     {
-        $this->message;
     }
 }

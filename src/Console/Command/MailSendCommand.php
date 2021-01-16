@@ -30,15 +30,11 @@ use Twig\Error\SyntaxError;
  */
 class MailSendCommand extends Command
 {
-    private $logger;
-
-    private $voterRepository;
-
-    private $statsService;
-
-    private $mailerService;
-
-    private $sesClient;
+    private LoggerInterface $logger;
+    private VoterRepository $voterRepository;
+    private StatsService $statsService;
+    private MailerService $mailerService;
+    private SesClient $sesClient;
 
     public function __construct(
         LoggerInterface $logger,

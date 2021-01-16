@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ProcessController extends AbstractController
 {
-    private $secret;
+    private string $secret;
 
     public function __construct(string $secret)
     {

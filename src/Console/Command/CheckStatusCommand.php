@@ -20,20 +20,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class CheckStatusCommand extends Command
 {
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
-
-    /**
-     * @var StatusServiceInterface
-     */
-    private $statusService;
-
-    /**
-     * @var StatsServiceInterface
-     */
-    private $statsService;
+    private LoggerInterface $logger;
+    private StatusServiceInterface $statusService;
+    private StatsServiceInterface $statsService;
 
     public function __construct(
         LoggerInterface $logger,

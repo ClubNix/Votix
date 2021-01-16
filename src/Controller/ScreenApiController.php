@@ -21,9 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class ScreenApiController extends AbstractController
 {
-    private $statsService;
-
-    private $statusService;
+    private StatsServiceInterface $statsService;
+    private StatusServiceInterface $statusService;
 
     public function __construct(
         StatsServiceInterface $statsService,

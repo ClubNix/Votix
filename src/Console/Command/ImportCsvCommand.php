@@ -21,9 +21,8 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
  */
 class ImportCsvCommand extends Command
 {
-    private $entityManager;
-
-    private $serializer;
+    private EntityManagerInterface $entityManager;
+    private DecoderInterface $serializer;
 
     public function __construct(EntityManagerInterface $entityManager, DecoderInterface $serializer)
     {
@@ -56,7 +55,7 @@ class ImportCsvCommand extends Command
 
         // decoding CSV contents
         $data = $this->serializer->decode(file_get_contents($filepath), 'csv', [
-            // prevents default key seperator "." from messing with the csv headers
+            // prevents default key separator "." from messing with the csv headers
             'csv_key_separator' => '=========',
         ]);
 

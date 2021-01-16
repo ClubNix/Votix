@@ -6,6 +6,7 @@
  *
  * @license MIT
  */
+
 namespace App\Console\Command;
 
 use App\Repository\CandidateRepository;
@@ -21,10 +22,7 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CandidatesResetCommand extends Command
 {
-    /**
-     * @var CandidateRepository
-     */
-    private $candidateRepository;
+    private CandidateRepository $candidateRepository;
 
     public function __construct(CandidateRepository $candidateRepository)
     {

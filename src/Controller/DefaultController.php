@@ -21,8 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class DefaultController extends AbstractController
 {
-    private $votixStart;
-    private $votixEnd;
+    private int $votixStart;
+    private int $votixEnd;
 
     public function __construct(int $votixStart, int $votixEnd)
     {

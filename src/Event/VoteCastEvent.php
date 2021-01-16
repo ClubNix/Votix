@@ -18,11 +18,8 @@ class VoteCastEvent extends Event
 {
     public const NAME = 'vote.cast';
 
-    /** @var Voter */
-    private $voter;
-
-    /** @var string */
-    private $privateKey;
+    private Voter $voter;
+    private string $privateKey;
 
     public function __construct(Voter $voter, string $privateKey)
     {
