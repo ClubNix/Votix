@@ -13,7 +13,7 @@ use App\Entity\Voter;
 use App\Event\VotesCountedEvent;
 use App\Repository\CandidateRepository;
 use App\Repository\VoterRepository;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class VoteCounterService

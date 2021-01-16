@@ -8,8 +8,9 @@
 namespace App\Tests\Unit\Service;
 
 use App\Service\EncryptionService;
+use App\Service\EncryptionServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
@@ -62,9 +63,9 @@ class EncryptionServiceTest extends WebTestCase
     /**
      * @depends testIsArmedWithArmedFilesystem
      *
-     * @param EncryptionService $encryptionService
+     * @param EncryptionServiceInterface $encryptionService
      */
-    public function testVerifyKeyWithValidKeyAndPassphrase($encryptionService): void
+    public function testVerifyKeyWithValidKeyAndPassphrase(EncryptionServiceInterface $encryptionService): void
     {
         [$success] = $encryptionService->verifyKey($this->getPrivateKeyFixture());
         $this->assertTrue($success);
@@ -73,11 +74,11 @@ class EncryptionServiceTest extends WebTestCase
     /**
      * @depends testIsArmedWithArmedFilesystem
      *
-     * @param EncryptionService $encryptionService
+     * @param EncryptionServiceInterface $encryptionService
      *
      * @return string
      */
-    public function testEncryption($encryptionService): string
+    public function testEncryption(EncryptionServiceInterface $encryptionService): string
     {
         $encrypted = $encryptionService->encryptVote($this->fakevote);
 
@@ -91,10 +92,10 @@ class EncryptionServiceTest extends WebTestCase
      * @depends testIsArmedWithArmedFilesystem
      * @depends testEncryption
      *
-     * @param EncryptionService $encryptionService
-     * @param $encrypted
+     * @param EncryptionServiceInterface $encryptionService
+     * @param string $encrypted
      */
-    public function testDecryption(EncryptionService $encryptionService, $encrypted): void
+    public function testDecryption(EncryptionServiceInterface $encryptionService, string $encrypted): void
     {
         $decrypted = $encryptionService->decryptVote($encrypted, $this->getPrivateKeyFixture());
 
@@ -104,7 +105,7 @@ class EncryptionServiceTest extends WebTestCase
         $this->assertEquals($this->fakevote, $decrypted);
     }
 
-    public function testGeneratekeys(): void
+    public function testGenerateKeys(): void
     {
         $eventDispatcher = $this->getEventDispatcherMock();
         $filesystem      = $this->getArmedFilesystemMock();
@@ -122,7 +123,7 @@ class EncryptionServiceTest extends WebTestCase
         $encryptionService->generateKeys();
     }
 
-    private function getEventDispatcherMock()
+    private function getEventDispatcherMock(): EventDispatcherInterface
     {
         /** @var EventDispatcherInterface $eventDispatcher */
         $eventDispatcher = $this
@@ -132,12 +133,12 @@ class EncryptionServiceTest extends WebTestCase
         return $eventDispatcher;
     }
 
-    private function getPrivateKeyFixture()
+    private function getPrivateKeyFixture(): string
     {
         return file_get_contents($this->goodKeysDirectory . '/votix_secret_key.txt');
     }
 
-    private function getArmedFilesystemMock()
+    private function getArmedFilesystemMock(): Filesystem
     {
         $filesystem = $this
             ->getMockBuilder(Filesystem::class)

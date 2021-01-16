@@ -11,7 +11,7 @@ namespace App\Service;
 use App\Event\KeysGeneratedEvent;
 use App\Event\KeysVerifiedEvent;
 use App\Exception\VoteEncryptionException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Laminas\Crypt\Exception\ExceptionInterface as LaminasCryptExceptionInterface;
 use Laminas\Crypt\PublicKey\Rsa;

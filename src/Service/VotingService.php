@@ -13,7 +13,7 @@ use App\Entity\Voter;
 use App\Event\VoteCastEvent;
 use App\Repository\VoterRepository;
 use Doctrine\ORM\ORMException;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Class VotingService
