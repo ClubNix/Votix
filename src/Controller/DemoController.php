@@ -72,13 +72,7 @@ class DemoController extends AbstractController
     {
         $voter = new Voter();
         $voter->setFirstname('Anonyme');
-        $fakeCandidate1 = new Candidate();
-        $fakeCandidate1->setName('Candidate A');
-        $fakeCandidate2 = new Candidate();
-        $fakeCandidate2->setName('Candidate B');
-        $fakeCandidate3 = new Candidate();
-        $fakeCandidate3->setName('Candidate C');
-        $candidates = [$fakeCandidate1, $fakeCandidate2, $fakeCandidate3];
+        $candidates = $this->getFakeCandidates();
 
         return $this->render('default/vote.html.twig', [
             'voter'      => $voter,
@@ -106,15 +100,7 @@ class DemoController extends AbstractController
     {
         $voter = new Voter();
         $voter->setFirstname('Anonyme');
-        $fakeCandidate1 = new Candidate();
-        $fakeCandidate1->setId(1);
-        $fakeCandidate1->setName('Candidate A');
-        $fakeCandidate2 = new Candidate();
-        $fakeCandidate2->setId(2);
-        $fakeCandidate2->setName('Candidate B');
-        $fakeCandidate3 = new Candidate();
-        $fakeCandidate2->setId(3);
-        $fakeCandidate3->setName('Candidate C');
+        [$fakeCandidate1, $fakeCandidate2, $fakeCandidate3] = $this->getFakeCandidates();
 
         $results = [
             $fakeCandidate1->getId() => ['candidate' => $fakeCandidate1, 'count' => 0],
@@ -175,5 +161,35 @@ class DemoController extends AbstractController
         return $this->render('default/admin-voters-list.html.twig', [
             'voters' => $voters,
         ]);
+    }
+
+    /**
+     * @Route("/{_locale}/demo/verify-results-hash", name="demo-verify-results-hash")
+     *
+     * @return Response
+     */
+    public function verifyResultsHash(): Response
+    {
+        $candidates = $this->getFakeCandidates();
+
+        return $this->render('default/admin-verify-results-hash.html.twig', [
+            'candidates' => $candidates,
+            'isChecksumValid' => null,
+        ]);
+    }
+
+    private function getFakeCandidates(): array
+    {
+        $fakeCandidate1 = new Candidate();
+        $fakeCandidate1->setId(1);
+        $fakeCandidate1->setName('Candidate A');
+        $fakeCandidate2 = new Candidate();
+        $fakeCandidate2->setId(2);
+        $fakeCandidate2->setName('Candidate B');
+        $fakeCandidate3 = new Candidate();
+        $fakeCandidate2->setId(3);
+        $fakeCandidate3->setName('Candidate C');
+
+        return [$fakeCandidate1, $fakeCandidate2, $fakeCandidate3];
     }
 }

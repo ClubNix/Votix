@@ -60,4 +60,10 @@ class DemoCest
         $I->amOnPage('/en/demo/results');
         $I->see('Les résultats');
     }
+
+    public function testDemoVerifyResultsHash(AcceptanceTester $I): void
+    {
+        $I->amOnPage('/en/demo/verify-results-hash');
+        $I->see('Vérification des résultats proclamés');
+    }
 }
