@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://secure.php.net/manual/en/intro-whatis.php" alt="PHP 7.4"><img src="https://img.shields.io/badge/PHP-^7.4-787cb4.svg" /></a>
-  <a href="https://symfony.com/what-is-symfony" alt="Symfony 5.1"><img src="https://img.shields.io/badge/Symfony-5.1-7aba20.svg" /></a>
+  <a href="https://symfony.com/what-is-symfony" alt="Symfony 5.2"><img src="https://img.shields.io/badge/Symfony-5.2-7aba20.svg" /></a>
 </p>
 
 <p align="center"><b>Votix is an advanced and secure online voting platform.</b></p>
@@ -24,26 +24,26 @@ Votix is released under the MIT license.
 
 ## Requirements
 
- * PHP 7.2 or greater
+ * PHP 7.4 or greater
  * PHP extensions curl, openssl, sqlite
 
 ## Quickstart
 
 ```bash
-# ArchLinux
-pacman -S composer php-sqlite php-intl
-yay -S symfony-cli
+# Packages needed for development on ArchLinux
+yay -S composer php-sqlite php-intl symfony-cli
 # enable extension=pdo_sqlite iconv in /etc/php/php.ini
 
+# Install dependencies
 composer install
+yarn install
 
 # Initialize local database
 make reset
 
-yarn install
-```
-
-php bin/console assets:install public --symlink
-
-# Start application
+# Start dev server
 symfony server:start --no-tls
+
+# Run tests
+make test
+```
