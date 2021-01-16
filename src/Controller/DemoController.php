@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Form\KeyCheckType;
+use App\Form\VoteCountingType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -88,7 +89,12 @@ class DemoController extends AbstractController
      */
     public function voteCounting(): Response
     {
-        return $this->render('default/no-stress.html.twig');
+        $form = $this->createForm(VoteCountingType::class, [
+            'action' => $this->generateUrl('demo'),
+        ]);
+        return $this->render('default/no-stress.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**

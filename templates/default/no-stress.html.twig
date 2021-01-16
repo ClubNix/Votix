@@ -3,15 +3,9 @@
 {% block body %}
     <h2>Procédure de déchiffrement</h2>
 
-    <form method="post" action="{{ path('no_stress_process') }}">
-        <div>
-            <label for="">Clef Votix</label>
-            <textarea name="key" placeholder="Collez ici la clef votix"></textarea>
-        </div>
-        <div>
-            <label for="">Mot de passe de déchiffrement</label>
-            <input type="password" name="password" placeholder="Mot de passe donné par le responsable de l'intégrité">
-        </div>
-        <input type="submit" class="button" value="Déchiffrer">
-    </form>
+    {{ form_start(form) }}
+    {{ form_row(form.key) }}
+    {{ form_row(form.password) }}
+    <input type="submit" class="button" value="Déchiffrer">
+    {{ form_end(form) }}
 {% endblock %}

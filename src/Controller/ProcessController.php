@@ -9,6 +9,7 @@
 namespace App\Controller;
 
 use App\Form\KeyCheckType;
+use App\Form\VoteCountingType;
 use App\Service\EncryptionServiceInterface;
 use App\Service\StatsService;
 use App\Service\StatusService;
@@ -45,7 +46,13 @@ class ProcessController extends AbstractController
      */
     public function voteCounting(): Response
     {
-        return $this->render('default/no-stress.html.twig');
+        $form = $this->createForm(VoteCountingType::class, [
+            'action' => $this->generateUrl('no_stress_process'),
+        ]);
+
+        return $this->render('default/no-stress.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -76,13 +83,23 @@ class ProcessController extends AbstractController
             return new Response('Les votes ne sont pas encore clos.');
         }
 
+        $form = $this->createForm(VoteCountingType::class, [
+            'action' => $this->generateUrl('no_stress_process'),
+        ]);
+
+        $form->handleRequest($request);
+
         // Check that required parameters are present
-        if (!$request->request->has('key') || !$request->request->has('password')) {
+        if (!$form->isSubmitted() || !$form->isValid()) {
             throw new BadRequestHttpException();
         }
 
-        $privateKey       = $request->request->get('key');
-        $receivedPassword = $request->request->get('password');
+        /** @var UploadedFile $keyFile */
+        $keyFile = $form->get('key')->getData();
+        $privateKey = $keyFile->getContent();
+
+        /** @var string $receivedPassword */
+        $receivedPassword = $form->get('password')->getData();
 
         if (!$counterService->verifyVoteCountingPassword($receivedPassword)) {
             throw new AccessDeniedHttpException('Le mot de passe ne correspond pas.');
@@ -178,7 +195,7 @@ class ProcessController extends AbstractController
             ]);
         }
 
-        /** @var UploadedFile $brochureFile */
+        /** @var UploadedFile $keyFile */
         $keyFile = $form->get('key')->getData();
         $keyContent = $keyFile->getContent();
 

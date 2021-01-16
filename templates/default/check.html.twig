@@ -6,7 +6,7 @@
 
     {{ form_start(form) }}
     {{ form_row(form.key) }}
-    {{ form_widget(form.submit, { 'label': 'Tester la clef' }) }}
+    <input type="submit" class="button" value="Tester la clef">
     {{ form_end(form) }}
 
     {% if message is defined and message is not empty %}
