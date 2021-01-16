@@ -1,7 +1,6 @@
 {
     "name": "clubnix/votix",
     "type": "project",
-    "version": "5.0",
     "description": "Votix. The advanced and secure online voting platform.",
     "license": "MIT",
     "authors": [
