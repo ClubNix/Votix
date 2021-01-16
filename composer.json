@@ -41,7 +41,7 @@
     },
     "config": {
         "platform": {
-            "php": "7.4"
+            "php": "7.3"
         },
         "preferred-install": {
             "*": "dist"
@@ -49,7 +49,7 @@
         "sort-packages": true
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=7.3",
         "ext-json": "*",
         "ext-pdo_sqlite": "*",
         "aws/aws-sdk-php": "3.*",

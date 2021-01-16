@@ -102,7 +102,7 @@ class Candidate implements JsonSerializable
         return $this->eligible;
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize()
     {
         return [
             'id'         => $this->id,

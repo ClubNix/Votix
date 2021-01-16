@@ -29,7 +29,7 @@ use Symfony\Component\Routing\Annotation\Route;
  */
 class VotingController extends AbstractController
 {
-    private CandidateRepository $candidateRepository;
+    private $candidateRepository;
 
     public function __construct(CandidateRepository $candidateRepository)
     {

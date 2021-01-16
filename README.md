@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://secure.php.net/manual/en/intro-whatis.php" alt="PHP 7.4"><img src="https://img.shields.io/badge/PHP-^7.4-787cb4.svg" /></a>
+  <a href="https://secure.php.net/manual/en/intro-whatis.php" alt="PHP 7.3"><img src="https://img.shields.io/badge/PHP-^7.3-787cb4.svg" /></a>
   <a href="https://symfony.com/what-is-symfony" alt="Symfony 5.2"><img src="https://img.shields.io/badge/Symfony-5.2-7aba20.svg" /></a>
 </p>
 
@@ -24,7 +24,7 @@ Votix is released under the MIT license.
 
 ## Requirements
 
- * PHP 7.4 or greater
+ * PHP 7.3 or greater
  * PHP extensions curl, openssl, sqlite
 
 ## Quickstart

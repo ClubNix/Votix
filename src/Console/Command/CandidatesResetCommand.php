@@ -22,7 +22,10 @@ use Symfony\Component\Yaml\Yaml;
  */
 class CandidatesResetCommand extends Command
 {
-    private CandidateRepository $candidateRepository;
+    /**
+     * @var CandidateRepository
+     */
+    private $candidateRepository;
 
     public function __construct(CandidateRepository $candidateRepository)
     {

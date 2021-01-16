@@ -256,7 +256,7 @@ class Voter implements JsonSerializable {
         ];
     }
 
-    public function __toString(): string
+    public function __toString()
     {
         return '#' . $this->id . ' ' . $this->firstname . ' ' . $this->lastname . ' (' . $this->email . ')';
     }

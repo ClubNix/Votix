@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DropVotersCommand extends Command
 {
-    public VoterRepository $voterRepository;
+    public $voterRepository;
 
     public function __construct(VoterRepository $voterRepository)
     {

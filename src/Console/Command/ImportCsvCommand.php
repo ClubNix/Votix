@@ -21,8 +21,9 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
  */
 class ImportCsvCommand extends Command
 {
-    private EntityManagerInterface $entityManager;
-    private DecoderInterface $serializer;
+    private $entityManager;
+
+    private $serializer;
 
     public function __construct(EntityManagerInterface $entityManager, DecoderInterface $serializer)
     {

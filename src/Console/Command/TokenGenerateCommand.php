@@ -22,9 +22,20 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class TokenGenerateCommand extends Command
 {
-    private VoterRepository $voterRepository;
-    private TokenService $tokenService;
-    private LoggerInterface $logger;
+    /**
+     * @var VoterRepository
+     */
+    private $voterRepository;
+
+    /**
+     * @var TokenService
+     */
+    private $tokenService;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     public function __construct(
         VoterRepository $voterRepository,
