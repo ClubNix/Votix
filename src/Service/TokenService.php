@@ -15,19 +15,19 @@ use App\Entity\Voter;
  */
 class TokenService implements TokenServiceInterface
 {
-    private $salt;
+    private $pepper;
 
     private $linkBase;
 
     /**
      * TokenService constructor.
      *
-     * @param string $salt
+     * @param string $pepper
      * @param string $linkBase
      */
-    public function __construct(string $salt, string $linkBase)
+    public function __construct(string $pepper, string $linkBase)
     {
-        $this->salt     = $salt;
+        $this->pepper   = hash('sha256', $pepper);
         $this->linkBase = $linkBase;
     }
 
@@ -72,7 +72,7 @@ class TokenService implements TokenServiceInterface
      */
     public function getTokenForVoter(Voter $voter): string
     {
-        return hash('sha256', 'votix-' . $voter->getEmail() . '-' . $this->salt);
+        return hash('sha256', 'votix-' . hash('sha384', $voter->getEmail() . '-' . $this->pepper));
     }
 
     /**
@@ -84,7 +84,7 @@ class TokenService implements TokenServiceInterface
      */
     public function getCodeForVoter(Voter $voter): string
     {
-        $code = (string) crc32('votix-' . $voter->getEmail() . '-' . $this->salt);
+        $code = (string) crc32('votix-' . hash('sha384', $voter->getEmail() . '-' . $this->pepper));
 
         return substr($code, 0, 4);
     }

@@ -31,7 +31,7 @@ services:
             $keysDirectory: '%kernel.project_dir%/var'
             $secretKey: '%votix_key_secret%'
             $secret: '%votix_secret%'
-            $salt: '%votix_secret%'
+            $pepper: '%votix_secret%'
             $linkBase: '%votix_link_base%'
             $password: '%votix_result_password%'
 
