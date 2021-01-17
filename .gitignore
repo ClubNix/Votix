@@ -17,6 +17,7 @@
 /public/build/images/glyphicons-*
 /.idea
 !docker-compose.override.yaml
+/codeception.yml
 
 ###> symfony/framework-bundle ###
 /.env.local
