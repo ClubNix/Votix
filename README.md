@@ -43,6 +43,8 @@ docker-compose run --rm votix [command]
 
 # run tests 
 docker-compose exec votix make test
+# run tests with code coverage (tests/_output/coverage)
+docker-compose exec votix make test_coverage
 # rebuild assets
 docker-compose exec votix yarn build
 # reset database
@@ -51,8 +53,10 @@ docker-compose exec votix make reset
 docker-compose down
 docker-compose up --force-recreate
 
-# bash
-docker-compose exec votix bash
+# exec bash in container / bash root in container
+make inside
+make inside_root
+
 # composer
 docker-compose exec votix composer
 # yarn

@@ -1,5 +1,7 @@
 test:
 	php "./vendor/codeception/codeception/codecept" run
+test_coverage:
+	XDEBUG_MODE=coverage php "./vendor/codeception/codeception/codecept" run --coverage --coverage-xml --coverage-html
 reset:
 	php bin/console doctrine:database:drop --force
 	php bin/console doctrine:database:create
@@ -12,3 +14,7 @@ install_dev:
 	make reset
 docker:
 	docker build docker -t votix
+inside:
+	docker-compose exec votix bash
+inside_root:
+	docker-compose exec -u root votix bash

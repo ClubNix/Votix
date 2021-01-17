@@ -9,7 +9,8 @@
 namespace App\Controller;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\Driver\Exception as DBALDriverException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,10 +28,11 @@ class MonitoringController extends AbstractController
      * @return Response
      *
      * @throws DBALException
+     * @throws DBALDriverException
      */
     public function index(Connection $connection): Response
     {
-        $dbPing = $connection->query("select datetime('now', 'localtime')")->fetchColumn();
+        $dbPing = $connection->executeQuery("select datetime('now', 'localtime')")->fetchOne();
         var_dump($dbPing);
 
         return new Response('OK');

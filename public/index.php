@@ -1,5 +1,9 @@
 <?php
 
+if ($_SERVER['APP_DEBUG']) {
+    include dirname(__DIR__).'/c3.php';
+}
+
 use App\Kernel;
 use Symfony\Component\ErrorHandler\Debug;
 use Symfony\Component\HttpFoundation\Request;

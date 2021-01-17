@@ -10,6 +10,9 @@ services:
       COMPOSER_CACHE_DIR: /mnt/cache_composer
     volumes:
       - .:/srv
+      # persistent caches for dependency managers
       - ./var/cache_yarn:/mnt/cache_yarn
       - ./var/cache_composer:/mnt/cache_composer
+      # enable xdebug in development for debugging and test coverage
+      - ./docker/docker-php-ext-xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
     user: ${CURRENT_UID:-1000}:${CURRENT_GID:-1000}

@@ -11,6 +11,9 @@
     "behat/gherkin": {
         "version": "v4.6.2"
     },
+    "codeception/c3": {
+        "version": "2.6.1"
+    },
     "codeception/codeception": {
         "version": "2.3",
         "recipe": {
@@ -59,8 +62,17 @@
     "codeception/stub": {
         "version": "3.7.0"
     },
+    "composer/ca-bundle": {
+        "version": "1.2.9"
+    },
+    "composer/composer": {
+        "version": "2.0.8"
+    },
     "composer/semver": {
         "version": "3.2.4"
+    },
+    "composer/spdx-licenses": {
+        "version": "1.5.5"
     },
     "composer/xdebug-handler": {
         "version": "1.4.5"
@@ -180,6 +192,9 @@
     "guzzlehttp/psr7": {
         "version": "1.7.0"
     },
+    "justinrainbow/json-schema": {
+        "version": "5.2.10"
+    },
     "laminas/laminas-code": {
         "version": "4.0.0"
     },
@@ -284,6 +299,9 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "react/promise": {
+        "version": "v2.8.0"
+    },
     "roave/security-advisories": {
         "version": "dev-master"
     },
@@ -334,6 +352,12 @@
     },
     "sebastian/version": {
         "version": "3.0.2"
+    },
+    "seld/jsonlint": {
+        "version": "1.8.3"
+    },
+    "seld/phar-utils": {
+        "version": "1.1.1"
     },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
@@ -537,6 +561,9 @@
     },
     "symfony/polyfill-php80": {
         "version": "v1.22.0"
+    },
+    "symfony/process": {
+        "version": "v5.2.1"
     },
     "symfony/profiler-pack": {
         "version": "v1.0.5"

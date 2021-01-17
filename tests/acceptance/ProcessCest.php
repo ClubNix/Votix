@@ -16,7 +16,7 @@ class ProcessCest
     {
         $I->amOnPage('/no/stress');
         $I->see('Procédure de déchiffrement');
-        $I->see('Clef Votix');
+        $I->see('Votix secret key');
         $I->see('Mot de passe de déchiffrement');
         $I->seeElement('input[type=submit][value=Déchiffrer]');
     }

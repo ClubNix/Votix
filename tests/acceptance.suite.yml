@@ -10,3 +10,6 @@ modules:
         - PhpBrowser:
             url: http://localhost:8000
         - \App\Tests\Helper\Acceptance
+coverage:
+    # as a local server we will get the c3 coverage report merged
+    remote: false
