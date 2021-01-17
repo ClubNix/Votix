@@ -86,7 +86,7 @@ class TokenService implements TokenServiceInterface
     {
         $code = (string) crc32('votix-' . hash('sha384', $voter->getEmail() . '-' . $this->pepper));
 
-        return substr($code, 0, 4);
+        return str_pad(substr($code, 0, 4), 4, '0', STR_PAD_LEFT);
     }
 
     /**
