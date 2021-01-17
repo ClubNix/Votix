@@ -38,7 +38,7 @@ class VotingController extends AbstractController
 
     /**
      * @Route("/vote/{login}/{receivedToken}", name="vote")
-     * @ParamConverter("voter", class="App:Voter", options={"login" = "login"})
+     * @ParamConverter("voter", class="App:Voter", options={"mapping": {"login" = "login"}})
      *
      * @param Voter $voter
      * @param string $receivedToken
