@@ -6,13 +6,20 @@
 parameters:
     locale: 'en'
 
+    # This is a random secret used to generate links
+    # This must be long and random bytes
     votix_secret:          ThisTokenIsNotSoSecretChangeIt
+
+    # This is used as passphrase to encrypt the RSA private key
+    # This must be long and preferably ascii
     votix_key_secret:      ThisTokenIsNotSoSecretChangeIt
-  
-    # celui là sera transmis au BDE
+
+    # This is used to access the results, must be communicated to the person who will access the result
+    # This must be random but still typable on a keyboard under stress
     votix_result_password: ThisTokenIsNotSoSecretChangeIt
-  
-    votix_link_base:       https://yourvotix/vote/
+
+    # Hardcoded base for urls sent in emails. Must contain "/vote/"
+    votix_link_base:       https://subdomain.example.com/vote/
   
     # http://www.timestamp.fr/
     votix_start:   1458255600
