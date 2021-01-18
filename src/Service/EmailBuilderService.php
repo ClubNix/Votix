@@ -58,9 +58,6 @@ class EmailBuilderService
         $html  = $this->templateEngine->render('mails/' . $template . '.html.twig',  $vars);
         $title = $this->templateEngine->render('mails/' . $template . '.title.twig', $vars);
 
-        var_dump($template);
-        var_dump($template);
-
         return $this->getEmailForVoter($voter, $title, $html);
     }
 
