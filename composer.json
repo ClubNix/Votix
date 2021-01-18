@@ -75,18 +75,19 @@
         "symfony/symfony": "*"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-master",
-        "phpunit/phpunit": "^9",
-        "codeception/codeception": "^4.0",
         "codeception/c3": "2.*",
-        "symfony/dotenv": "^5.1",
-        "symfony/maker-bundle": "^1.11",
-        "doctrine/doctrine-fixtures-bundle": "^3.3",
-        "symfony/profiler-pack": "^1.0",
-        "vimeo/psalm": "^4.3",
+        "codeception/codeception": "^4.0",
+        "codeception/module-asserts": "^1.0.0",
         "codeception/module-phpbrowser": "^1.0.0",
         "codeception/module-symfony": "^1.0.0",
-        "codeception/module-asserts": "^1.0.0"
+        "doctrine/doctrine-fixtures-bundle": "^3.3",
+        "phpunit/phpunit": "^9",
+        "psalm/plugin-symfony": "^2.1",
+        "roave/security-advisories": "dev-master",
+        "symfony/dotenv": "^5.1",
+        "symfony/maker-bundle": "^1.11",
+        "symfony/profiler-pack": "^1.0",
+        "vimeo/psalm": "^4.3"
     },
     "scripts": {
         "auto-scripts": {
