@@ -63,7 +63,7 @@ class CheckStatusCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->logger->info('Current status details', [
+        $this->logger->notice('Current status details', [
             'status'         => $this->statusService->getCurrentStatus(),
             'status_message' => $this->statusService->getCurrentStatusMessage(),
             'stats'          => $this->statsService->getStats(),

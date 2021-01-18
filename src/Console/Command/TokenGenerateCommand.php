@@ -88,8 +88,8 @@ class TokenGenerateCommand extends Command
         $token = $this->tokenService->getTokenForVoter($voter);
         $code  = $this->tokenService->getCodeForVoter($voter);
 
-        $this->logger->info($token);
-        $this->logger->info($code);
+        $this->logger->notice($token);
+        $this->logger->notice($code);
 
         return 0;
     }

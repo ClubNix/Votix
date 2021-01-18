@@ -10,9 +10,8 @@ namespace App\Console\Command;
 
 use App\Entity\Voter;
 use App\Repository\VoterRepository;
-use App\Service\MailerService;
+use App\Service\EmailBuilderService;
 use App\Service\StatsService;
-use Aws\Ses\SesClient;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Psr\Log\LoggerInterface;
@@ -21,9 +20,9 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Twig\Error\Error as TwigError;
 
 /**
  * Class VotixMailSendCommand
@@ -36,22 +35,22 @@ class MailSendCommand extends Command
 
     private $statsService;
 
-    private $mailerService;
+    private $emailBuilderService;
 
-    private $sesClient;
+    private $mailer;
 
     public function __construct(
         LoggerInterface $logger,
         VoterRepository $voterRepository,
         StatsService $statsService,
-        MailerService $mailerService,
-        SesClient $sesClient
+        EmailBuilderService $emailBuilderService,
+        MailerInterface $mailer
     ) {
         $this->logger = $logger;
         $this->voterRepository = $voterRepository;
         $this->statsService = $statsService;
-        $this->mailerService = $mailerService;
-        $this->sesClient = $sesClient;
+        $this->emailBuilderService = $emailBuilderService;
+        $this->mailer = $mailer;
 
         parent::__construct();
     }
@@ -82,9 +81,8 @@ class MailSendCommand extends Command
      * @return int
      * @throws NoResultException
      * @throws NonUniqueResultException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws TwigError
+     * @throws TransportExceptionInterface
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
@@ -98,21 +96,29 @@ class MailSendCommand extends Command
 
         $nb_mails_to_send = $stats['nb_invites'] - $stats['nb_votants'];
 
-        $this->logger->info('Number of mails to send : {nb_mails_to_send}', ['nb_mails_to_send' => $nb_mails_to_send]);
+        $this->logger->notice('Number of mails to send : {nb_mails_to_send}', ['nb_mails_to_send' => $nb_mails_to_send]);
 
+        $counterSent = 0;
         $counter = 1;
 
         foreach ($voters as $voter) {
             $info = '> ' . $counter . '/' . $nb_mails_to_send . ' ' . $voter->getFirstname() . ' '. $voter->getLastname() . ' <' . $voter->getEmail() . '>';
 
-            $this->logger->info($info);
+            $this->logger->notice($info);
 
-            $email = $this->mailerService->getTemplatedEmail($voter, $template);
+            $email = $this->emailBuilderService->getTemplatedEmail($voter, $template);
 
             if ($mustExecute) {
-                $emailSentId = $this->sesClient->sendEmail($email);
-                $message = 'Message envoyé à ' . $email['Destination']['ToAddresses'][0];
-                $this->logger->info($message, ['mail' => $emailSentId->getAll()]);
+                try {
+                    $this->mailer->send($email);
+                    $message = 'Message envoyé à ' . $voter->getEmail();
+                    $this->logger->notice($message, ['mail' => $voter->getEmail()]);
+                    $counterSent++;
+                } catch (TransportExceptionInterface $e) {
+                    $message = 'Message NON envoyé à ' . $voter->getEmail();
+                    $this->logger->emergency($message, ['mail' => $voter->getEmail()]);
+                    throw $e;
+                }
 
                 usleep(200000);
             } else {
@@ -121,6 +127,8 @@ class MailSendCommand extends Command
 
             $counter++;
         }
+
+        $this->logger->notice('Number of mails to sent : {nb_mails_sent}', ['nb_mails_sent' => $counterSent]);
 
         return 0;
     }

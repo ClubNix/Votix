@@ -9,36 +9,43 @@
 namespace App\Service;
 
 use App\Entity\Voter;
+use Symfony\Component\Mime\Email;
 use Twig\Environment;
+use Twig\Error\Error as TwigError;
 
 /**
- * Class MailerService
+ * Class EmailBuilderService
  */
-class MailerService
+class EmailBuilderService
 {
-
     private $tokenService;
 
     /** @var Environment */
     private $templateEngine;
 
-    public function __construct(TokenService $tokenService, Environment $templating)
+    private $from;
+    private $replyTo;
+    private $returnPath;
+
+    public function __construct(TokenServiceInterface $tokenService, Environment $templating, string $from, string $replyTo, string $returnPath)
     {
         $this->tokenService   = $tokenService;
         $this->templateEngine = $templating;
+
+        $this->from = $from;
+        $this->replyTo = $replyTo;
+        $this->returnPath = $returnPath;
     }
 
     /**
      * @param Voter $voter
      * @param string $template
      *
-     * @return array
+     * @return Email
      *
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws TwigError
      */
-    public function getTemplatedEmail(Voter $voter, string $template): array
+    public function getTemplatedEmail(Voter $voter, string $template): Email
     {
         $tokenService = $this->tokenService;
 
@@ -51,6 +58,9 @@ class MailerService
         $html  = $this->templateEngine->render('mails/' . $template . '.html.twig',  $vars);
         $title = $this->templateEngine->render('mails/' . $template . '.title.twig', $vars);
 
+        var_dump($template);
+        var_dump($template);
+
         return $this->getEmailForVoter($voter, $title, $html);
     }
 
@@ -59,27 +69,18 @@ class MailerService
      * @param string $title
      * @param string $html
      *
-     * @return array
+     * @return Email
      */
-    private function getEmailForVoter(Voter $voter, string $title, string $html): array
+    private function getEmailForVoter(Voter $voter, string $title, string $html): Email
     {
         $to = $voter->getFirstname() . ' ' . $voter->getLastname() . '<' . $voter->getEmail() . '>';
 
-        $email = [
-            'Source' => 'Votix <votix@votix.clubnix.fr>',
-            'Destination' => [
-                'ToAddresses' => [$to]
-            ],
-            'Message' => [
-                'Subject' => ['Data' => $title, 'Charset' => 'UTF-8'],
-                'Body' => [
-                    'Html' => ['Data' => $html, 'Charset' => 'UTF-8'],
-                ],
-            ],
-            'ReplyToAddresses' => ['votix@clubnix.fr'],
-            'ReturnPath'       => 'votix@clubnix.fr'
-        ];
-
-        return $email;
+        return (new Email())
+            ->from($this->from)
+            ->to($to)
+            ->replyTo($this->replyTo)
+            ->returnPath($this->returnPath)
+            ->subject($title)
+            ->html($html);
     }
 }
