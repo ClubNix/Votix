@@ -18,6 +18,7 @@
 /.idea
 !docker-compose.override.yaml
 /codeception.yml
+/.vagrant
 
 ###> symfony/framework-bundle ###
 /.env.local
