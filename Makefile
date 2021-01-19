@@ -12,6 +12,12 @@ install_dev:
 	yarn install
 	yarn build
 	make reset
+install_prod:
+	composer install --no-dev
+	yarn install
+	yarn build
+	php bin/console doctrine:database:create
+    php bin/console doctrine:schema:update --force
 docker:
 	docker build docker -t votix
 inside:
