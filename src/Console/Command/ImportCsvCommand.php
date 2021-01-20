@@ -21,8 +21,14 @@ use Symfony\Component\Serializer\Encoder\DecoderInterface;
  */
 class ImportCsvCommand extends Command
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $entityManager;
 
+    /**
+     * @var DecoderInterface
+     */
     private $serializer;
 
     public function __construct(EntityManagerInterface $entityManager, DecoderInterface $serializer)
@@ -49,8 +55,10 @@ class ImportCsvCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     *
+     * @return int
      */
-    protected function execute(InputInterface $input, OutputInterface $output): void
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $filepath = $input->getArgument('filepath');
 
@@ -87,5 +95,7 @@ class ImportCsvCommand extends Command
         }
 
         $this->entityManager->flush();
+
+        return Command::SUCCESS;
     }
 }

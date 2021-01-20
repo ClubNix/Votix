@@ -29,14 +29,19 @@ use Twig\Error\Error as TwigError;
  */
 class MailSendCommand extends Command
 {
+    /** @var LoggerInterface */
     private $logger;
 
+    /** @var VoterRepository */
     private $voterRepository;
 
+    /** @var StatsService */
     private $statsService;
 
+    /** @var EmailBuilderService */
     private $emailBuilderService;
 
+    /** @var MailerInterface */
     private $mailer;
 
     public function __construct(
@@ -130,6 +135,6 @@ class MailSendCommand extends Command
 
         $this->logger->notice('Number of mails to sent : {nb_mails_sent}', ['nb_mails_sent' => $counterSent]);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

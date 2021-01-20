@@ -14,6 +14,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Class ConfigGenerateCommand
@@ -25,10 +26,18 @@ class ConfigGenerateSecretsCommand extends Command
      */
     private $logger;
 
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
     public function __construct(
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        Filesystem $filesystem
     ) {
         $this->logger = $logger;
+        $this->filesystem = $filesystem;
+
         parent::__construct();
     }
 
@@ -51,10 +60,10 @@ class ConfigGenerateSecretsCommand extends Command
     {
         $dotEnvFilepath = __DIR__ . '/../../../.env.local';
 
-        if (file_exists($dotEnvFilepath)) {
+        if ($this->filesystem->exists($dotEnvFilepath)) {
             $output->write("Config $dotEnvFilepath already exists. Exiting.");
 
-            return -1;
+            return Command::FAILURE;
         }
 
         // 512 bits secret
@@ -76,11 +85,7 @@ class ConfigGenerateSecretsCommand extends Command
         $config .= "VOTIX_KEY_SECRET=$keySecretEncoded" . PHP_EOL;
         $config .= "VOTIX_RESULT_PASSWORD=$resultPasswordEncoded" . PHP_EOL;
 
-        if (file_put_contents($dotEnvFilepath, $config) === false) {
-            $output->write("$dotEnvFilepath is not writeable.");
-
-            return -1;
-        }
+        $this->filesystem->dumpFile($dotEnvFilepath, $config);
 
         $table = new Table($output);
         $table
@@ -94,7 +99,7 @@ class ConfigGenerateSecretsCommand extends Command
         ;
         $table->render();
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**

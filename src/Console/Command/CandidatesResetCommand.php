@@ -63,6 +63,6 @@ class CandidatesResetCommand extends Command
 
         $this->candidateRepository->import($parsed['candidates']);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

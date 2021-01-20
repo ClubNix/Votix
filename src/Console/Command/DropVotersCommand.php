@@ -19,6 +19,9 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DropVotersCommand extends Command
 {
+    /**
+     * @var VoterRepository
+     */
     public $voterRepository;
 
     public function __construct(VoterRepository $voterRepository)
@@ -47,6 +50,6 @@ class DropVotersCommand extends Command
     {
         $this->voterRepository->deleteAll();
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

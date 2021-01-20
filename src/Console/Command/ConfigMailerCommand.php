@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
@@ -30,10 +31,18 @@ class ConfigMailerCommand extends Command
      */
     private $logger;
 
+    /**
+     * @var Filesystem
+     */
+    private $filesystem;
+
     public function __construct(
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        Filesystem $filesystem
     ) {
         $this->logger = $logger;
+        $this->filesystem = $filesystem;
+
         parent::__construct();
     }
 
@@ -57,7 +66,7 @@ class ConfigMailerCommand extends Command
         $output->writeln("Be sure that your system time is correct or the configuration will fail !");
         $dotEnvFilepath = __DIR__ . '/../../../.env.local';
 
-        if (!file_exists($dotEnvFilepath)) {
+        if (!$this->filesystem->exists($dotEnvFilepath)) {
             $output->writeln("Config $dotEnvFilepath already exists. Exiting.");
 
             return Command::FAILURE;
@@ -110,7 +119,7 @@ class ConfigMailerCommand extends Command
             $config .= "VOTIX_REPLY_TO=$replyTo" . PHP_EOL;
             $config .= "VOTIX_RETURN_PATH=$returnPath" . PHP_EOL;
 
-            file_put_contents($dotEnvFilepath, $config);
+            $this->filesystem->appendToFile($dotEnvFilepath, $config);
 
             $output->writeln('Configuration saved.');
         } else {

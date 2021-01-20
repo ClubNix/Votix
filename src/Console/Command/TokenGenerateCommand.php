@@ -72,17 +72,17 @@ class TokenGenerateCommand extends Command
     {
         $email = $input->getArgument('email');
 
-        /** @var Voter $voter */
+        /** @var Voter|null $voter */
         $voter = $this->voterRepository->findOneBy(['email' => $email]);
 
         if ($voter === NULL) {
             $this->logger->error("L'addresse email n'a pas été trouvé chez les votants !");
-            return 1;
+            return Command::FAILURE;
         }
 
         if ($voter->hasVoted()) {
             $this->logger->warning('Ce votant a déjà voté !');
-            return 1;
+            return Command::FAILURE;
         }
 
         $token = $this->tokenService->getTokenForVoter($voter);
@@ -91,6 +91,6 @@ class TokenGenerateCommand extends Command
         $this->logger->notice($token);
         $this->logger->notice($code);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

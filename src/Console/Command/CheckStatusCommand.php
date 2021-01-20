@@ -69,6 +69,6 @@ class CheckStatusCommand extends Command
             'stats'          => $this->statsService->getStats(),
         ]);
 
-        return 0;
+        return Command::SUCCESS;
     }
 }
