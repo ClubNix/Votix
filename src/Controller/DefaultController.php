@@ -65,21 +65,4 @@ class DefaultController extends AbstractController
     {
         return $this->render('default/faq.html.twig');
     }
-
-    /**
-     * @Route("/{_locale}/hall-of-fame", name="hall-of-fame")
-     * @Cache(expires="tomorrow", public=true)
-     *
-     * @param ArchivesService $archivesService
-     *
-     * @return Response
-     */
-    public function history(ArchivesService $archivesService): Response
-    {
-        $data = $archivesService->getArchive();
-
-        return $this->render('default/history.html.twig', [
-            'archive' => $data['archives'],
-        ]);
-    }
 }

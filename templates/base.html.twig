@@ -33,11 +33,6 @@
         </a>
       </li>
       <li>
-        <a class="navbar-item {{ app.request.attributes.get('_route') == 'hall-of-fame' ? 'is-active' }}" href="{{ path('hall-of-fame') }}">
-          {% trans %}Hall of Fame{% endtrans %}
-        </a>
-      </li>
-      <li>
         <a class="navbar-item {{ app.request.attributes.get('_route') == 'faq' ? 'is-active' }}" href="{{ path('faq') }}">
           {% trans %}F.A.Q.{% endtrans %}
         </a>

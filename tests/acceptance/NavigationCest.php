@@ -18,7 +18,6 @@ class NavigationCest
         $I->see('Élections du BDE'); //TODO translate
 
         $I->see('Homepage');
-        $I->see('Hall of Fame');
         $I->see('F.A.Q.');
 
         $I->see('Vote status');
@@ -35,14 +34,5 @@ class NavigationCest
         $I->amOnPage('/');
         $I->click('F.A.Q.');
         $I->see('Qui va gagner ?'); //TODO translate
-    }
-
-    public function testHallOfFame(AcceptanceTester $I): void
-    {
-        $I->amOnPage('/');
-        $I->click('Hall of Fame');
-        $I->see('Candidate');
-        $I->see('Vote count');
-        $I->see('Percentage');
     }
 }
