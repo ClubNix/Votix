@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<psalm>
+    <projectFiles>
+        <directory name="src"/>
+    </projectFiles>
+    <plugins>
+        <pluginClass xmlns="https://getpsalm.org/schema/config" class="Psalm\SymfonyPsalmPlugin\Plugin"/>
+    </plugins>
+</psalm>
