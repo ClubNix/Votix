@@ -43,7 +43,7 @@ class DefaultController extends AbstractController
         $status = $statusService->getCurrentStatus();
 
         if ($statusService->isVoteUnconfigured()) {
-            return $this->redirectToRoute('unconfigured');
+            return $this->redirectToRoute('configure');
         }
 
         $now = time();
@@ -71,12 +71,22 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/{_locale}/unconfigured", name="unconfigured")
+     * @Route("/{_locale}/configure", name="configure")
+     *
+     * @param string $secret
+     * @param int $votixStart
+     * @param string $linkBase
+     * @param string $from
      *
      * @return Response
      */
-    public function unconfigured(): Response
+    public function configured(string $secret, int $votixStart, string $linkBase, string $from): Response
     {
-        return $this->render('default/unconfigured.html.twig');
+        return $this->render('default/configure.html.twig', [
+            'secrets_configured' => $secret !== 'ThisTokenIsNotSoSecretChangeItInDotEnv',
+            'link_base_configured' => $linkBase !== 'https://subdomain.example.com/vote/',
+            'time_window_configured' => $votixStart !== 0,
+            'mailer_configured' => $from !== 'votix@domain.tld',
+        ]);
     }
 }

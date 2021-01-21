@@ -8,28 +8,40 @@ parameters:
 
     # This is a random secret used to generate links
     # This must be long and random bytes
-    votix_secret:          ThisTokenIsNotSoSecretChangeIt
+    votix_secret: '%env(default:default_votix_secret:base64:VOTIX_SECRET)%'
+    default_votix_secret: ThisTokenIsNotSoSecretChangeItInDotEnv
 
     # This is used as passphrase to encrypt the RSA private key
     # This must be long and preferably ascii
-    votix_key_secret:      ThisTokenIsNotSoSecretChangeIt
+    votix_key_secret: '%env(default:default_votix_key_secret:base64:VOTIX_KEY_SECRET)%'
+    default_votix_key_secret: ThisTokenIsNotSoSecretChangeItInDotEnv
 
     # This is used to access the results, must be communicated to the person who will access the result
     # This must be random but still typable on a keyboard under stress
-    votix_result_password: ThisTokenIsNotSoSecretChangeIt
+    votix_result_password: '%env(default:default_votix_result_password:base64:VOTIX_RESULT_PASSWORD)%'
+    default_votix_result_password: ThisTokenIsNotSoSecretChangeItInDotEnv
 
     # Hardcoded base for urls sent in emails. Must contain "/vote/"
-    votix_link_base:       https://subdomain.example.com/vote/
+    votix_link_base: '%env(VOTIX_LINK_BASE)%'
+    env(VOTIX_LINK_BASE): https://subdomain.example.com/vote/
   
     # http://www.timestamp.fr/
-    votix_start:   1458255600
-    votix_end:     1558317580
-    votix_support: votix@domain.tld
+    votix_start:   '%env(int:VOTIX_START)%'
+    votix_end:     '%env(int:VOTIX_END)%'
+    votix_support: '%env(VOTIX_SUPPORT)%'
+
+    env(VOTIX_START): 0
+    env(VOTIX_END): 1558317580
+    env(VOTIX_SUPPORT): votix@domain.tld
 
     # email parameters
-    votix_from: votix@domain.tld
-    votix_reply_to: votix@domain.tld
-    votix_return_path: votix@domain.tld
+    votix_from: '%env(VOTIX_FROM)%'
+    votix_reply_to: '%env(VOTIX_REPLY_TO)%'
+    votix_return_path: '%env(VOTIX_RETURN_PATH)%'
+
+    env(VOTIX_FROM): votix@domain.tld
+    env(VOTIX_REPLY_TO): votix@domain.tld
+    env(VOTIX_RETURN_PATH): votix@domain.tld
 
 services:
     # default configuration for services in *this* file

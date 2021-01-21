@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block subnav %}
+{% endblock %}
+
+{% block body %}
+    <div class="callout warning">
+        <h3>Votix is not configured yet</h3>
+
+        <p><a href="https://github.com/ClubNix/Votix/wiki">See configuration instructions on wiki</a></p>
+
+
+        <ul>
+            {% if secrets_configured %}
+                <li class="config success">Secrets configured</li>
+            {% else %}
+                <li class="config alert">Secrets not configured</li>
+            {% endif %}
+            {% if mailer_configured %}
+                <li class="config success">Mailer configured</li>
+            {% else %}
+                <li class="config alert">Mailer not configured</li>
+            {% endif %}
+            {% if link_base_configured %}
+                <li class="config success">Link base configured. Your base : {{ app.request.getSchemeAndHttpHost() }}</li>
+            {% else %}
+                <li class="config alert">Link base not configured. Your base : {{ app.request.getSchemeAndHttpHost() }}</li>
+            {% endif %}
+            {% if time_window_configured %}
+                <li class="config success">Time window configured</li>
+            {% else %}
+                <li class="config alert">Time window not configured</li>
+            {% endif %}
+        </ul>
+
+        <a href="{{ path('homepage') }}" class="btn btn-success">
+            {% trans %}Back to homepage{% endtrans %}
+        </a>
+    </div>
+{% endblock %}
