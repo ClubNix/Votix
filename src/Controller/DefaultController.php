@@ -8,7 +8,6 @@
  */
 namespace App\Controller;
 
-use App\Service\ArchivesService;
 use App\Service\StatsService;
 use App\Service\StatusService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
@@ -41,10 +40,15 @@ class DefaultController extends AbstractController
      */
     public function index(StatsService $statsService, StatusService $statusService): Response
     {
+        $status = $statusService->getCurrentStatus();
+
+        if ($statusService->isVoteUnconfigured()) {
+            return $this->redirectToRoute('unconfigured');
+        }
+
         $now = time();
 
         $progress = $statsService->getStatsByPromotion();
-        $status   = $statusService->getCurrentStatus();
 
         return $this->render('default/index.html.twig', [
             'start'        => $this->votixStart,
@@ -64,5 +68,15 @@ class DefaultController extends AbstractController
     public function faq(): Response
     {
         return $this->render('default/faq.html.twig');
+    }
+
+    /**
+     * @Route("/{_locale}/unconfigured", name="unconfigured")
+     *
+     * @return Response
+     */
+    public function unconfigured(): Response
+    {
+        return $this->render('default/unconfigured.html.twig');
     }
 }

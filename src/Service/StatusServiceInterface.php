@@ -13,9 +13,10 @@ namespace App\Service;
  */
 interface StatusServiceInterface
 {
-    public const OPEN    = 'OPEN';
-    public const CLOSED  = 'CLOSED';
-    public const WAITING = 'WAITING';
+    public const UNCONFIGURED = 'UNCONFIGURED';
+    public const OPEN         = 'OPEN';
+    public const CLOSED       = 'CLOSED';
+    public const WAITING      = 'WAITING';
 
     public function getCurrentStatus(): string;
 

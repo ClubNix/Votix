@@ -26,6 +26,7 @@
     </h1>
     <!-- <small>Élections du BDE</small> -->
 
+    {% block subnav %}
     <ul class="subnav-hero-subnav">
       <li>
         <a class="navbar-item {{ app.request.attributes.get('_route') == 'homepage' ? 'is-active' }}" href="{{ path('homepage') }}">
@@ -38,6 +39,7 @@
         </a>
       </li>
     </ul>
+    {% endblock %}
   </header>
 
 
