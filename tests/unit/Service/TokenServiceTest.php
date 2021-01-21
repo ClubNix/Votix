@@ -13,12 +13,11 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 /**
  * Class TokenServiceTest
- * @package Tests\AppBundle\Entity
  */
 class TokenServiceTest extends WebTestCase
 {
     private const REGEX_FOUR_DIGITS = '/^[0-9]{4}$/';
-    private const REGEX_SHA256 = '/^[0-9a-f]{64}$/';
+    private const REGEX_BASE64URL = '/^[-_0-9a-zA-Z]+$/';
 
     public function testGetCodeForVoter(): string
     {
@@ -40,8 +39,7 @@ class TokenServiceTest extends WebTestCase
 
         $token = $tokenService->getTokenForVoter($voter);
 
-        $this->assertTrue(strlen($token) === 64);
-        $this->assertMatchesRegularExpression(self::REGEX_SHA256, $token);
+        $this->assertMatchesRegularExpression(self::REGEX_BASE64URL, $token);
 
         return $token;
     }
