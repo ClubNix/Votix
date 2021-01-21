@@ -10,15 +10,15 @@
             <tbody>
                 {% for candidate in candidates %}
                     <tr>
-                        <td>{{ candidate.name }}</td>
-                        <td><input type="number" name="count-{{ candidate.id }}"></td>
+                        <td><label for="number">{{ candidate.name }}</label></td>
+                        <td><input id="number" type="number" name="count-{{ candidate.id }}"></td>
                     </tr>
                 {% endfor %}
             </tbody>
             <tfoot>
                 <tr>
-                    <td>Code de vérification</td>
-                    <td><input type="text" name="checksum"></td>
+                    <td><label for="checksum">Code de vérification</label></td>
+                    <td><input type="text" name="checksum" id="checksum"></td>
                 </tr>
                 <tr>
                     <td></td>
