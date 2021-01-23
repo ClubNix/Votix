@@ -33,6 +33,11 @@ docker-compose up -d --force-recreate
 docker-compose exec votix make test
 ```
 
+## Documentation
+
+Please check Votix Wiki for installation and configuration instructions for production
+https://github.com/ClubNix/Votix/wiki
+
 ## Contributing
 
 ```bash
