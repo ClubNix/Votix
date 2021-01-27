@@ -44,13 +44,18 @@ class DemoController extends AbstractController
     /**
      * @Route("/{_locale}/demo/already-voted", name="demo-already-voted")
      *
+     * @param string $votixSupport
+     *
      * @return Response
      */
-    public function alreadyVoted(): Response
+    public function alreadyVoted(string $votixSupport): Response
     {
         $voter = new Voter();
         $voter->setFirstname('Anonymous');
-        return $this->render('default/already-voted.html.twig', ['voter' => $voter]);
+        return $this->render('default/already-voted.html.twig', [
+            'voter' => $voter,
+            'votix_support_email' => $votixSupport,
+        ]);
     }
 
     /**

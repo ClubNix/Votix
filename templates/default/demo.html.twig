@@ -3,20 +3,20 @@
 {% block body %}
 <div class="row marketing">
     <div class="col-lg-12">
-        <h3>Démos disponibles</h3>
-        <p>Liste de démos avec fausses données pour illustration et les curieux.</p>
+        <h3>{% trans %}Available demos{% endtrans %}</h3>
+        <p>{% trans %}List of demos with fake data for illustration and curious people.{% endtrans %}</p>
 
         <h4>Pages</h4>
         <ul>
-            <li><a href="{{ path('demo-arm') }}">Arm</a></li>
-            <li><a href="{{ path('demo-check') }}">Check</a></li>
-            <li><a href="{{ path('demo-vote-bad-timing') }}">Vote bad timing</a></li>
-            <li><a href="{{ path('demo-already-voted') }}">Already voted</a></li>
-            <li><a href="{{ path('demo-thank-you') }}">Thank you</a></li>
-            <li><a href="{{ path('demo-vote') }}">Vote</a></li>
-            <li><a href="{{ path('demo-vote-counting') }}">Vote Counting</a></li>
-            <li><a href="{{ path('demo-results') }}">Results</a></li>
-            <li><a href="{{ path('demo-verify-results-hash') }}">Verify Results hash</a></li>
+            <li><a href="{{ path('demo-arm') }}">{% trans %}Arm{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-check') }}">{% trans %}Check{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-vote-bad-timing') }}">{% trans %}Vote bad timing{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-already-voted') }}">{% trans %}Already voted{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-thank-you') }}">{% trans %}Thank you{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-vote') }}">{% trans %}Vote{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-vote-counting') }}">{% trans %}Vote Counting{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-results') }}">{% trans %}Results{% endtrans %}</a></li>
+            <li><a href="{{ path('demo-verify-results-hash') }}">{% trans %}Verify Results hash{% endtrans %}</a></li>
         </ul>        
     </div>
 </div>

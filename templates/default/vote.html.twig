@@ -11,9 +11,9 @@
 {% block body %}
     <div>
         <h4>Vote</h4>
-        Bonjour {{ voter.firstname }}, tu peux à présent voter.<br />
+        Bonjour, vous pouvez à présent voter.<br />
 
-        Attention : Tu ne peux voter qu'une seule fois ! Choisis bien.<br /><br />
+        Attention : Il n'est pas possible de changer son vote après validation.<br /><br />
 
         <form action="" method="post">
             <input type="hidden" name="token" value="{{ token }}">

@@ -4,9 +4,9 @@
     <div class="callout alert">
         <h4>Erreur</h4>
         
-        <p>Oops {{ voter.firstname }}, tu as déjà voté !</p>
+        <p>Oops, vous avez déjà voté !</p>
 
-        <p>Si tu penses qu'il s'agit d'une erreur, contacte philippe.lewin at gmail.com.</p>
+        <p>Si vous pensez qu'il s'agit d'une erreur, contactez {{ votix_support_email|replace({'@': ' AT '}) }} merci.</p>
 
         <a href="{{ path('homepage') }}" class="btn btn-success">
             {% trans %}Back to homepage{% endtrans %}

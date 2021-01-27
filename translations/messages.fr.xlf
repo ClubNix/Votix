@@ -74,6 +74,50 @@
                 <source>voters in total</source>
                 <target>votants au total</target>
             </trans-unit>
+            <trans-unit id="demos">
+                <source>demos</source>
+                <target>démos</target>
+            </trans-unit>
+            <trans-unit id="available_demos">
+                <source>Available demos</source>
+                <target>Démos disponibles</target>
+            </trans-unit>
+            <trans-unit id="available_demos_explanation">
+                <source>List of demos with fake data for illustration and curious people.</source>
+                <target>Liste de démos avec fausses données pour illustration et les curieux.</target>
+            </trans-unit>
+            <trans-unit id="arm">
+                <source>Arm</source>
+                <target>Armement</target>
+            </trans-unit>
+            <trans-unit id="check">
+                <source>Check</source>
+                <target>Vérification</target>
+            </trans-unit>
+            <trans-unit id="vote_bad_timing">
+                <source>Vote bad timing</source>
+                <target>Vote non dans les temps</target>
+            </trans-unit>
+            <trans-unit id="already_voted">
+                <source>Already voted</source>
+                <target>Déjà voté</target>
+            </trans-unit>
+            <trans-unit id="thank_you">
+                <source>Thank you</source>
+                <target>Merci</target>
+            </trans-unit>
+            <trans-unit id="vote_counting">
+                <source>Vote Counting</source>
+                <target>Dépouillement</target>
+            </trans-unit>
+            <trans-unit id="results">
+                <source>Results</source>
+                <target>Résultats</target>
+            </trans-unit>
+            <trans-unit id="verify_results_hash">
+                <source>Verify Results hash</source>
+                <target>Vérification de la signature des résultats</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
