@@ -21,6 +21,9 @@ parameters:
     votix_result_password: '%env(default:default_votix_result_password:base64:VOTIX_RESULT_PASSWORD)%'
     default_votix_result_password: ThisTokenIsNotSoSecretChangeItInDotEnv
 
+    votix_admin_password: '%env(string:base64:VOTIX_ADMIN_PASSWORD)%'
+    env(VOTIX_ADMIN_PASSWORD): "JGFyZ29uMmlkJHY9MTkkbT02NTUzNix0PTQscD0xJFZYbG9NRXRyTXpFeFdXTmhhMjVWZVEkS3BuejRQTU1hOXRZeWNVSWFkWmN5STFKWHo5MDJvKy9EK2VieWpYQ09tQQ=="
+
     # Hardcoded base for urls sent in emails. Must contain "/vote/"
     votix_link_base: '%env(VOTIX_LINK_BASE)%'
     env(VOTIX_LINK_BASE): https://subdomain.example.com/vote/

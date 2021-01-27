@@ -12,6 +12,7 @@ use App\Entity\Candidate;
 use App\Service\VoteCounterServiceInterface;
 use App\Repository\CandidateRepository;
 use App\Repository\VoterRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +21,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Class AdminController
+ *
+ * @IsGranted("ROLE_ADMIN")
  */
 class AdminController extends AbstractController
 {
@@ -60,6 +63,8 @@ class AdminController extends AbstractController
         $isChecksumValid = null;
 
         if ($request->request->has('checksum')) {
+            $checksum = $request->request->get('checksum') ?? "";
+
             /** @var Candidate[] $candidates */
             $candidates = $candidateRepository->findAll();
             $candidatesIndexed = [];
@@ -87,7 +92,7 @@ class AdminController extends AbstractController
 
             $hash = $counterService->hashResults($results, $this->secret);
 
-            $isChecksumValid = hash_equals($hash, $request->request->get('checksum'));
+            $isChecksumValid = hash_equals($hash, $checksum);
         }
 
         $candidates = $candidateRepository->findAllShuffled();
