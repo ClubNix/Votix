@@ -20,6 +20,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Twig\Error\Error as TwigError;
@@ -102,6 +103,14 @@ class MailSendCommand extends Command
         $nb_mails_to_send = $stats['nb_invites'] - $stats['nb_votants'];
 
         $this->logger->notice('Number of mails to send : {nb_mails_to_send}', ['nb_mails_to_send' => $nb_mails_to_send]);
+
+        $helper = $this->getHelper('question');
+        $question = new ConfirmationQuestion('Ready to send emails ?', false);
+
+        if ($mustExecute && !$helper->ask($input, $output, $question)) {
+            $output->writeln('cancelled');
+            return Command::FAILURE;
+        }
 
         $counterSent = 0;
         $counter = 1;
