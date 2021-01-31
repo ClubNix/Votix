@@ -17,9 +17,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Serializer\Encoder\DecoderInterface;
 
 /**
- * Class VotixCsvCommand
+ * Class VoterImportCommand
  */
-class ImportCsvCommand extends Command
+class VoterImportCommand extends Command
 {
     /**
      * @var EntityManagerInterface
@@ -42,8 +42,8 @@ class ImportCsvCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('votix:importcsv')
-            ->setDescription('Import users with CSV file')
+            ->setName('votix:voter:import')
+            ->setDescription('Import voters with CSV file')
             ->addArgument(
                 'filepath',
                 InputArgument::REQUIRED,
@@ -68,16 +68,16 @@ class ImportCsvCommand extends Command
             'csv_key_separator' => '=========',
         ]);
 
-        $ligne = 1;
+        $counter = 1;
         foreach ($data as $entry) {
             // skip empty lines
             if (empty($entry['Prénom.Apprenant'])) {
                 continue;
             }
 
-            $login = trim($entry['Coordonnée.Coordonnée']);
-            $firstname = $entry['Prénom.Apprenant'];
-            $lastname = $entry['Nom.Apprenant'];
+            $login = strstr(trim($entry['Coordonnée.Coordonnée']), '@', true);
+            $firstname = trim($entry['Prénom.Apprenant']);
+            $lastname = trim($entry['Nom.Apprenant']);
             $promotion = trim($entry['Code.Groupe']);
             $email = trim($entry['Coordonnée.Coordonnée']);
 
@@ -90,11 +90,13 @@ class ImportCsvCommand extends Command
 
             $this->entityManager->persist($voter);
 
-            echo "Line $ligne: " . $voter . PHP_EOL;
-            $ligne++;
+            $output->writeln("Line $counter: " . $voter);
+            $counter++;
         }
 
         $this->entityManager->flush();
+
+        $output->writeln('Done');
 
         return Command::SUCCESS;
     }
