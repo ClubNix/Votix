@@ -4,7 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: 'en'
+    # todo default en
+    locale: 'fr'
 
     # This is a random secret used to generate links
     # This must be long and random bytes
@@ -45,6 +46,9 @@ parameters:
     env(VOTIX_FROM): votix@domain.tld
     env(VOTIX_REPLY_TO): votix@domain.tld
     env(VOTIX_RETURN_PATH): votix@domain.tld
+
+    votix_subtitle: '%env(string:VOTIX_SUBTITLE)%'
+    env(VOTIX_SUBTITLE): "Élections du BDE"
 
 services:
     # default configuration for services in *this* file
