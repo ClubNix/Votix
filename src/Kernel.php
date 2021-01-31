@@ -14,18 +14,24 @@ class Kernel extends BaseKernel
 
     protected function configureContainer(ContainerConfigurator $c): void
     {
+        // default to prod if env unknown
+        $env = in_array($this->environment, ['dev', 'test', 'prod']) ? $this->environment : 'prod';
+
         $c->import('../config/{packages}/*.yaml');
-        $c->import('../config/{packages}/'.$this->environment.'/*.yaml');
+        $c->import('../config/{packages}/'.$env.'/*.yaml');
 
         if (is_file(dirname(__DIR__).'/config/services.yaml')) {
             $c->import('../config/services.yaml');
-            $c->import('../config/{services}_'.$this->environment.'.yaml');
+            $c->import('../config/{services}_'.$env.'.yaml');
         }
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void
     {
-        $routes->import('../config/{routes}/'.$this->environment.'/*.yaml');
+        // default to prod if env unknown
+        $env = in_array($this->environment, ['dev', 'test', 'prod']) ? $this->environment : 'prod';
+
+        $routes->import('../config/{routes}/'.$env.'/*.yaml');
         $routes->import('../config/{routes}/*.yaml');
     }
 }
