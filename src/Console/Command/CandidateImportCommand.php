@@ -15,12 +15,13 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * Class VotixCandidatesResetCommand
+ * Class CandidateImportCommand
  */
-class CandidatesResetCommand extends Command
+class CandidateImportCommand extends Command
 {
     /**
      * @var CandidateRepository
@@ -37,8 +38,8 @@ class CandidatesResetCommand extends Command
     protected function configure(): void
     {
         $this
-            ->setName('votix:candidates:reset')
-            ->setDescription('Reset candidates')
+            ->setName('votix:candidate:import')
+            ->setDescription('Reset candidates from yaml')
             ->addArgument(
                 'filepath',
                 InputArgument::REQUIRED,
@@ -61,7 +62,20 @@ class CandidatesResetCommand extends Command
 
         $parsed = Yaml::parse(file_get_contents($filepath));
 
+        foreach ($parsed['candidates'] as $candidate) {
+            $output->writeln('name: ' . $candidate['name'] . ', eligible: ' . $candidate['eligible']);
+        }
+
+        $helper = $this->getHelper('question');
+        $question = new ConfirmationQuestion('Are you sure you want to overwrite candidates with these values ?', false);
+        if (!$helper->ask($input, $output, $question)) {
+            $output->writeln('cancelled');
+            return Command::FAILURE;
+        }
+
         $this->candidateRepository->import($parsed['candidates']);
+
+        $output->writeln('done');
 
         return Command::SUCCESS;
     }
