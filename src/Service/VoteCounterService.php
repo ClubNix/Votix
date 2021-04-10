@@ -20,7 +20,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  */
 class VoteCounterService implements VoteCounterServiceInterface
 {
-
     /**
      * @var CandidateRepository
      */
@@ -60,7 +59,7 @@ class VoteCounterService implements VoteCounterServiceInterface
         VoterRepository            $voterRepository,
         EventDispatcherInterface   $eventDispatcher,
         EncryptionServiceInterface $encryption,
-        $password
+        string $password
     ) {
         $this->candidateRepository = $candidateRepository;
         $this->voterRepository     = $voterRepository;
@@ -119,7 +118,7 @@ class VoteCounterService implements VoteCounterServiceInterface
         $chain = hash('sha512', $secret);
 
         // Sort candidates by name
-        usort($results, static function($a, $b) {
+        usort($results, static function(array $a, array $b) {
             /** @var Candidate $candidateA */
             $candidateA = $a['candidate'];
             /** @var Candidate $candidateB */
@@ -132,7 +131,7 @@ class VoteCounterService implements VoteCounterServiceInterface
             $chain .= '-' . $result['count'];
         }
 
-        return crc32($chain);
+        return (string) crc32($chain);
     }
 
     /**

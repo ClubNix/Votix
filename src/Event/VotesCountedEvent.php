@@ -17,9 +17,18 @@ class VotesCountedEvent extends Event
 {
     public const NAME = 'votes.counted';
 
+    /**
+     * @var array
+     */
     private $results;
 
-    public function __construct($results)
+    public function __construct(array $results)
     {
+        $this->results = $results;
+    }
+
+    public function getResults(): array
+    {
+        return $this->results;
     }
 }

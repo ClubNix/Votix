@@ -23,7 +23,7 @@ use Laminas\Crypt\PublicKey\RsaOptions;
 class EncryptionService implements EncryptionServiceInterface
 {
     /**
-     * @var Number of bits for the RSA key pair
+     * @var int Number of bits for the RSA key pair
      */
     private const PRIVATE_KEY_BITS = 2048;
 
@@ -57,8 +57,8 @@ class EncryptionService implements EncryptionServiceInterface
      */
     public function __construct(
         EventDispatcherInterface $eventDispatcher,
-        $keysDirectory,
-        $secretKey,
+        string $keysDirectory,
+        string $secretKey,
         Filesystem $filesystem
     ) {
         $this->eventDispatcher = $eventDispatcher;
@@ -85,7 +85,7 @@ class EncryptionService implements EncryptionServiceInterface
      *
      * @return array First element boolean $success, second element string message.
      */
-    public function verifyKey($key): array
+    public function verifyKey(string $key): array
     {
         $success = false;
         $message = 'ERROR';
@@ -118,7 +118,7 @@ class EncryptionService implements EncryptionServiceInterface
      *
      * @return string Decrypted vote.
      */
-    public function decryptVote($vote, $key): string
+    public function decryptVote(string $vote, string $key): string
     {
         try {
             $decrypted = $this->getRsa($key)->decrypt($vote);
@@ -166,13 +166,18 @@ class EncryptionService implements EncryptionServiceInterface
 
         $rsaOptions->generateKeys(['private_key_bits' => self::PRIVATE_KEY_BITS]);
 
-        $this->filesystem->dumpFile($this->keysDirectory . '/private_key.pem', $rsaOptions->getPrivateKey());
-        $this->filesystem->dumpFile($this->keysDirectory . '/public_key.pub',  $rsaOptions->getPublicKey());
+        /** @var Rsa\PrivateKey $privateKey */
+        $privateKey = $rsaOptions->getPrivateKey();
+        /** @var Rsa\PublicKey $publicKey */
+        $publicKey = $rsaOptions->getPrivateKey();
+
+        $this->filesystem->dumpFile($this->keysDirectory . '/private_key.pem', $privateKey->toString());
+        $this->filesystem->dumpFile($this->keysDirectory . '/public_key.pub',  $publicKey->toString());
 
         $this->eventDispatcher->dispatch(new KeysGeneratedEvent(), KeysGeneratedEvent::NAME);
     }
 
-    public function encryptSignature($signature): array
+    public function encryptSignature(string $signature): array
     {
         $rsaOptions = new RsaOptions([
             'pass_phrase' => $this->secretKey,

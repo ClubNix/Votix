@@ -15,9 +15,9 @@ interface EncryptionServiceInterface
 {
     public function isArmed(): bool;
 
-    public function verifyKey($key): array;
+    public function verifyKey(string $key): array;
 
-    public function decryptVote($vote, $key): string;
+    public function decryptVote(string $vote, string $key): string;
 
     public function encryptVote(string $vote): string;
 
@@ -25,5 +25,5 @@ interface EncryptionServiceInterface
 
     public function getGeneratedKeyFilePath(): string;
 
-    public function encryptSignature($signature): array;
+    public function encryptSignature(string $signature): array;
 }

@@ -110,7 +110,7 @@ class StatsService implements StatsServiceInterface
         return 'AUTRES';
     }
 
-    private function getGroupRatio(array $promotions)
+    private function getGroupRatio(array $promotions): float
     {
         $total_votants = 0;
         $total_invites = 0;

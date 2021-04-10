@@ -76,7 +76,7 @@ class ScreenApiController extends AbstractController
         return new JsonResponse($data);
     }
 
-    protected function truncateFloat($number)
+    protected function truncateFloat(float $number): float
     {
         return floor($number * 100) / 100;
     }

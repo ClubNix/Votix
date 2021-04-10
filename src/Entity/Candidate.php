@@ -38,6 +38,8 @@ class Candidate implements JsonSerializable
 
     /**
      * Set id
+     *
+     * @param $id
      */
     public function setId($id)
     {

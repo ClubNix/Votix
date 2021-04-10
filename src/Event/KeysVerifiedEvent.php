@@ -17,8 +17,6 @@ class KeysVerifiedEvent extends Event
 {
     public const NAME = 'keys.verified';
 
-    private $message;
-
     public function __construct($success, $message)
     {
     }
