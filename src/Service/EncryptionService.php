@@ -169,7 +169,7 @@ class EncryptionService implements EncryptionServiceInterface
         /** @var Rsa\PrivateKey $privateKey */
         $privateKey = $rsaOptions->getPrivateKey();
         /** @var Rsa\PublicKey $publicKey */
-        $publicKey = $rsaOptions->getPrivateKey();
+        $publicKey = $rsaOptions->getPublicKey();
 
         $this->filesystem->dumpFile($this->keysDirectory . '/private_key.pem', $privateKey->toString());
         $this->filesystem->dumpFile($this->keysDirectory . '/public_key.pub',  $publicKey->toString());
