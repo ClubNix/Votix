@@ -1,4 +1,4 @@
-FROM php:7.3-apache-buster
+FROM php:8.0-apache-buster
 
 ARG APCU_VERSION=5.1.19
 
