@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>Arm</h1>
+        <p class="lead">Ready to arm Votix?</p><br>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if passphrase %}
+            <p>Passphrase: {{ passphrase }}</p>
+            <br>
+            <form method="POST" enctype="multipart/form-data" action="/download-key">
+                <fieldset>
+                    <legend>Get key</legend>
+                    <div class="input-group">
+                        <button class="btn btn-primary mb-3">Download</button>
+                    </div>
+                </fieldset>
+            </form>
+        {% endif %}
+
+        <div class="form">
+            <form method="POST" enctype="multipart/form-data" action="/arm">
+                <fieldset>
+                    <legend>Arm</legend>
+                    <div class="input-group">
+                        <button class="btn btn-primary mb-3">Arm</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

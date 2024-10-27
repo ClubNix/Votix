@@ -1,0 +1,11 @@
+flask
+flask-sqlalchemy
+flask-login
+werkzeug
+requests
+urllib3
+email-validator
+python-dotenv
+click
+rsa
+cryptography

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>Register a new candidate in Votix</h1>
+        <br>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form">
+            <form method="POST" enctype="multipart/form-data" action="/register-candidate">
+                <fieldset>
+                    <legend>Register new candidate</legend>
+                    <div class="input-group">
+                        <span class="input-group addon">Name</span>
+                        <label for="name"></label>
+                        <input type="text" id="name" name="name" placeholder="Candidate name" required>
+                    </div>
+                    <div class="remember">
+                        <label for="eligible">Eligible</label>
+                        <input type="checkbox" id="eligible" name="eligible" checked>
+                    </div>
+                    <div class="input-group">
+                        <button class="btn btn-primary mb-3">Register</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>No stress</h1>
+        <p class="lead">Ready to deliberate Votix?</p><br>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% if results %}
+        <div>
+            <h2>Results</h2>
+            {% for result in results %}
+            <p>{{ result['name'] }} have {{ result['votes'] }} votes!</p>
+            {% endfor %}
+        </div>
+        {% else %}
+            <div class="form">
+                <form method="POST" enctype="multipart/form-data" action="/deliberate">
+                    <fieldset>
+                        <legend>Deliberate</legend>
+                        <div class="input-group">
+                            <span class="input-group addon">Private key</span>
+                            <label for="file"></label>
+                            <input type="file" id="file" name="file" placeholder="Enter the private key" required accept=".pem">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group addon">Password</span>
+                            <label for="password"></label>
+                            <input type="password" id="password" name="password" placeholder="Private key password" required>
+                        </div>
+                        <div class="input-group">
+                            <button class="btn btn-primary mb-3">Submit</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

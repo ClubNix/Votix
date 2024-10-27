@@ -1,0 +1,17 @@
+build/
+bin/
+
+dependency/
+
+.vscode/
+.settings/
+.idea/
+*.code-workspace
+
+*.iml
+*.swp
+*~
+
+.venv/
+
+*.csv

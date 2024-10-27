@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>Vote</h1>
+        <br>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div class="form">
+            <form method="POST" enctype="multipart/form-data" action="{{ url_for('votix.vote', link_string=voter.link_string) }}">
+                <fieldset>
+                    <legend>Vote</legend>
+                    <div class="input-group">
+                        <span class="input-group addon">Secret code</span>
+                        <label for="secret"></label>
+                        <input type="number" id="secret" name="secret" placeholder="Secret code" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group addon">Candidates</span>
+                        <label for="candidate"></label>
+                        <select id="candidate" name="candidate" class="form-select" aria-label="Default select example" required>
+                            <option selected disabled>Vote for a candidate</option>
+                            {% for candidate in candidates %}
+                                <option value="{{ candidate[0] }}">{{ candidate[1] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <button class="btn btn-primary mb-3">Register</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

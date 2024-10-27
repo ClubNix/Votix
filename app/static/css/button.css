@@ -1,0 +1,13 @@
+.btn-transparent{
+    border-color: rgba(255, 255, 255, 1);
+    color: rgba(255, 255, 255, 1);
+}
+
+.btn a {
+    color: var(--bs-dark);
+    text-decoration: none;
+}
+
+.btn {
+    margin: 0 15px;
+}

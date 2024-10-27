@@ -1,0 +1,99 @@
+.center-form {
+    display: flex;
+    justify-content: center;
+}
+.center-form > select {
+    margin: 0 15px;
+}
+.center-form > .btn {
+    height: 100%;
+}
+
+.create-form input {
+    margin: 0.5rem;
+}
+
+.form {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--form-text-color);
+}
+.form p {
+    color: var(--text-color);
+}
+.form > form {
+    width: 75%;
+}
+.form fieldset {
+    border: 2px solid var(--fieldset-border-color);
+    border-radius: 5px;
+    padding: 1rem;
+}
+.form fieldset > legend {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+    float: none !important;
+    width: auto;
+    padding: 0 10px;
+}
+.form legend {
+    color: var(--text-color);
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-group {
+    display: flex;
+    align-content: stretch;
+    padding: 1rem;
+    text-align: left;
+}
+.input-group > input, .input-group > textarea, .input-group > select {
+    flex: 1 0 auto;
+    font-family: Montserrat, sans-serif;
+    font-size: 1rem;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.input-group > input {
+    color: var(--text-color);
+    padding-left: .5rem;
+}
+.input-group > select {
+    background: var(--input-group-background-color);
+}
+.input-group .addon {
+    background: var(--input-group-addon-color);
+    border: 1px solid var(--input-group-addon-color);
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    width: 150px;
+}
+.input-group .file {
+    border-radius: 5px;
+    padding: .5rem 1rem;
+    width: 150px;
+    border: 1px solid var(--input-group-addon-color);
+    background: var(--input-group-background-color);
+    margin-right: 1rem;
+}
+.input-group .btn {
+    width: 100%;
+    border-radius: 5px;
+}
+.input-group > textarea {
+    border: 1px solid var(--input-group-addon-color) !important;
+    margin-left: unset !important;
+}
+
+.remember {
+    color: var(--text-color);
+}

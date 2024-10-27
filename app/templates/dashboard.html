@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>Votix</h1>
+        <p class="lead">Welcome to admin dashboard of Votix</p><br>
+
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-danger">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div>
+            <h2>Configuration</h2>
+            <br>
+            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <button type="button" class="btn btn-transparent">
+                    <a href="{{ url_for('votix.register_candidate') }}">Register Candidate</a>
+                </button>
+                <button type="button" class="btn btn-transparent">
+                    <a href="{{ url_for('votix.import_voters') }}">Import Voters</a>
+                </button>
+                <button type="button" class="btn btn-transparent">
+                    <a href="{{ url_for('admin.arm') }}">Configure</a>
+                </button>
+            {% endif %}
+        </div>
+        <br><br>
+        <div>
+            <h2>Actions</h2>
+            <br>
+            <button type="button" class="btn btn-transparent">
+                <a href="{{ url_for('votix.register_voter') }}">Register Voter</a>
+            </button>
+            {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <button type="button" class="btn btn-transparent">
+                    <a href="{{ url_for('admin.arm') }}">ARM</a>
+                </button>
+                <button type="button" class="btn btn-transparent">
+                    <a href="{{ url_for('admin.deliberate') }}">Deliberate</a>
+                </button>
+            {% endif %}
+        </div>
+        <br>
+        <div class="form">
+            <fieldset>
+                <legend>Votix statistics</legend>
+                {% if voters %}
+                <p>There is {{ voters }} voters registered on Votix!</p>
+                {% else %}
+                <p>There is no voter registered on Votix!</p>
+                {% endif %}
+
+                {% if candidates %}
+                <div>
+                    <p>There is {{ candidates|length }} candidates registered on Votix!</p>
+                </div>
+                {% else %}
+                <p>There is no candidate registered on Votix!</p>
+                {% endif %}
+
+                {% if votes %}
+                <p>There is {{ votes }} votes yet on Votix!</p>
+                {% else %}
+                <p>There is no vote yet on Votix!</p>
+                {% endif %}
+            </fieldset>
+        </div>
+    </div>
+{% endblock %}

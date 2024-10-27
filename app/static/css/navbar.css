@@ -1,0 +1,16 @@
+.navbar {
+    background-color: var(--bs-dark);
+}
+
+.navbar img {
+    width: 6rem;
+    margin-right: 2rem;
+}
+
+.navbar a {
+    color: var(--bs-light);
+    text-decoration: none;
+}
+.navbar a:hover {
+    color: var(--bs-light);
+}

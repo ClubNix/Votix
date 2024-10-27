@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>Votix</h1>
+        <br>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-danger">
+                    {{ messages[0] }}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="form">
+            <form method="POST" enctype="multipart/form-data" action="/login">
+                <fieldset>
+                    <legend>Login</legend>
+                    <div class="input-group">
+                        <span class="input-group addon">Email</span>
+                        <label for="email"></label>
+                        <input type="email" id="email" name="email" placeholder="Your email" required>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group addon">Password</span>
+                        <label for="password"></label>
+                        <input type="password" id="password" name="password" placeholder="Your password" required>
+                    </div>
+                    <div class="remember">
+                        <label for="remember">Remember me</label>
+                        <input type="checkbox" id="remember" name="remember">
+                    </div>
+                    <div class="input-group">
+                        <button class="btn btn-primary mb-3">Login</button>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock %}

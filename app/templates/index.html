@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Votix{% endblock %}
+{% block content %}
+    <div class="starter-template text-center py-5 px-3">
+        <h1>Votix</h1>
+        <p class="lead">Welcome to Votix, a simple voting app</p><br>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if percentages %}
+            {% for prom, percentage in percentages.items() %}
+                <div class="row mb-3">
+                    <div class="col-2">
+                        <label>{{ prom }}</label>
+                    </div>
+                    <div class="col-10">
+                        <div class="progress" style="height: 30px;">
+                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentage }}%;">
+                                {{ percentage }}%
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
