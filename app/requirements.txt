@@ -9,3 +9,4 @@ python-dotenv
 click
 rsa
 cryptography
+gunicorn
