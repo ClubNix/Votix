@@ -102,7 +102,7 @@ def validate_voters_csv(file: str):
 
 
 @click.command(help="Add a admin user to the app")
-@click.option('--role', help='Role of the user to add')
+@click.option('--role', help='Role of the user to add (admin, technician, user)')
 def add_user(role: str):
     with app.app_context():
         auth.create_user(role)

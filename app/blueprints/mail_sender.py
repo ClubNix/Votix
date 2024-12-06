@@ -6,7 +6,7 @@ from jinja2 import Environment, FileSystemLoader
 from flask import current_app
 
 from app import db
-from ..models import Voter
+from ..models import Voter, User
 
 import os
 import ssl
@@ -20,7 +20,6 @@ _SMTP_PORT = int(os.getenv("SMTP_PORT"))
 _SMTP_USERNAME = os.getenv("SMTP_USERNAME")
 _SMTP_PASSWORD = os.getenv("SMTP_PASSWORD")
 _SMTP_VERIFY_SSL = os.getenv("SMTP_VERIFY_SSL")
-_ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
 _VALID_EMAIL_DOMAINS = os.getenv('VALID_EMAIL_DOMAINS').split(',')
 
 email_logger = logging.getLogger(__name__)
@@ -142,5 +141,6 @@ def send_admin_test_email():
     """
     subject = "Test email"
     html_content = env.get_template('admin-test.html').render()
-    send_email(subject, html_content, os.getenv("ADMIN_EMAIL"))
-    email_logger.info(f"Test email sent to {os.getenv('ADMIN_EMAIL')}")
+    admin_email = User.query.filter_by(role='admin').first().email 
+    send_email(subject, html_content, admin_email)
+    email_logger.info(f"Test email sent to {admin_email}")
