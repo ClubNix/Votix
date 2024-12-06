@@ -32,9 +32,7 @@ def create_app():
             from app.blueprints import auth
 
             if User.query.filter_by(role='admin').first() is None:
-                print('No admin user found, creating one...\n')
-                auth.create_user(role='admin')
-                print('\nAdmin user created successfully')
+                print('No admin user found, don\'t forget to create one!\n')
 
         except Exception as e:
             print(e)
