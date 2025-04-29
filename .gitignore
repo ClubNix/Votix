@@ -15,3 +15,4 @@ dependency/
 .venv/
 
 *.csv
+app/var/*
