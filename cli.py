@@ -53,8 +53,9 @@ def send_reminder():
 
 @click.command(help="Send a test email to the admin")
 def send_admin_test():
-    print("Sending test email")
-    mail_sender.send_admin_test_email()
+    with app.app_context():
+        print("Sending test email")
+        mail_sender.send_admin_test_email()
 
 
 @click.command(help="Import voters from a CSV file")
@@ -102,7 +103,7 @@ def validate_voters_csv(file: str):
 
 
 @click.command(help="Add a admin user to the app")
-@click.option('--role', help='Role of the user to add (admin, technician, user)')
+@click.option('--role', help='Role of the user to add')
 def add_user(role: str):
     with app.app_context():
         auth.create_user(role)

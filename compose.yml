@@ -5,10 +5,10 @@ services:
       dockerfile: Dockerfile
 
     ports:
-      - "5000:5000"
+      - 5000:5000
 
     volumes:
       - ./data:/app/app/var
-      - ./logs:/app/logs
+      - ./logs:/app/app/logs
 
     restart: unless-stopped
