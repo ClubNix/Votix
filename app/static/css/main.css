@@ -1,6 +1,6 @@
 div#banner{ /*Image de fond*/
     position: fixed;
-    background-image: url(/static/images/index-back.jpg);
+    background-image: url(/static/images/ATLAS_logo_rond.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center center;
