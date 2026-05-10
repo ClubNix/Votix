@@ -1,15 +1,3 @@
 @import 'bootstrap.min.css';
-@import 'main.css';
-@import 'navbar.css';
-@import 'form.css';
-@import 'button.css';
-
-@import url("https://fonts.googleapis.com/css2?family=Montserrat&family=Roboto&display=swap");
-
-:root {
-    --text-color: rgb(33, 37, 41);
-    --form-text-color: rgb(211, 224, 234);
-    --input-group-background-color: rgb(255, 255, 255);
-    --input-group-addon-color: rgb(33, 37, 41);
-    --fieldset-border-color: rgb(33, 37, 41);
-}
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@import 'theme.css';

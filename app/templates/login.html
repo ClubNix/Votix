@@ -1,39 +1,53 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — Connexion{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>Votix</h1>
-        <br>
+
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:440px;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+            <div style="width:3rem;height:3rem;background:var(--primary-light);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+                <i class="bi bi-shield-lock-fill" style="font-size:1.4rem;color:var(--primary);"></i>
+            </div>
+            <h1 style="font-size:1.5rem;font-weight:800;margin:0 0 .25rem;">Connexion</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin:0;">Espace réservé aux administrateurs et techniciens.</p>
+        </div>
+
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="alert alert-danger">
-                    {{ messages[0] }}
-                </div>
+            <div class="alert alert-danger">
+                <i class="bi bi-x-circle"></i>
+                {{ messages[0] }}
+            </div>
             {% endif %}
         {% endwith %}
-        <div class="form">
-            <form method="POST" enctype="multipart/form-data" action="/login">
-                <fieldset>
-                    <legend>Login</legend>
-                    <div class="input-group">
-                        <span class="input-group addon">Email</span>
-                        <label for="email"></label>
-                        <input type="email" id="email" name="email" placeholder="Your email" required>
+
+        <div class="form-card">
+            <div class="card-body">
+                <form method="POST" action="/login">
+                    <div class="mb-form">
+                        <label for="email" class="form-label">Adresse email</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                               placeholder="vous@example.com" required autocomplete="email">
                     </div>
-                    <div class="input-group">
-                        <span class="input-group addon">Password</span>
-                        <label for="password"></label>
-                        <input type="password" id="password" name="password" placeholder="Your password" required>
+                    <div class="mb-form">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="••••••••" required autocomplete="current-password">
                     </div>
-                    <div class="remember">
-                        <label for="remember">Remember me</label>
-                        <input type="checkbox" id="remember" name="remember">
+                    <div class="form-check mb-form" style="margin-top:.5rem;">
+                        <input type="checkbox" id="remember" name="remember" class="form-check-input">
+                        <label for="remember" class="form-check-label">Se souvenir de moi</label>
                     </div>
-                    <div class="input-group">
-                        <button class="btn btn-primary mb-3">Login</button>
-                    </div>
-                </fieldset>
-            </form>
+                    <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem;">
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Se connecter
+                    </button>
+                </form>
+            </div>
         </div>
+
     </div>
+</div>
+
 {% endblock %}

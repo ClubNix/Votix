@@ -1,42 +1,91 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — ARM{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>Arm</h1>
-        <p class="lead">Ready to arm Votix?</p><br>
+
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:500px;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+            <div style="width:3rem;height:3rem;background:#fef2f2;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+                <i class="bi bi-shield-exclamation" style="font-size:1.4rem;color:var(--danger);"></i>
+            </div>
+            <h1 style="font-size:1.5rem;font-weight:800;margin:0 0 .25rem;">ARM</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin:0;">Génération des clés cryptographiques RSA pour l'élection.</p>
+        </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
+                <div class="alert alert-{{ category }}">
+                    <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
         {% if passphrase %}
-            <p>Passphrase: {{ passphrase }}</p>
-            <br>
-            <form method="POST" enctype="multipart/form-data" action="/download-key">
-                <fieldset>
-                    <legend>Get key</legend>
-                    <div class="input-group">
-                        <button class="btn btn-primary mb-3">Download</button>
-                    </div>
-                </fieldset>
-            </form>
+        <div class="card" style="margin-bottom:1rem;border-color:#fca5a5;">
+            <div class="card-header" style="background:#fef2f2;">
+                <div class="card-icon" style="background:#fecaca;color:#b91c1c;">
+                    <i class="bi bi-key-fill"></i>
+                </div>
+                <span class="card-title" style="color:#b91c1c;">Clé générée — Sauvegardez maintenant</span>
+            </div>
+            <div class="card-body">
+                <p style="font-size:.85rem;color:#b91c1c;margin-bottom:.75rem;">
+                    <i class="bi bi-exclamation-triangle me-1"></i>
+                    Cette passphrase n'est affichée qu'une seule fois. Copiez-la immédiatement.
+                </p>
+                <div class="passphrase-box">
+                    <span class="passphrase-text" id="passphrase-value">{{ passphrase }}</span>
+                    <button type="button" class="copy-btn" onclick="copyPassphrase()">
+                        <i class="bi bi-clipboard"></i> Copier
+                    </button>
+                </div>
+                <form method="POST" action="/download-key" style="margin-top:1rem;">
+                    <button type="submit" class="btn btn-danger btn-full">
+                        <i class="bi bi-download"></i>
+                        Télécharger la clé privée (.pem)
+                    </button>
+                </form>
+            </div>
+        </div>
         {% endif %}
 
-        <div class="form">
-            <form method="POST" enctype="multipart/form-data" action="/arm">
-                <fieldset>
-                    <legend>Arm</legend>
-                    <div class="input-group">
-                        <button class="btn btn-primary mb-3">Arm</button>
-                    </div>
-                </fieldset>
-            </form>
+        <div class="form-card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+                    <i class="bi bi-cpu"></i>
+                </div>
+                <span class="card-title">Armer le système</span>
+            </div>
+            <div class="card-body">
+                <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.25rem;">
+                    Cette action génère une paire de clés RSA 2048 bits. La clé publique sera utilisée pour chiffrer les votes.
+                    La clé privée (protégée par passphrase) doit être sauvegardée en lieu sûr.
+                </p>
+                <form method="POST" action="/arm">
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="bi bi-lightning-charge"></i>
+                        Générer les clés et armer Votix
+                    </button>
+                </form>
+            </div>
         </div>
+
     </div>
+</div>
+
+<script>
+function copyPassphrase() {
+    const text = document.getElementById('passphrase-value').textContent.trim();
+    navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        btn.innerHTML = '<i class="bi bi-clipboard-check"></i> Copié !';
+        setTimeout(() => { btn.innerHTML = '<i class="bi bi-clipboard"></i> Copier'; }, 2000);
+    });
+}
+</script>
+
 {% endblock %}

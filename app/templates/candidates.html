@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Votix — Candidats{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Candidats</h1>
+    <p>Liste des candidats enregistrés et leur statut d'éligibilité.</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+            <i class="bi bi-person-badge-fill"></i>
+        </div>
+        <span class="card-title">Candidats enregistrés</span>
+        <span class="ms-auto section-badge blue">{{ candidates | length }}</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+        {% if candidates %}
+        <table style="width:100%;border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:1px solid var(--border);background:var(--bg);">
+                    <th style="padding:.75rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">#</th>
+                    <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Nom</th>
+                    <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for candidate in candidates %}
+                <tr style="border-bottom:1px solid var(--border);{% if loop.last %}border-bottom:none;{% endif %}">
+                    <td style="padding:.85rem 1.5rem;font-size:.85rem;color:var(--text-muted);font-weight:600;">{{ candidate[0] }}</td>
+                    <td style="padding:.85rem 1rem;">
+                        <div style="display:flex;align-items:center;gap:.75rem;">
+                            <div style="width:2rem;height:2rem;border-radius:50%;background:{% if candidate[2] %}#d1fae5{% else %}var(--danger-light){% endif %};color:{% if candidate[2] %}#059669{% else %}var(--danger){% endif %};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+                                {{ candidate[1][0] | upper }}
+                            </div>
+                            <span style="font-weight:600;font-size:.9rem;">{{ candidate[1] }}</span>
+                        </div>
+                    </td>
+                    <td style="padding:.85rem 1rem;">
+                        {% if candidate[2] %}
+                        <span class="section-badge" style="background:#d1fae5;color:#059669;">
+                            <i class="bi bi-check-circle-fill me-1"></i>Éligible
+                        </span>
+                        {% else %}
+                        <span class="section-badge" style="background:var(--danger-light);color:var(--danger);">
+                            <i class="bi bi-x-circle-fill me-1"></i>Non éligible
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div style="padding:2.5rem;text-align:center;color:var(--text-muted);">
+            <i class="bi bi-person-badge" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>
+            Aucun candidat enregistré.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div style="margin-top:1rem;">
+    <a href="{{ url_for('votix.register_candidate') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-person-plus"></i> Ajouter un candidat
+    </a>
+</div>
+
+{% endblock %}

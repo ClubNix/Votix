@@ -1,48 +1,95 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — Délibération{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>No stress</h1>
-        <p class="lead">Ready to deliberate Votix?</p><br>
+
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:560px;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+            <div style="width:3rem;height:3rem;background:#d1fae5;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+                <i class="bi bi-trophy-fill" style="font-size:1.4rem;color:#059669;"></i>
+            </div>
+            <h1 style="font-size:1.5rem;font-weight:800;margin:0 0 .25rem;">Délibération</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin:0;">Déchiffrement des votes et révélation des résultats.</p>
+        </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
+                <div class="alert alert-{{ category }}">
+                    <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
 
         {% if results %}
-        <div>
-            <h2>Results</h2>
-            {% for result in results %}
-            <p>{{ result['name'] }} have {{ result['votes'] }} votes!</p>
-            {% endfor %}
+
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#fef9c3;color:#854d0e;">
+                    <i class="bi bi-bar-chart-fill"></i>
+                </div>
+                <span class="card-title">Résultats de l'élection</span>
+            </div>
+            <div class="card-body">
+                {% set sorted_results = results | sort(attribute='votes', reverse=true) %}
+                {% for result in sorted_results %}
+                {% set loop_index = loop.index %}
+                <div class="result-item">
+                    <span class="result-rank {% if loop_index == 1 %}first{% elif loop_index == 2 %}second{% elif loop_index == 3 %}third{% else %}other{% endif %}">
+                        {% if loop_index == 1 %}🥇
+                        {% elif loop_index == 2 %}🥈
+                        {% elif loop_index == 3 %}🥉
+                        {% else %}{{ loop_index }}{% endif %}
+                    </span>
+                    <span class="result-name">{{ result['name'] }}</span>
+                    <span class="result-badge">{{ result['votes'] }} vote{{ 's' if result['votes'] != 1 }}</span>
+                </div>
+                {% endfor %}
+            </div>
         </div>
+
         {% else %}
-            <div class="form">
-                <form method="POST" enctype="multipart/form-data" action="/deliberate">
-                    <fieldset>
-                        <legend>Deliberate</legend>
-                        <div class="input-group">
-                            <span class="input-group addon">Private key</span>
-                            <label for="file"></label>
-                            <input type="file" id="file" name="file" placeholder="Enter the private key" required accept=".pem">
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group addon">Password</span>
-                            <label for="password"></label>
-                            <input type="password" id="password" name="password" placeholder="Private key password" required>
-                        </div>
-                        <div class="input-group">
-                            <button class="btn btn-primary mb-3">Submit</button>
-                        </div>
-                    </fieldset>
+
+        <div class="form-card">
+            <div class="card-header">
+                <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+                    <i class="bi bi-lock-fill"></i>
+                </div>
+                <span class="card-title">Déchiffrer les votes</span>
+            </div>
+            <div class="card-body">
+                <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.25rem;">
+                    Fournissez la clé privée RSA et la passphrase pour déchiffrer les bulletins de vote.
+                </p>
+                <form method="POST" action="/deliberate" enctype="multipart/form-data">
+                    <div class="mb-form">
+                        <label for="file" class="form-label">
+                            <i class="bi bi-file-earmark-lock me-1"></i>Clé privée (.pem)
+                        </label>
+                        <input type="file" id="file" name="file" class="form-control"
+                               accept=".pem" required>
+                    </div>
+                    <div class="mb-form">
+                        <label for="password" class="form-label">
+                            <i class="bi bi-key me-1"></i>Passphrase
+                        </label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="Passphrase de la clé privée" required autocomplete="off">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem;">
+                        <i class="bi bi-unlock"></i>
+                        Déchiffrer et afficher les résultats
+                    </button>
                 </form>
             </div>
+        </div>
+
         {% endif %}
+
     </div>
+</div>
+
 {% endblock %}

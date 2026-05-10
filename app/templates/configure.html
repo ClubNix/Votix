@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+{% block title %}Votix — Configuration{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Configuration</h1>
+    <p>Paramètres de l'élection, SMTP et envoi des emails.</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<!-- Tab navigation -->
+<ul class="nav nav-tabs mb-4" id="configTabs" role="tablist" style="border-bottom:2px solid var(--border);">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="tab-voting-btn" data-bs-toggle="tab" data-bs-target="#tab-voting" type="button" role="tab">
+            <i class="bi bi-calendar-range me-1"></i>Période de vote
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-smtp-btn" data-bs-toggle="tab" data-bs-target="#tab-smtp" type="button" role="tab">
+            <i class="bi bi-server me-1"></i>SMTP
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-url-btn" data-bs-toggle="tab" data-bs-target="#tab-url" type="button" role="tab">
+            <i class="bi bi-link-45deg me-1"></i>URL &amp; Domaines
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-emails-btn" data-bs-toggle="tab" data-bs-target="#tab-emails" type="button" role="tab">
+            <i class="bi bi-send me-1"></i>Envoi des emails
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content" id="configTabsContent">
+
+    <!-- ── Période de vote ────────────────────────────────── -->
+    <div class="tab-pane fade show active" id="tab-voting" role="tabpanel">
+        <div class="card" style="max-width:600px;">
+            <div class="card-header">
+                <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+                <span class="card-title">Fenêtre de vote</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/configure">
+                    <input type="hidden" name="section" value="voting">
+                    <input type="hidden" name="tab" value="0">
+                    <div class="mb-form">
+                        <label for="voting_start" class="form-label">
+                            <i class="bi bi-play-circle me-1"></i>Début du vote
+                        </label>
+                        <input type="datetime-local" id="voting_start" name="voting_start"
+                               class="form-control" value="{{ voting_start }}" required>
+                    </div>
+                    <div class="mb-form">
+                        <label for="voting_end" class="form-label">
+                            <i class="bi bi-stop-circle me-1"></i>Fin du vote
+                        </label>
+                        <input type="datetime-local" id="voting_end" name="voting_end"
+                               class="form-control" value="{{ voting_end }}" required>
+                    </div>
+                    {% if voting_start and voting_end %}
+                    <div class="alert alert-info" style="margin-bottom:1rem;">
+                        <i class="bi bi-info-circle"></i>
+                        Vote ouvert du <strong>{{ voting_start | replace('T', ' ') }}</strong>
+                        au <strong>{{ voting_end | replace('T', ' ') }}</strong>.
+                    </div>
+                    {% endif %}
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2"></i> Enregistrer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SMTP ──────────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-smtp" role="tabpanel">
+        <div class="card" style="max-width:600px;">
+            <div class="card-header">
+                <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+                    <i class="bi bi-server"></i>
+                </div>
+                <span class="card-title">Serveur SMTP</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/configure">
+                    <input type="hidden" name="section" value="smtp">
+                    <input type="hidden" name="tab" value="1">
+                    <div class="row g-3 mb-form">
+                        <div class="col-8">
+                            <label for="smtp_server" class="form-label">Serveur</label>
+                            <input type="text" id="smtp_server" name="smtp_server"
+                                   class="form-control" value="{{ smtp_server }}"
+                                   placeholder="smtp.example.com">
+                        </div>
+                        <div class="col-4">
+                            <label for="smtp_port" class="form-label">Port</label>
+                            <input type="number" id="smtp_port" name="smtp_port"
+                                   class="form-control" value="{{ smtp_port }}" placeholder="465">
+                        </div>
+                    </div>
+                    <div class="mb-form">
+                        <label for="smtp_username" class="form-label">Identifiant</label>
+                        <input type="text" id="smtp_username" name="smtp_username"
+                               class="form-control" value="{{ smtp_username }}"
+                               autocomplete="username">
+                    </div>
+                    <div class="mb-form">
+                        <label for="smtp_password" class="form-label">Mot de passe</label>
+                        <input type="password" id="smtp_password" name="smtp_password"
+                               class="form-control" value="{{ smtp_password }}"
+                               autocomplete="current-password">
+                    </div>
+                    <div class="mb-form">
+                        <label for="smtp_from" class="form-label">Adresse expéditeur (From)</label>
+                        <input type="email" id="smtp_from" name="smtp_from"
+                               class="form-control" value="{{ smtp_from }}">
+                    </div>
+                    <div class="mb-form">
+                        <label for="smtp_reply_to" class="form-label">Adresse réponse (Reply-To)</label>
+                        <input type="email" id="smtp_reply_to" name="smtp_reply_to"
+                               class="form-control" value="{{ smtp_reply_to }}">
+                    </div>
+                    <div class="mb-form" style="padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);">
+                        <div class="form-check">
+                            <input type="checkbox" id="smtp_verify_ssl" name="smtp_verify_ssl"
+                                   class="form-check-input" value="True"
+                                   {% if smtp_verify_ssl != 'False' %}checked{% endif %}>
+                            <label for="smtp_verify_ssl" class="form-check-label">
+                                <strong>Vérifier le certificat SSL</strong>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2"></i> Enregistrer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── URL & Domaines ────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-url" role="tabpanel">
+        <div class="row g-3" style="max-width:700px;">
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:#d1fae5;color:#059669;">
+                            <i class="bi bi-link-45deg"></i>
+                        </div>
+                        <span class="card-title">URL de vote</span>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/configure">
+                            <input type="hidden" name="section" value="url">
+                            <input type="hidden" name="tab" value="2">
+                            <div class="mb-form">
+                                <label for="voting_url" class="form-label">URL de base</label>
+                                <input type="url" id="voting_url" name="voting_url"
+                                       class="form-control" value="{{ voting_url }}"
+                                       placeholder="https://votix.fr/vote">
+                                <span class="form-text">Le lien unique de l'électeur sera ajouté à la suite de cette URL.</span>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check2"></i> Enregistrer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:#fef9c3;color:#854d0e;">
+                            <i class="bi bi-at"></i>
+                        </div>
+                        <span class="card-title">Domaines email autorisés</span>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="/configure">
+                            <input type="hidden" name="section" value="domains">
+                            <input type="hidden" name="tab" value="2">
+                            <div class="mb-form">
+                                <label for="valid_domains" class="form-label">Domaines (séparés par des virgules)</label>
+                                <input type="text" id="valid_domains" name="valid_domains"
+                                       class="form-control" value="{{ valid_domains }}"
+                                       placeholder="esiee.fr,edu.esiee.fr">
+                                <span class="form-text">Seules les adresses email de ces domaines pourront être inscrites.</span>
+                            </div>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check2"></i> Enregistrer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── Envoi des emails ───────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-emails" role="tabpanel">
+        <div class="row g-3">
+
+            <!-- Test email -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+                            <i class="bi bi-envelope-check"></i>
+                        </div>
+                        <span class="card-title">Email de test</span>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.1rem;">
+                            Envoie un email de test à <strong>{{ admin_email }}</strong> pour vérifier la configuration SMTP.
+                        </p>
+                        <form method="POST" action="/send-test-email">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                <i class="bi bi-send"></i> Envoyer l'email de test
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Invitations -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:#d1fae5;color:#059669;">
+                            <i class="bi bi-envelope-plus"></i>
+                        </div>
+                        <span class="card-title">Invitations</span>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.1rem;">
+                            Notifie tous les électeurs inscrits qu'ils ont été ajoutés à la liste de vote.
+                        </p>
+                        <form method="POST" action="/send-invitations">
+                            <button type="submit" class="btn btn-outline-primary btn-sm"
+                                    onclick="return confirm('Envoyer les invitations à tous les électeurs ?')">
+                                <i class="bi bi-send"></i> Envoyer les invitations
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liens de vote -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+                            <i class="bi bi-link"></i>
+                        </div>
+                        <span class="card-title">Liens de vote</span>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.1rem;">
+                            Envoie à chaque électeur son lien de vote unique et son code secret.
+                        </p>
+                        <form method="POST" action="/send-links">
+                            <button type="submit" class="btn btn-outline-primary btn-sm"
+                                    onclick="return confirm('Envoyer les liens de vote à tous les électeurs ?')">
+                                <i class="bi bi-send"></i> Envoyer les liens
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rappels -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:#fef9c3;color:#854d0e;">
+                            <i class="bi bi-bell"></i>
+                        </div>
+                        <span class="card-title">Rappels</span>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.1rem;">
+                            Envoie un rappel uniquement aux électeurs qui n'ont pas encore voté.
+                        </p>
+                        <form method="POST" action="/send-reminders">
+                            <button type="submit" class="btn btn-outline-secondary btn-sm"
+                                    onclick="return confirm('Envoyer les rappels aux électeurs n\\'ayant pas voté ?')">
+                                <i class="bi bi-send"></i> Envoyer les rappels
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+// Restore the active tab after form submit (via ?tab=N in URL)
+const params = new URLSearchParams(window.location.search);
+const tabIndex = parseInt(params.get('tab') || '0');
+const tabBtns = document.querySelectorAll('#configTabs .nav-link');
+if (tabBtns[tabIndex]) {
+    tabBtns.forEach(b => { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-pane').forEach(p => { p.classList.remove('show', 'active'); });
+    tabBtns[tabIndex].classList.add('active');
+    tabBtns[tabIndex].closest('.nav-item').nextElementSibling; // focus
+    const targetId = tabBtns[tabIndex].getAttribute('data-bs-target');
+    document.querySelector(targetId).classList.add('show', 'active');
+}
+</script>
+
+{% endblock %}

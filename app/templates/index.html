@@ -1,34 +1,68 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — Accueil{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>Votix</h1>
-        <p class="lead">Welcome to Votix, a simple voting app</p><br>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        {% if percentages %}
-            {% for prom, percentage in percentages.items() %}
-                <div class="row mb-3">
-                    <div class="col-2">
-                        <label>{{ prom }}</label>
-                    </div>
-                    <div class="col-10">
-                        <div class="progress" style="height: 30px;">
-                            <div class="progress-bar" role="progressbar" aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100" style="width: {{ percentage }}%;">
-                                {{ percentage }}%
-                            </div>
-                        </div>
+<div class="hero">
+    <div class="hero-badge">
+        <i class="bi bi-shield-check"></i>
+        Élection sécurisée
+    </div>
+    <img src="{{ url_for('static', filename='images/votix-black.png') }}"
+         alt="Votix"
+         style="width:15rem;object-fit:contain;margin-bottom:.75rem;display:block;margin-left:auto;margin-right:auto;">
+    <p class="lead">Plateforme de vote pour l'élection du bureau associatif de votre école.</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div style="max-width:600px;margin:0 auto 1.5rem;">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                <i class="bi bi-{% if category == 'warning' %}exclamation-triangle{% elif category == 'danger' %}x-circle{% else %}info-circle{% endif %}"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}
+
+{% if percentages %}
+<div class="card" style="max-width:660px;margin:0 auto;">
+    <div class="card-header">
+        <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+            <i class="bi bi-bar-chart-fill"></i>
+        </div>
+        <span class="card-title">Participation par promotion</span>
+    </div>
+    <div class="card-body">
+        {% for prom, percentage in percentages.items() %}
+        <div class="promo-row">
+            <span class="promo-label">{{ prom }}</span>
+            <div class="promo-bar-wrap">
+                <div class="progress">
+                    <div class="progress-bar"
+                         role="progressbar"
+                         style="width: {{ percentage }}%"
+                         aria-valuenow="{{ percentage }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
                     </div>
                 </div>
-            {% endfor %}
-        {% endif %}
+            </div>
+            <span class="promo-pct">{{ percentage }}%</span>
+        </div>
+        {% endfor %}
     </div>
+</div>
+{% else %}
+<div class="card" style="max-width:480px;margin:0 auto;text-align:center;">
+    <div class="card-body" style="padding:2.5rem 1.5rem;">
+        <i class="bi bi-clock-history" style="font-size:2.5rem;color:var(--text-muted);"></i>
+        <p style="margin:.8rem 0 0;color:var(--text-muted);font-size:.95rem;">
+            Les résultats de participation seront affichés ici pendant la période de vote.
+        </p>
+    </div>
+</div>
+{% endif %}
+
 {% endblock %}

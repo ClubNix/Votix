@@ -1,42 +1,97 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — Voter{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>Vote</h1>
-        <br>
+
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:520px;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+            <div style="width:3rem;height:3rem;background:var(--primary-light);border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+                <i class="bi bi-check2-square" style="font-size:1.4rem;color:var(--primary);"></i>
+            </div>
+            <h1 style="font-size:1.5rem;font-weight:800;margin:0 0 .25rem;">Voter</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin:0;">Votre vote est chiffré et anonyme.</p>
+        </div>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
                 <div class="alert alert-{{ category }}">
+                    <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
                     {{ message }}
                 </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="form">
-            <form method="POST" enctype="multipart/form-data" action="{{ url_for('votix.vote', link_string=voter.link_string) }}">
-                <fieldset>
-                    <legend>Vote</legend>
-                    <div class="input-group">
-                        <span class="input-group addon">Secret code</span>
-                        <label for="secret"></label>
-                        <input type="number" id="secret" name="secret" placeholder="Secret code" required>
+
+        <div class="form-card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#fef9c3;color:#854d0e;">
+                    <i class="bi bi-key-fill"></i>
+                </div>
+                <span class="card-title">Bulletin de vote</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('votix.vote', link_string=voter.link_string) }}" id="vote-form">
+
+                    <div class="mb-form">
+                        <label for="secret" class="form-label">
+                            <i class="bi bi-lock me-1"></i>Code secret
+                        </label>
+                        <input type="number" id="secret" name="secret" class="form-control"
+                               placeholder="Entrez votre code secret" required autocomplete="off">
+                        <span class="form-text">Ce code vous a été envoyé par email.</span>
                     </div>
-                    <div class="input-group">
-                        <span class="input-group addon">Candidates</span>
-                        <label for="candidate"></label>
-                        <select id="candidate" name="candidate" class="form-select" aria-label="Default select example" required>
-                            <option selected disabled>Vote for a candidate</option>
-                            {% for candidate in candidates %}
-                                <option value="{{ candidate[0] }}">{{ candidate[1] }}</option>
-                            {% endfor %}
-                        </select>
+
+                    <hr class="section-divider">
+
+                    <div class="mb-form">
+                        <label class="form-label">
+                            <i class="bi bi-person-badge me-1"></i>Choisissez un candidat
+                        </label>
+
+                        {% for candidate in candidates %}
+                        <div style="position:relative;">
+                            <input type="radio"
+                                   class="candidate-radio"
+                                   id="candidate_{{ candidate[0] }}"
+                                   name="candidate"
+                                   value="{{ candidate[0] }}"
+                                   required>
+                            <label class="candidate-label" for="candidate_{{ candidate[0] }}">
+                                <div class="candidate-avatar">{{ candidate[1][0] | upper }}</div>
+                                <span class="candidate-name">{{ candidate[1] }}</span>
+                                <i class="bi bi-check-circle-fill candidate-check"></i>
+                            </label>
+                        </div>
+                        {% endfor %}
                     </div>
-                    <div class="input-group">
-                        <button class="btn btn-primary mb-3">Register</button>
-                    </div>
-                </fieldset>
-            </form>
+
+                    <button type="submit" class="btn btn-primary btn-full btn-lg">
+                        <i class="bi bi-send-check"></i>
+                        Soumettre mon vote
+                    </button>
+
+                    <p style="text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:.9rem;margin-bottom:0;">
+                        <i class="bi bi-shield-check me-1"></i>
+                        Votre vote est chiffré par RSA. Il ne peut pas être lié à votre identité.
+                    </p>
+
+                </form>
+            </div>
         </div>
+
     </div>
+</div>
+
+<style>
+.candidate-radio:checked + .candidate-label {
+    border-color: var(--primary);
+    background: var(--primary-light);
+}
+.candidate-radio:checked + .candidate-label .candidate-check {
+    opacity: 1;
+}
+</style>
+
 {% endblock %}

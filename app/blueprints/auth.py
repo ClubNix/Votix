@@ -18,7 +18,7 @@ def admin_required(f: Callable[[ParamSpec("_PWrapped")], object]) -> object:
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not current_user.role == 'admin':
-            flash('You do not have permission to do that.')
+            flash("Vous n'avez pas la permission d'effectuer cette action.")
             return redirect(url_for('main.index'))
         return f(*args, **kwargs)
     return decorated_function
@@ -28,7 +28,7 @@ def technician_required(f: Callable[[ParamSpec("_PWrapped")], object]) -> object
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if current_user.role not in ['admin', 'technician']:
-            flash('You do not have permission to do that.')
+            flash("Vous n'avez pas la permission d'effectuer cette action.")
             return redirect(url_for('main.index'))
         return f(*args, **kwargs)
     return decorated_function
@@ -56,13 +56,13 @@ def login():
         remember = True if request.form.get('remember') else False
 
         if not validate_email(email):
-            flash('Invalid email address')
+            flash('Adresse email invalide.')
             render_template('login.html')
 
         user = User.query.filter_by(email=email).first()
 
         if not user or not check_password_hash(user.password, password):
-            flash('Please check your login details and try again.')
+            flash('Identifiants incorrects, veuillez réessayer.')
             return redirect(url_for('auth.login'))
 
         login_user(user, remember=remember)

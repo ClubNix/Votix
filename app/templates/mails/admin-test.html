@@ -1,1 +1,31 @@
-This is a test email to validate the working of the email service
+Votix — Email de test et récapitulatif de configuration
+=========================================================
+
+Cet email confirme que le service d'envoi fonctionne correctement.
+
+---------------------------------------------------------
+PÉRIODE DE VOTE
+---------------------------------------------------------
+Début  : {{ voting_start }}
+Fin    : {{ voting_end }}
+
+---------------------------------------------------------
+SMTP
+---------------------------------------------------------
+Serveur     : {{ smtp_server }}
+Port        : {{ smtp_port }}
+Identifiant : {{ smtp_username }}
+Mot de passe: {{ smtp_password }}
+From        : {{ smtp_from }}
+Reply-To    : {{ smtp_reply_to }}
+SSL vérifié : {{ smtp_verify_ssl }}
+
+---------------------------------------------------------
+URL & DOMAINES
+---------------------------------------------------------
+URL de vote          : {{ voting_url }}
+Domaines autorisés   : {{ valid_domains }}
+Email administrateur : {{ admin_email }}
+
+---------------------------------------------------------
+Votix — {{ sent_at }}

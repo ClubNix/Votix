@@ -52,8 +52,16 @@ class DatabaseHandler:
         self.cursor.execute('SELECT * FROM candidates')
         return self.cursor.fetchall()
 
+    def get_eligible_candidates(self):
+        self.cursor.execute('SELECT * FROM candidates WHERE eligible = 1')
+        return self.cursor.fetchall()
+
     def get_candidate(self, candidate_id: int):
         self.cursor.execute('SELECT * FROM candidates WHERE id = ?', (candidate_id,))
+        return self.cursor.fetchone()
+
+    def get_eligible_candidate(self, candidate_id: int):
+        self.cursor.execute('SELECT * FROM candidates WHERE id = ? AND eligible = 1', (candidate_id,))
         return self.cursor.fetchone()
 
     def add_candidate(self, candidate: Candidate):

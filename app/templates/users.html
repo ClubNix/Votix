@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+{% block title %}Votix — Utilisateurs système{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Utilisateurs système</h1>
+    <p>Gérez les comptes administrateurs et techniciens.</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="row g-4">
+
+    <!-- User list -->
+    <div class="col-12 col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+                    <i class="bi bi-people"></i>
+                </div>
+                <span class="card-title">Comptes existants</span>
+                <span class="ms-auto section-badge blue">{{ users | length }}</span>
+            </div>
+            <div class="card-body" style="padding:0;">
+                {% if users %}
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:1px solid var(--border);background:var(--bg);">
+                            <th style="padding:.75rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Utilisateur</th>
+                            <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Email</th>
+                            <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Rôle</th>
+                            <th style="padding:.75rem 1rem;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr style="border-bottom:1px solid var(--border);{% if loop.last %}border-bottom:none;{% endif %}">
+                            <td style="padding:.85rem 1.5rem;">
+                                <div style="display:flex;align-items:center;gap:.75rem;">
+                                    <div style="width:2rem;height:2rem;border-radius:50%;background:{% if user.role == 'admin' %}var(--danger-light){% else %}var(--primary-light){% endif %};color:{% if user.role == 'admin' %}var(--danger){% else %}var(--primary){% endif %};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
+                                        {{ user.username[0] | upper }}
+                                    </div>
+                                    <span style="font-weight:600;font-size:.9rem;">{{ user.username }}</span>
+                                </div>
+                            </td>
+                            <td style="padding:.85rem 1rem;font-size:.85rem;color:var(--text-muted);">{{ user.email }}</td>
+                            <td style="padding:.85rem 1rem;">
+                                {% if user.role == 'admin' %}
+                                <span class="section-badge red"><i class="bi bi-shield-fill me-1"></i>Admin</span>
+                                {% else %}
+                                <span class="section-badge blue"><i class="bi bi-wrench me-1"></i>Technicien</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding:.85rem 1rem;text-align:right;">
+                                {% if user.id != current_user.id %}
+                                <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}"
+                                      onsubmit="return confirm('Supprimer {{ user.username }} ?')">
+                                    <button type="submit" class="btn btn-sm"
+                                            style="background:var(--danger-light);color:var(--danger);border:none;"
+                                            title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                                {% else %}
+                                <button class="btn btn-sm" disabled
+                                        style="background:var(--bg);color:var(--text-muted);border:none;cursor:not-allowed;"
+                                        title="Impossible de supprimer votre propre compte">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div style="padding:2.5rem;text-align:center;color:var(--text-muted);">
+                    <i class="bi bi-people" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>
+                    Aucun utilisateur système.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Add user form -->
+    <div class="col-12 col-lg-5">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#d1fae5;color:#059669;">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <span class="card-title">Ajouter un utilisateur</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('admin.users') }}">
+                    <div class="mb-form">
+                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                        <input type="text" id="username" name="username" class="form-control"
+                               placeholder="jean.dupont" required autocomplete="off">
+                    </div>
+                    <div class="mb-form">
+                        <label for="email" class="form-label">Adresse email</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                               placeholder="jean.dupont@exemple.com" required autocomplete="off">
+                    </div>
+                    <div class="mb-form">
+                        <label for="password" class="form-label">Mot de passe</label>
+                        <input type="password" id="password" name="password" class="form-control"
+                               placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+                    <div class="mb-form">
+                        <label class="form-label">Rôle</label>
+                        <div style="display:flex;gap:.75rem;">
+                            <label style="flex:1;border:2px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:.6rem;" id="role-admin-label">
+                                <input type="radio" name="role" value="admin" id="role-admin"
+                                       style="accent-color:var(--danger);" onchange="highlightRole()">
+                                <span>
+                                    <i class="bi bi-shield-fill" style="color:var(--danger);"></i>
+                                    <strong style="display:block;font-size:.85rem;">Admin</strong>
+                                    <span style="font-size:.75rem;color:var(--text-muted);">Accès complet</span>
+                                </span>
+                            </label>
+                            <label style="flex:1;border:2px solid var(--border);border-radius:var(--radius-sm);padding:.75rem 1rem;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:.6rem;" id="role-tech-label">
+                                <input type="radio" name="role" value="technician" id="role-tech"
+                                       style="accent-color:var(--primary);" onchange="highlightRole()">
+                                <span>
+                                    <i class="bi bi-wrench" style="color:var(--primary);"></i>
+                                    <strong style="display:block;font-size:.85rem;">Technicien</strong>
+                                    <span style="font-size:.75rem;color:var(--text-muted);">Gestion électeurs</span>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem;">
+                        <i class="bi bi-person-check"></i>
+                        Créer l'utilisateur
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function highlightRole() {
+    const adminLabel = document.getElementById('role-admin-label');
+    const techLabel  = document.getElementById('role-tech-label');
+    const adminRadio = document.getElementById('role-admin');
+    const techRadio  = document.getElementById('role-tech');
+    adminLabel.style.borderColor = adminRadio.checked ? 'var(--danger)'   : 'var(--border)';
+    adminLabel.style.background  = adminRadio.checked ? 'var(--danger-light)' : '';
+    techLabel.style.borderColor  = techRadio.checked  ? 'var(--primary)'  : 'var(--border)';
+    techLabel.style.background   = techRadio.checked  ? 'var(--primary-light)' : '';
+}
+</script>
+
+{% endblock %}

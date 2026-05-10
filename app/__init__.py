@@ -8,18 +8,29 @@ import os
 
 db = SQLAlchemy()
 
-load_dotenv(dotenv_path='./app/.env')
-_SECRET_KEY = os.getenv("SECRET_KEY")
-_VOTING_URL = os.getenv("VOTING_URL")
+load_dotenv(dotenv_path='./app/.env', override=True)
 
 
 def create_app():
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = _SECRET_KEY
+    app.config['SECRET_KEY']    = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(os.path.dirname(__file__), "var", "db.sqlite")}'
-    app.config['FILE_UPLOADS'] = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
-    app.config['VOTING_URL'] = _VOTING_URL
+    app.config['FILE_UPLOADS']  = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+
+    # Runtime-mutable config (editable via /configure without restart)
+    app.config['VOTING_URL']    = os.getenv('VOTING_URL', '')
+    app.config['VOTING_START']  = int(os.getenv('VOTING_START', 0))
+    app.config['VOTING_END']    = int(os.getenv('VOTING_END', 0))
+    app.config['ADMIN_EMAIL']   = os.getenv('ADMIN_EMAIL', '')
+    app.config['VALID_EMAIL_DOMAINS'] = [d.strip() for d in os.getenv('VALID_EMAIL_DOMAINS', '').split(',') if d.strip()]
+    app.config['SMTP_SERVER']   = os.getenv('SMTP_SERVER', '')
+    app.config['SMTP_PORT']     = int(os.getenv('SMTP_PORT', 465))
+    app.config['SMTP_USERNAME'] = os.getenv('SMTP_USERNAME', '')
+    app.config['SMTP_PASSWORD'] = os.getenv('SMTP_PASSWORD', '')
+    app.config['SMTP_FROM']     = os.getenv('SMTP_FROM', '')
+    app.config['SMTP_REPLY_TO'] = os.getenv('SMTP_REPLY_TO', '')
+    app.config['SMTP_VERIFY_SSL'] = os.getenv('SMTP_VERIFY_SSL', 'True')
 
     db.init_app(app)
 
@@ -49,10 +60,12 @@ def create_app():
     from .blueprints.auth import auth
     from .blueprints.admin import admin
     from .blueprints.votix import votix
+    from .blueprints.configure import configure_bp
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(admin)
     app.register_blueprint(votix)
+    app.register_blueprint(configure_bp)
 
     return app

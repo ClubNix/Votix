@@ -1,19 +1,65 @@
-Hello {{ first_name }},
-
-Here's your voting link: {{ voting_link }}
-
-You'll have to enter the following secret code: {{ secret_code }}.
-
-This link is unique and will allow you to vote, only once, for the candidate of your choice.
-
-The link will be valid from the May, 17th 2024 at 00:01 AM to the May, 17th 2024 at 04:00 PM (UTC+1).
-The results will be announced the same day at 05:00 PM, in the Marcel Dassault amphitheater.
-
-Don't forget to reply to this email if you have any issues.
-
-Good luck to all the candidates !
-
-Cordially,
-
-Louis GAMBART
-Votix/Club*Nix - System and Network Administrator
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Votre lien de vote — Votix</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
+          <tr>
+            <td style="background:#0f172a;border-radius:12px 12px 0 0;padding:32px 40px;text-align:center;">
+              <img src="cid:votix_logo" alt="Votix" style="height:48px;width:auto;display:block;margin:0 auto;">
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#ffffff;padding:40px;">
+              <p style="margin:0 0 16px;font-size:18px;font-weight:600;color:#0f172a;">Bonjour {{ first_name }},</p>
+              <p style="margin:0 0 24px;font-size:15px;color:#475569;line-height:1.6;">
+                Voici votre lien de vote personnel. Ce lien est <strong>unique</strong> et ne peut être utilisé qu'une seule fois.
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;">
+                <tr>
+                  <td align="center">
+                    <a href="{{ voting_link }}" style="display:inline-block;background:#2563eb;color:#ffffff;font-size:16px;font-weight:600;padding:14px 36px;border-radius:8px;text-decoration:none;">Voter maintenant</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 4px;font-size:12px;color:#94a3b8;text-align:center;">Ou copiez ce lien dans votre navigateur :</p>
+              <p style="margin:0 0 28px;font-size:12px;color:#2563eb;text-align:center;word-break:break-all;">{{ voting_link }}</p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 28px;">
+                <tr>
+                  <td style="background:#f8fafc;border:2px dashed #e2e8f0;border-radius:8px;padding:20px;text-align:center;">
+                    <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.05em;">Votre code secret</p>
+                    <p style="margin:0;font-size:34px;font-weight:700;color:#0f172a;letter-spacing:10px;">{{ secret_code }}</p>
+                  </td>
+                </tr>
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+                <tr>
+                  <td style="background:#eff6ff;border-left:4px solid #2563eb;border-radius:0 8px 8px 0;padding:16px 20px;">
+                    <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#1e40af;text-transform:uppercase;letter-spacing:.05em;">Période de vote</p>
+                    <p style="margin:0 0 4px;font-size:14px;color:#1e40af;">Début : {{ voting_start }}</p>
+                    <p style="margin:0;font-size:14px;color:#1e40af;">Fin&nbsp;&nbsp;&nbsp;: {{ voting_end }}</p>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0;font-size:13px;color:#94a3b8;line-height:1.6;">
+                En cas de problème, répondez à cet email ou contactez l'administrateur.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f8fafc;border-radius:0 0 12px 12px;border-top:1px solid #e2e8f0;padding:20px 40px;text-align:center;">
+              <p style="margin:0;font-size:13px;color:#94a3b8;">L'équipe <strong style="color:#64748b;">Votix</strong> — Élection sécurisée du BDE</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

@@ -1,36 +1,64 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — Ajouter un candidat{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>Register a new candidate in Votix</h1>
-        <br>
+
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:460px;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+            <div style="width:3rem;height:3rem;background:#ede9fe;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+                <i class="bi bi-person-badge-fill" style="font-size:1.4rem;color:#7c3aed;"></i>
+            </div>
+            <h1 style="font-size:1.5rem;font-weight:800;margin:0 0 .25rem;">Ajouter un candidat</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin:0;">Enregistrez un candidat pour l'élection.</p>
+        </div>
+
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
+                <div class="alert alert-{{ category }}">
+                    <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
-        <div class="form">
-            <form method="POST" enctype="multipart/form-data" action="/register-candidate">
-                <fieldset>
-                    <legend>Register new candidate</legend>
-                    <div class="input-group">
-                        <span class="input-group addon">Name</span>
-                        <label for="name"></label>
-                        <input type="text" id="name" name="name" placeholder="Candidate name" required>
+
+        <div class="form-card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <span class="card-title">Informations du candidat</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/register-candidate">
+                    <div class="mb-form">
+                        <label for="name" class="form-label">Nom complet</label>
+                        <input type="text" id="name" name="name" class="form-control"
+                               placeholder="Prénom Nom" required autocomplete="name">
                     </div>
-                    <div class="remember">
-                        <label for="eligible">Eligible</label>
-                        <input type="checkbox" id="eligible" name="eligible" checked>
+                    <div class="mb-form" style="padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);">
+                        <div class="form-check">
+                            <input type="checkbox" id="eligible" name="eligible"
+                                   class="form-check-input" checked>
+                            <label for="eligible" class="form-check-label">
+                                <strong>Candidat éligible</strong>
+                            </label>
+                        </div>
+                        <p class="form-text" style="margin:.4rem 0 0 1.6rem;">
+                            Décochez si le candidat ne remplit pas les conditions d'éligibilité.
+                        </p>
                     </div>
-                    <div class="input-group">
-                        <button class="btn btn-primary mb-3">Register</button>
-                    </div>
-                </fieldset>
-            </form>
+                    <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem;">
+                        <i class="bi bi-person-check"></i>
+                        Enregistrer le candidat
+                    </button>
+                </form>
+            </div>
         </div>
+
     </div>
+</div>
+
 {% endblock %}

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Votix — Électeurs{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Électeurs</h1>
+    <p>Liste des électeurs inscrits. Les informations de vote ne sont pas affichées.</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <span class="card-title">Électeurs inscrits</span>
+        <span class="ms-auto section-badge blue">{{ voters | length }}</span>
+    </div>
+    <div class="card-body" style="padding:0;">
+        {% if voters %}
+        <div style="overflow-x:auto;">
+            <table style="width:100%;border-collapse:collapse;min-width:600px;">
+                <thead>
+                    <tr style="border-bottom:1px solid var(--border);background:var(--bg);">
+                        <th style="padding:.75rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Nom</th>
+                        <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Email</th>
+                        <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Promotion</th>
+                        <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:center;">Invitation</th>
+                        <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:center;">Lien</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for voter in voters %}
+                    <tr style="border-bottom:1px solid var(--border);{% if loop.last %}border-bottom:none;{% endif %}">
+                        <td style="padding:.85rem 1.5rem;">
+                            <div style="display:flex;align-items:center;gap:.75rem;">
+                                <div style="width:2rem;height:2rem;border-radius:50%;background:var(--primary-light);color:var(--primary);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem;flex-shrink:0;">
+                                    {{ voter.last_name[0] | upper }}
+                                </div>
+                                <span style="font-weight:600;font-size:.9rem;">{{ voter.last_name | upper }} {{ voter.first_name | capitalize }}</span>
+                            </div>
+                        </td>
+                        <td style="padding:.85rem 1rem;font-size:.85rem;color:var(--text-muted);">{{ voter.email }}</td>
+                        <td style="padding:.85rem 1rem;">
+                            <span class="section-badge blue">{{ voter.promotion }}</span>
+                        </td>
+                        <td style="padding:.85rem 1rem;text-align:center;">
+                            {% if voter.invitation_sent %}
+                            <i class="bi bi-check-circle-fill" style="color:#059669;font-size:1rem;" title="Envoyée"></i>
+                            {% else %}
+                            <i class="bi bi-dash-circle" style="color:var(--text-muted);font-size:1rem;" title="Non envoyée"></i>
+                            {% endif %}
+                        </td>
+                        <td style="padding:.85rem 1rem;text-align:center;">
+                            {% if voter.link_sent %}
+                            <i class="bi bi-check-circle-fill" style="color:#059669;font-size:1rem;" title="Envoyé"></i>
+                            {% else %}
+                            <i class="bi bi-dash-circle" style="color:var(--text-muted);font-size:1rem;" title="Non envoyé"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="padding:2.5rem;text-align:center;color:var(--text-muted);">
+            <i class="bi bi-people" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>
+            Aucun électeur inscrit.
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div style="margin-top:1rem;display:flex;gap:.5rem;flex-wrap:wrap;">
+    <a href="{{ url_for('votix.register_voter') }}" class="btn btn-primary btn-sm">
+        <i class="bi bi-person-check"></i> Inscrire un électeur
+    </a>
+    <a href="{{ url_for('votix.import_voters') }}" class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-upload"></i> Importer depuis CSV
+    </a>
+</div>
+
+{% endblock %}

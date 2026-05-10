@@ -1,73 +1,138 @@
 {% extends "base.html" %}
-{% block title %}Votix{% endblock %}
+{% block title %}Votix — Dashboard{% endblock %}
 {% block content %}
-    <div class="starter-template text-center py-5 px-3">
-        <h1>Votix</h1>
-        <p class="lead">Welcome to admin dashboard of Votix</p><br>
 
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <div class="alert alert-danger">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
-        {% endwith %}
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Vue d'ensemble et gestion de l'élection.</p>
+</div>
 
-        <div>
-            <h2>Configuration</h2>
-            <br>
-            {% if current_user.is_authenticated and current_user.role == 'admin' %}
-                <button type="button" class="btn btn-transparent">
-                    <a href="{{ url_for('votix.register_candidate') }}">Register Candidate</a>
-                </button>
-                <button type="button" class="btn btn-transparent">
-                    <a href="{{ url_for('votix.import_voters') }}">Import Voters</a>
-                </button>
-                <button type="button" class="btn btn-transparent">
-                    <a href="{{ url_for('admin.arm') }}">Configure</a>
-                </button>
-            {% endif %}
-        </div>
-        <br><br>
-        <div>
-            <h2>Actions</h2>
-            <br>
-            <button type="button" class="btn btn-transparent">
-                <a href="{{ url_for('votix.register_voter') }}">Register Voter</a>
-            </button>
-            {% if current_user.is_authenticated and current_user.role == 'admin' %}
-                <button type="button" class="btn btn-transparent">
-                    <a href="{{ url_for('admin.arm') }}">ARM</a>
-                </button>
-                <button type="button" class="btn btn-transparent">
-                    <a href="{{ url_for('admin.deliberate') }}">Deliberate</a>
-                </button>
-            {% endif %}
-        </div>
-        <br>
-        <div class="form">
-            <fieldset>
-                <legend>Votix statistics</legend>
-                {% if voters %}
-                <p>There is {{ voters }} voters registered on Votix!</p>
-                {% else %}
-                <p>There is no voter registered on Votix!</p>
-                {% endif %}
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-danger">
+        <i class="bi bi-x-circle"></i>
+        {{ messages[0] }}
+    </div>
+    {% endif %}
+{% endwith %}
 
-                {% if candidates %}
-                <div>
-                    <p>There is {{ candidates|length }} candidates registered on Votix!</p>
-                </div>
-                {% else %}
-                <p>There is no candidate registered on Votix!</p>
-                {% endif %}
-
-                {% if votes %}
-                <p>There is {{ votes }} votes yet on Votix!</p>
-                {% else %}
-                <p>There is no vote yet on Votix!</p>
-                {% endif %}
-            </fieldset>
+<!-- Statistics -->
+<div class="row g-3 mb-4">
+    <div class="col-12 col-sm-4">
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
+            <div>
+                <div class="stat-value">{{ voters if voters else 0 }}</div>
+                <div class="stat-label">Électeurs inscrits</div>
+            </div>
         </div>
     </div>
+    <div class="col-12 col-sm-4">
+        <div class="stat-card">
+            <div class="stat-icon purple"><i class="bi bi-person-badge-fill"></i></div>
+            <div>
+                <div class="stat-value">{{ candidates|length if candidates else 0 }}</div>
+                <div class="stat-label">Candidats</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-sm-4">
+        <div class="stat-card">
+            <div class="stat-icon green"><i class="bi bi-check2-circle"></i></div>
+            <div>
+                <div class="stat-value">{{ votes if votes else 0 }}</div>
+                <div class="stat-label">Votes enregistrés</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+
+    <!-- Configuration (admin only) -->
+    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+    <div class="col-12 col-md-6">
+        <div class="card h-100">
+            <div class="card-header">
+                <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+                <span class="card-title">Configuration</span>
+            </div>
+            <div class="card-body">
+                <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.2rem;">
+                    Paramètres de l'élection : candidats, électeurs et clés cryptographiques.
+                </p>
+                <div class="action-group">
+                    <a href="{{ url_for('votix.register_candidate') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-person-plus"></i> Ajouter candidat
+                    </a>
+                    <a href="{{ url_for('votix.candidates') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-person-badge"></i> Voir candidats
+                    </a>
+                    <a href="{{ url_for('votix.import_voters') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-upload"></i> Importer électeurs
+                    </a>
+                    <a href="{{ url_for('configure.configure') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-gear"></i> Configurer
+                    </a>
+                    <a href="{{ url_for('admin.users') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-people"></i> Utilisateurs
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="col-12 col-md-{% if current_user.is_authenticated and current_user.role == 'admin' %}6{% else %}12{% endif %}">
+        <div class="card h-100">
+            <div class="card-header">
+                <div class="card-icon" style="background:#d1fae5;color:#059669;">
+                    <i class="bi bi-lightning-fill"></i>
+                </div>
+                <span class="card-title">Actions</span>
+            </div>
+            <div class="card-body">
+                <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1.2rem;">
+                    Opérations disponibles selon votre rôle.
+                </p>
+                <div class="action-group">
+                    <a href="{{ url_for('votix.register_voter') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-person-check"></i> Inscrire électeur
+                    </a>
+                    <a href="{{ url_for('votix.voters_list') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-people"></i> Voir électeurs
+                    </a>
+                    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.arm') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-key"></i> ARM
+                    </a>
+                    <a href="{{ url_for('admin.deliberate') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-trophy"></i> Délibérer
+                    </a>
+                    {% endif %}
+                </div>
+
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                <hr style="margin:1.25rem 0;border-color:var(--border);">
+                <p style="font-size:.8rem;color:var(--text-muted);margin-bottom:.75rem;">
+                    <i class="bi bi-exclamation-triangle me-1" style="color:var(--danger);"></i>
+                    Zone dangereuse — action irréversible.
+                </p>
+                <form method="POST" action="{{ url_for('admin.reset') }}"
+                      onsubmit="return confirm('Réinitialiser l\'application ?\n\nCette action supprimera TOUS les électeurs, candidats et votes, ainsi que les comptes secondaires.\n\nSeul le premier compte administrateur sera conservé.\n\nCette action est IRRÉVERSIBLE.') && confirm('Dernière confirmation : êtes-vous certain(e) ?')">
+                    <button type="submit" class="btn btn-sm"
+                            style="background:var(--danger-light);color:var(--danger);border:1px solid var(--danger);width:100%;">
+                        <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser l'application
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+</div>
+
 {% endblock %}
