@@ -82,8 +82,8 @@ def send_email(subject: str, body: str, recipient: str):
     msg.attach(MIMEText(body, 'plain'))
 
     try:
-        with smtplib.SMTP(_SMTP_SERVER, _SMTP_PORT) as server:
-            server.starttls(context=smtp_ssl_context)
+        with smtplib.SMTP_SSL(_SMTP_SERVER, _SMTP_PORT, context=smtp_ssl_context) as server:
+#            server.starttls(context=smtp_ssl_context)
             server.login(_SMTP_USERNAME, _SMTP_PASSWORD)
             server.sendmail(_SMTP_FROM, recipient, msg.as_string())
     except smtplib.SMTPException as e:
