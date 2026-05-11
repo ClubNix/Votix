@@ -42,6 +42,8 @@ def register_voter():
         email = request.form['email']
         promotion = request.form['promotion']
 
+        send_email = bool(request.form.get('send_email'))
+
         if not validate_email_domain(email):
             flash('Adresse email invalide ou domaine non autorisé.', 'danger')
             return render_template('register_voter.html', list=promotion_list)
@@ -61,16 +63,19 @@ def register_voter():
                 flash(f'Une erreur est survenue lors de l\'ajout de l\'électeur : {e}', 'danger')
                 return render_template('register_voter.html', list=promotion_list)
 
-        try:
-            voter_obj = Voter.query.filter_by(email=email).first()
-            if voter_obj:
-                send_link_email(voter_obj)
-                flash('Électeur ajouté et lien de vote envoyé avec succès.', 'success')
-            else:
-                flash('Électeur ajouté, mais impossible de récupérer le compte pour l\'envoi du lien.', 'warning')
-        except Exception as e:
-            votix_logger.error(f"Failed to send link email to {email}: {e}")
-            flash('Électeur ajouté, mais l\'envoi du lien de vote a échoué.', 'warning')
+        if not send_email:
+            flash('Électeur ajouté. Le lien de vote n\'a pas été envoyé.', 'success')
+        else:
+            try:
+                voter_obj = Voter.query.filter_by(email=email).first()
+                if voter_obj:
+                    send_link_email(voter_obj)
+                    flash('Électeur ajouté et lien de vote envoyé avec succès.', 'success')
+                else:
+                    flash('Électeur ajouté, mais impossible de récupérer le compte pour l\'envoi du lien.', 'warning')
+            except Exception as e:
+                votix_logger.error(f"Failed to send link email to {email}: {e}")
+                flash('Électeur ajouté, mais l\'envoi du lien de vote a échoué.', 'warning')
 
         return render_template('register_voter.html', list=promotion_list)
     else:
