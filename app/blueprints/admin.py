@@ -98,7 +98,7 @@ def deliberate():
 
             results = {}
             for candidate in candidates:
-                results[candidate[0]] = {'name': candidate[1], 'votes': 0}
+                results[candidate[0]] = {'name': candidate[1], 'eligible': bool(candidate[2]), 'votes': 0}
 
             for vote in votes:
                 encrypted_ballot = hex(int.from_bytes(vote[0], 'big'))[2:]

@@ -51,6 +51,7 @@
                         </label>
 
                         {% for candidate in candidates %}
+                        {% if candidate[2] %}
                         <div style="position:relative;">
                             <input type="radio"
                                    class="candidate-radio"
@@ -64,6 +65,15 @@
                                 <i class="bi bi-check-circle-fill candidate-check"></i>
                             </label>
                         </div>
+                        {% else %}
+                        <div style="position:relative;">
+                            <label class="candidate-label candidate-ineligible">
+                                <div class="candidate-avatar candidate-avatar-ineligible">{{ candidate[1][0] | upper }}</div>
+                                <span class="candidate-name">{{ candidate[1] }}</span>
+                                <span class="candidate-ineligible-badge">Non éligible</span>
+                            </label>
+                        </div>
+                        {% endif %}
                         {% endfor %}
                     </div>
 
@@ -91,6 +101,25 @@
 }
 .candidate-radio:checked + .candidate-label .candidate-check {
     opacity: 1;
+}
+.candidate-ineligible {
+    opacity: .5;
+    cursor: default;
+    pointer-events: none;
+}
+.candidate-avatar-ineligible {
+    background: #e5e7eb;
+    color: #9ca3af;
+}
+.candidate-ineligible-badge {
+    margin-left: auto;
+    font-size: .72rem;
+    font-weight: 600;
+    color: #9ca3af;
+    background: #f3f4f6;
+    border-radius: 999px;
+    padding: .15rem .6rem;
+    white-space: nowrap;
 }
 </style>
 

@@ -34,7 +34,7 @@
                 <span class="card-title">Résultats de l'élection</span>
             </div>
             <div class="card-body">
-                {% set sorted_results = results | sort(attribute='votes', reverse=true) %}
+                {% set sorted_results = results | selectattr('eligible') | sort(attribute='votes', reverse=true) | list %}
                 {% for result in sorted_results %}
                 {% set loop_index = loop.index %}
                 <div class="result-item">

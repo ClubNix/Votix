@@ -182,7 +182,7 @@ def vote(link_string):
 
     with DatabaseHandler('app/var/db.sqlite') as db:
         voter = db.get_voter_by_link(link_string)
-        candidates = db.get_eligible_candidates()
+        candidates = db.get_candidates()
 
         if voter is None:
             flash("Ce lien de vote n'existe pas.", 'danger')
