@@ -17,6 +17,15 @@ class DatabaseHandler:
         self.conn = sqlite3.connect(db_name)
         self.cursor = self.conn.cursor()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            self.conn.rollback()
+        self.conn.close()
+        return False
+
     def close_connection(self):
         self.conn.close()
 

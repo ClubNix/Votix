@@ -28,10 +28,10 @@ admin_logger.addHandler(handler)
 @login_required
 @technician_required
 def dashboard():
-    db = DatabaseHandler('app/var/db.sqlite')
-    voters = db.count_voters()[0]
-    candidates = db.get_candidates()
-    votes = db.count_votes()[0]
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        voters = db.count_voters()[0]
+        candidates = db.get_candidates()
+        votes = db.count_votes()[0]
 
     return render_template('dashboard.html', voters=voters, candidates=candidates, votes=votes)
 
@@ -74,15 +74,7 @@ def download_key():
 @admin_required
 def deliberate():
     if request.method == 'POST':
-        db = DatabaseHandler('app/var/db.sqlite')
-
-        votes = db.get_votes()
-        candidates = db.get_candidates()
         passphrase = request.form['password']
-
-        results = {}
-        for candidate in candidates:
-            results[candidate[0]] = {'name': candidate[1], 'votes': 0}
 
         file = request.files['file']
         if file.filename == '':
@@ -100,6 +92,14 @@ def deliberate():
                 flash('Fichier invalide.', 'danger')
                 return render_template('no_stress.html')
 
+            with DatabaseHandler('app/var/db.sqlite') as db:
+                votes = db.get_votes()
+                candidates = db.get_candidates()
+
+            results = {}
+            for candidate in candidates:
+                results[candidate[0]] = {'name': candidate[1], 'votes': 0}
+
             for vote in votes:
                 encrypted_ballot = hex(int.from_bytes(vote[0], 'big'))[2:]
                 ballot = decrypt_ballot(bytes.fromhex(encrypted_ballot), privkey, passphrase)
@@ -107,7 +107,6 @@ def deliberate():
                 results[int(ballot[0])]['votes'] += 1
 
             os.remove(filepath)
-            db.close_connection()
 
             admin_logger.info('Deliberation successful')
             flash('Délibération effectuée avec succès.', 'success')

@@ -46,22 +46,20 @@ def register_voter():
             flash('Adresse email invalide ou domaine non autorisé.', 'danger')
             return render_template('register_voter.html', list=promotion_list)
 
-        db = DatabaseHandler('app/var/db.sqlite')
-        if db.get_voter_by_email(email) is not None:
-            flash('Un électeur avec cette adresse email existe déjà.', 'danger')
-            return render_template('register_voter.html', list=promotion_list)
+        with DatabaseHandler('app/var/db.sqlite') as db:
+            if db.get_voter_by_email(email) is not None:
+                flash('Un électeur avec cette adresse email existe déjà.', 'danger')
+                return render_template('register_voter.html', list=promotion_list)
 
-        try:
-            link_string = str(uuid.uuid4())
-            secret = str(random.randint(0, 9999)).zfill(4)
-            db.add_voter(Voter(last_name=last_name, first_name=first_name, email=email, promotion=promotion,
-                               voted=False, link_string=link_string, secret=secret, invitation_sent=False,
-                               link_sent=False))
-        except Exception as e:
-            flash(f'Une erreur est survenue lors de l\'ajout de l\'électeur : {e}', 'danger')
-            return render_template('register_voter.html', list=promotion_list)
-
-        db.close_connection()
+            try:
+                link_string = str(uuid.uuid4())
+                secret = str(random.randint(0, 9999)).zfill(4)
+                db.add_voter(Voter(last_name=last_name, first_name=first_name, email=email, promotion=promotion,
+                                   voted=False, link_string=link_string, secret=secret, invitation_sent=False,
+                                   link_sent=False))
+            except Exception as e:
+                flash(f'Une erreur est survenue lors de l\'ajout de l\'électeur : {e}', 'danger')
+                return render_template('register_voter.html', list=promotion_list)
 
         try:
             voter_obj = Voter.query.filter_by(email=email).first()
@@ -90,27 +88,26 @@ def import_voters():
             return render_template('import_voters.html', list=promotion_list)
 
         if file:
-            db = DatabaseHandler('app/var/db.sqlite')
             try:
                 filepath = os.path.join(current_app.config['FILE_UPLOADS'], f'{uuid.uuid4()}.csv')
                 file.save(filepath)
-                with open(filepath, 'r') as f:
-                    reader = csv.reader(f)
-                    next(reader)
-                    for row in reader:
-                        last_name, first_name, email, promotion = row
+                with DatabaseHandler('app/var/db.sqlite') as db:
+                    with open(filepath, 'r') as f:
+                        reader = csv.reader(f)
+                        next(reader)
+                        for row in reader:
+                            last_name, first_name, email, promotion = row
 
-                        link_string = str(uuid.uuid4())
-                        secret = str(random.randint(0, 9999)).zfill(4)
-                        db.add_voter(Voter(
-                            last_name=last_name, first_name=first_name, email=email, promotion=promotion,
-                            link_string=link_string, secret=secret)
-                        )
+                            link_string = str(uuid.uuid4())
+                            secret = str(random.randint(0, 9999)).zfill(4)
+                            db.add_voter(Voter(
+                                last_name=last_name, first_name=first_name, email=email, promotion=promotion,
+                                link_string=link_string, secret=secret)
+                            )
             except Exception as e:
                 flash('Une erreur est survenue lors de l\'importation des électeurs.', 'danger')
                 votix_logger.error(f"An error occurred while importing voters: {e}")
                 return render_template('import_voters.html', list=promotion_list)
-            db.close_connection()
 
             votix_logger.info('Voters imported successfully via {file.filename}')
             flash('Électeurs importés avec succès.', 'success')
@@ -143,9 +140,8 @@ def voters_list():
 @login_required
 @technician_required
 def candidates():
-    db = DatabaseHandler('app/var/db.sqlite')
-    all_candidates = db.get_candidates()
-    db.close_connection()
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        all_candidates = db.get_candidates()
     return render_template('candidates.html', candidates=all_candidates)
 
 
@@ -157,13 +153,12 @@ def register_candidate():
         name = request.form['name']
         eligible = True if request.form.get('eligible') else False
 
-        db = DatabaseHandler('app/var/db.sqlite')
         try:
-            db.add_candidate(Candidate(name=name, eligible=eligible))
+            with DatabaseHandler('app/var/db.sqlite') as db:
+                db.add_candidate(Candidate(name=name, eligible=eligible))
         except Exception as e:
             flash(f'Une erreur est survenue lors de l\'ajout du candidat : {e}', 'danger')
             return render_template('register_candidate.html')
-        db.close_connection()
 
         flash('Candidat ajouté avec succès.', 'success')
         return render_template('register_candidate.html')
@@ -173,10 +168,6 @@ def register_candidate():
 
 @votix.route('/vote/<link_string>', methods=['GET', 'POST'])
 def vote(link_string):
-    db = DatabaseHandler('app/var/db.sqlite')
-    voter = db.get_voter_by_link(link_string)
-    candidates = db.get_eligible_candidates()
-
     current_time = int(time.time())
     cfg = dotenv_values('./app/.env')
     voting_start = int(cfg.get('VOTING_START', 0) or 0)
@@ -189,42 +180,45 @@ def vote(link_string):
         flash('Le vote est terminé.', 'danger')
         return render_template('index.html')
 
-    if voter is None:
-        flash("Ce lien de vote n'existe pas.", 'danger')
-        return render_template('index.html')
-    if voter.voted:
-        flash('Cet électeur a déjà voté.', 'danger')
-        return render_template('index.html')
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        voter = db.get_voter_by_link(link_string)
+        candidates = db.get_eligible_candidates()
 
-    if request.method == 'POST':
-        candidate_id = int(request.form['candidate'])
-        secret_code = request.form['secret']
+        if voter is None:
+            flash("Ce lien de vote n'existe pas.", 'danger')
+            return render_template('index.html')
+        if voter.voted:
+            flash('Cet électeur a déjà voté.', 'danger')
+            return render_template('index.html')
 
-        if not candidate_id:
-            flash('Veuillez sélectionner un candidat.', 'danger')
+        if request.method == 'POST':
+            candidate_id = int(request.form['candidate'])
+            secret_code = request.form['secret']
+
+            if not candidate_id:
+                flash('Veuillez sélectionner un candidat.', 'danger')
+                return render_template('vote.html', voter=voter, candidates=candidates)
+            if db.get_eligible_candidate(candidate_id) is None:
+                flash('Candidat invalide ou non éligible.', 'danger')
+                return render_template('vote.html', voter=voter, candidates=candidates)
+
+            if not secret_code:
+                flash('Le code secret est requis.', 'danger')
+                return render_template('vote.html', voter=voter, candidates=candidates)
+            if voter.secret != secret_code:
+                flash('Code secret invalide.', 'danger')
+                return render_template('vote.html', voter=voter, candidates=candidates)
+
+            try:
+                pubkey = open('app/var/pubkey.pem', 'rb').read()
+                ballot = encrypt_ballot(str(candidate_id), pubkey, str(voter.link_string))
+                db.add_vote(voter, ballot)
+            except Exception as e:
+                flash(f'Une erreur est survenue lors de l\'enregistrement du vote : {e}', 'danger')
+                return render_template('vote.html', voter=voter, candidates=candidates)
+
+        else:
             return render_template('vote.html', voter=voter, candidates=candidates)
-        if db.get_eligible_candidate(candidate_id) is None:
-            flash('Candidat invalide ou non éligible.', 'danger')
-            return render_template('vote.html', voter=voter, candidates=candidates)
 
-        if not secret_code:
-            flash('Le code secret est requis.', 'danger')
-            return render_template('vote.html', voter=voter, candidates=candidates)
-        if voter.secret != secret_code:
-            flash('Code secret invalide.', 'danger')
-            return render_template('vote.html', voter=voter, candidates=candidates)
-
-        try:
-            pubkey = open('app/var/pubkey.pem', 'rb').read()
-            ballot = encrypt_ballot(str(candidate_id), pubkey, str(voter.link_string))
-            db.add_vote(voter, ballot)
-        except Exception as e:
-            flash(f'Une erreur est survenue lors de l\'enregistrement du vote : {e}', 'danger')
-            return render_template('vote.html', voter=voter, candidates=candidates)
-
-        db.close_connection()
-
-        flash('Vote enregistré avec succès.', 'success')
-        return render_template('index.html')
-    else:
-        return render_template('vote.html', voter=voter, candidates=candidates)
+    flash('Vote enregistré avec succès.', 'success')
+    return render_template('index.html')
