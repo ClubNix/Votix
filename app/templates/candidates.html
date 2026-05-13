@@ -35,6 +35,7 @@
                     <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Logo</th>
                     <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Nom</th>
                     <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Statut</th>
+                    <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -65,6 +66,24 @@
                             <i class="bi bi-x-circle-fill me-1"></i>Non éligible
                         </span>
                         {% endif %}
+                    </td>
+                    <td style="padding:.85rem 1rem;">
+                        <div style="display:flex;gap:.5rem;align-items:center;">
+                            <a href="{{ url_for('votix.edit_candidate', candidate_id=candidate[0]) }}"
+                               class="btn btn-sm"
+                               style="padding:.3rem .65rem;font-size:.8rem;background:var(--bg);border:1px solid var(--border);color:var(--text);">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form method="POST"
+                                  action="{{ url_for('votix.delete_candidate', candidate_id=candidate[0]) }}"
+                                  onsubmit="return confirm('Supprimer « {{ candidate[1] }} » ? Cette action est irréversible.');">
+                                <button type="submit"
+                                        class="btn btn-sm"
+                                        style="padding:.3rem .65rem;font-size:.8rem;background:var(--danger-light);border:1px solid var(--danger);color:var(--danger);">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
                 {% endfor %}

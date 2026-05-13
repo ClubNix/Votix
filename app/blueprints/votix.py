@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, flash, current_app
+from flask import Blueprint, render_template, request, flash, current_app, redirect, url_for
 from flask_login import login_required
 from dotenv import load_dotenv, dotenv_values
 
@@ -186,6 +186,79 @@ def register_candidate():
         return render_template('register_candidate.html')
     else:
         return render_template('register_candidate.html')
+
+
+@votix.route('/edit-candidate/<int:candidate_id>', methods=['GET', 'POST'])
+@login_required
+@technician_required
+def edit_candidate(candidate_id):
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        candidate = db.get_candidate(candidate_id)
+
+    if candidate is None:
+        flash('Candidat introuvable.', 'danger')
+        return redirect(url_for('votix.candidates'))
+
+    if request.method == 'POST':
+        name = request.form['name']
+        eligible = True if request.form.get('eligible') else False
+        remove_logo = bool(request.form.get('remove_logo'))
+
+        current_logo = candidate[3] if len(candidate) > 3 else ''
+        logo_filename = current_logo
+
+        if remove_logo:
+            if current_logo:
+                try:
+                    os.remove(os.path.join(current_app.config['FILE_UPLOADS'], current_logo))
+                except FileNotFoundError:
+                    pass
+            logo_filename = ''
+        else:
+            logo_file = request.files.get('logo')
+            if logo_file and logo_file.filename:
+                if not _allowed_logo(logo_file.filename):
+                    flash('Format de logo invalide. Utilisez PNG, JPG, JPEG, GIF ou WEBP.', 'danger')
+                    return render_template('edit_candidate.html', candidate=candidate)
+                if current_logo:
+                    try:
+                        os.remove(os.path.join(current_app.config['FILE_UPLOADS'], current_logo))
+                    except FileNotFoundError:
+                        pass
+                ext = logo_file.filename.rsplit('.', 1)[1].lower()
+                logo_filename = f'{uuid.uuid4()}.{ext}'
+                logo_file.save(os.path.join(current_app.config['FILE_UPLOADS'], logo_filename))
+
+        with DatabaseHandler('app/var/db.sqlite') as db:
+            db.update_candidate(candidate_id, name, eligible, logo_filename)
+
+        flash('Candidat mis à jour avec succès.', 'success')
+        return redirect(url_for('votix.candidates'))
+
+    return render_template('edit_candidate.html', candidate=candidate)
+
+
+@votix.route('/delete-candidate/<int:candidate_id>', methods=['POST'])
+@login_required
+@technician_required
+def delete_candidate(candidate_id):
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        candidate = db.get_candidate(candidate_id)
+        if candidate is None:
+            flash('Candidat introuvable.', 'danger')
+            return redirect(url_for('votix.candidates'))
+
+        logo = candidate[3] if len(candidate) > 3 else ''
+        if logo:
+            try:
+                os.remove(os.path.join(current_app.config['FILE_UPLOADS'], logo))
+            except FileNotFoundError:
+                pass
+
+        db.delete_candidate(candidate_id)
+
+    flash('Candidat supprimé.', 'success')
+    return redirect(url_for('votix.candidates'))
 
 
 @votix.route('/vote/<link_string>', methods=['GET', 'POST'])

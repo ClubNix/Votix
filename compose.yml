@@ -9,6 +9,7 @@ services:
 
     volumes:
       - ./data:/app/app/var
+      - ./data/uploads:/app/app/static/uploads
       - ./logs:/app/app/logs
 
     restart: unless-stopped

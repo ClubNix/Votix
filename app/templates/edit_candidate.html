@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block title %}Votix — Modifier un candidat{% endblock %}
+{% block content %}
+
+<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+    <div style="width:100%;max-width:460px;">
+
+        <div style="text-align:center;margin-bottom:1.75rem;">
+            <div style="width:3rem;height:3rem;background:#ede9fe;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:.75rem;">
+                <i class="bi bi-pencil-square" style="font-size:1.4rem;color:#7c3aed;"></i>
+            </div>
+            <h1 style="font-size:1.5rem;font-weight:800;margin:0 0 .25rem;">Modifier un candidat</h1>
+            <p style="color:var(--text-muted);font-size:.9rem;margin:0;">Mettez à jour les informations du candidat.</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% else %}info-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <div class="form-card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#ede9fe;color:#7c3aed;">
+                    <i class="bi bi-person-badge"></i>
+                </div>
+                <span class="card-title">Informations du candidat</span>
+            </div>
+            <div class="card-body">
+                <form method="POST"
+                      action="{{ url_for('votix.edit_candidate', candidate_id=candidate[0]) }}"
+                      enctype="multipart/form-data">
+
+                    <div class="mb-form">
+                        <label for="name" class="form-label">Nom de la liste</label>
+                        <input type="text" id="name" name="name" class="form-control"
+                               value="{{ candidate[1] }}" required autocomplete="off">
+                    </div>
+
+                    <div class="mb-form">
+                        <label class="form-label">Logo actuel</label>
+                        {% set current_logo = candidate[3] if candidate|length > 3 else '' %}
+                        {% if current_logo %}
+                        <div style="display:flex;align-items:center;gap:1rem;padding:.75rem;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:.75rem;">
+                            <img src="{{ url_for('static', filename='uploads/' + current_logo) }}"
+                                 alt="Logo actuel"
+                                 style="width:3.5rem;height:3.5rem;object-fit:contain;border-radius:6px;border:1px solid var(--border);">
+                            <div>
+                                <div class="form-check">
+                                    <input type="checkbox" id="remove_logo" name="remove_logo"
+                                           class="form-check-input">
+                                    <label for="remove_logo" class="form-check-label">
+                                        <strong>Supprimer le logo actuel</strong>
+                                    </label>
+                                </div>
+                                <p class="form-text" style="margin:.3rem 0 0 1.6rem;">
+                                    Cochez pour retirer le logo sans en charger un nouveau.
+                                </p>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="form-text" style="margin:0 0 .5rem;">Aucun logo configuré.</p>
+                        {% endif %}
+
+                        <label for="logo" class="form-label">
+                            {% if current_logo %}Remplacer le logo{% else %}Ajouter un logo{% endif %}
+                            <span style="color:var(--text-muted);font-weight:400;">(optionnel)</span>
+                        </label>
+                        <input type="file" id="logo" name="logo" class="form-control"
+                               accept=".png,.jpg,.jpeg,.gif,.webp">
+                        <span class="form-text">PNG, JPG, JPEG, GIF ou WEBP.</span>
+                    </div>
+
+                    <div class="mb-form" style="padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);">
+                        <div class="form-check">
+                            <input type="checkbox" id="eligible" name="eligible"
+                                   class="form-check-input" {% if candidate[2] %}checked{% endif %}>
+                            <label for="eligible" class="form-check-label">
+                                <strong>Candidat éligible</strong>
+                            </label>
+                        </div>
+                        <p class="form-text" style="margin:.4rem 0 0 1.6rem;">
+                            Décochez si le candidat ne remplit pas les conditions d'éligibilité.
+                        </p>
+                    </div>
+
+                    <div style="display:flex;gap:.75rem;margin-top:.5rem;">
+                        <a href="{{ url_for('votix.candidates') }}" class="btn btn-secondary" style="flex:1;text-align:center;">
+                            Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary" style="flex:2;">
+                            <i class="bi bi-check-lg"></i>
+                            Enregistrer les modifications
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

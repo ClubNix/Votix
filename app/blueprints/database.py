@@ -79,6 +79,17 @@ class DatabaseHandler:
         self.conn.commit()
         database_logger.info(f"Added candidate {candidate.name}")
 
+    def update_candidate(self, candidate_id: int, name: str, eligible: bool, logo: str):
+        self.cursor.execute('UPDATE candidates SET name = ?, eligible = ?, logo = ? WHERE id = ?',
+                            (name, eligible, logo, candidate_id))
+        self.conn.commit()
+        database_logger.info(f"Updated candidate {candidate_id}")
+
+    def delete_candidate(self, candidate_id: int):
+        self.cursor.execute('DELETE FROM candidates WHERE id = ?', (candidate_id,))
+        self.conn.commit()
+        database_logger.info(f"Deleted candidate {candidate_id}")
+
     def get_votes(self):
         self.cursor.execute('SELECT ballot FROM voters WHERE voted = 1')
         return self.cursor.fetchall()
