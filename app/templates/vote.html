@@ -60,7 +60,14 @@
                                    value="{{ candidate[0] }}"
                                    required>
                             <label class="candidate-label" for="candidate_{{ candidate[0] }}">
+                                {% if candidate|length > 3 and candidate[3] %}
+                                <img src="{{ url_for('static', filename='uploads/' + candidate[3]) }}"
+                                     alt="Logo {{ candidate[1] }}"
+                                     class="candidate-avatar"
+                                     style="object-fit:contain;background:#f9fafb;border-radius:6px;">
+                                {% else %}
                                 <div class="candidate-avatar">{{ candidate[1][0] | upper }}</div>
+                                {% endif %}
                                 <span class="candidate-name">{{ candidate[1] }}</span>
                                 <i class="bi bi-check-circle-fill candidate-check"></i>
                             </label>
@@ -68,7 +75,14 @@
                         {% else %}
                         <div style="position:relative;">
                             <label class="candidate-label candidate-ineligible">
+                                {% if candidate|length > 3 and candidate[3] %}
+                                <img src="{{ url_for('static', filename='uploads/' + candidate[3]) }}"
+                                     alt="Logo {{ candidate[1] }}"
+                                     class="candidate-avatar candidate-avatar-ineligible"
+                                     style="object-fit:contain;border-radius:6px;">
+                                {% else %}
                                 <div class="candidate-avatar candidate-avatar-ineligible">{{ candidate[1][0] | upper }}</div>
+                                {% endif %}
                                 <span class="candidate-name">{{ candidate[1] }}</span>
                                 <span class="candidate-ineligible-badge">Non éligible</span>
                             </label>

@@ -32,11 +32,17 @@
                 <span class="card-title">Informations du candidat</span>
             </div>
             <div class="card-body">
-                <form method="POST" action="/register-candidate">
+                <form method="POST" action="/register-candidate" enctype="multipart/form-data">
                     <div class="mb-form">
                         <label for="name" class="form-label">Nom de la liste</label>
                         <input type="text" id="name" name="name" class="form-control"
                                placeholder="Reconcuite" required autocomplete="name">
+                    </div>
+                    <div class="mb-form">
+                        <label for="logo" class="form-label">Logo du candidat <span style="color:var(--text-muted);font-weight:400;">(optionnel)</span></label>
+                        <input type="file" id="logo" name="logo" class="form-control"
+                               accept=".png,.jpg,.jpeg,.gif,.webp">
+                        <span class="form-text">PNG, JPG, JPEG, GIF ou WEBP. Affiché sur la page des candidats et sur la page de vote.</span>
                     </div>
                     <div class="mb-form" style="padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);">
                         <div class="form-check">

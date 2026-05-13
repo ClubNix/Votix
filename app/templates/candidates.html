@@ -32,6 +32,7 @@
             <thead>
                 <tr style="border-bottom:1px solid var(--border);background:var(--bg);">
                     <th style="padding:.75rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">#</th>
+                    <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Logo</th>
                     <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Nom</th>
                     <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Statut</th>
                 </tr>
@@ -41,12 +42,18 @@
                 <tr style="border-bottom:1px solid var(--border);{% if loop.last %}border-bottom:none;{% endif %}">
                     <td style="padding:.85rem 1.5rem;font-size:.85rem;color:var(--text-muted);font-weight:600;">{{ candidate[0] }}</td>
                     <td style="padding:.85rem 1rem;">
-                        <div style="display:flex;align-items:center;gap:.75rem;">
-                            <div style="width:2rem;height:2rem;border-radius:50%;background:{% if candidate[2] %}#d1fae5{% else %}var(--danger-light){% endif %};color:{% if candidate[2] %}#059669{% else %}var(--danger){% endif %};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;">
-                                {{ candidate[1][0] | upper }}
-                            </div>
-                            <span style="font-weight:600;font-size:.9rem;">{{ candidate[1] }}</span>
+                        {% if candidate|length > 3 and candidate[3] %}
+                        <img src="{{ url_for('static', filename='uploads/' + candidate[3]) }}"
+                             alt="Logo {{ candidate[1] }}"
+                             style="width:2.5rem;height:2.5rem;object-fit:contain;border-radius:6px;border:1px solid var(--border);">
+                        {% else %}
+                        <div style="width:2.5rem;height:2.5rem;border-radius:6px;background:{% if candidate[2] %}#d1fae5{% else %}var(--danger-light){% endif %};color:{% if candidate[2] %}#059669{% else %}var(--danger){% endif %};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;">
+                            {{ candidate[1][0] | upper }}
                         </div>
+                        {% endif %}
+                    </td>
+                    <td style="padding:.85rem 1rem;">
+                        <span style="font-weight:600;font-size:.9rem;">{{ candidate[1] }}</span>
                     </td>
                     <td style="padding:.85rem 1rem;">
                         {% if candidate[2] %}

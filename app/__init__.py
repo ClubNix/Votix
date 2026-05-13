@@ -40,6 +40,15 @@ def create_app():
         try:
             db.create_all()
 
+            # Migrate: add logo column to candidates if missing
+            import sqlite3 as _sqlite3
+            _db_path = os.path.join(os.path.dirname(__file__), 'var', 'db.sqlite')
+            with _sqlite3.connect(_db_path) as _conn:
+                _cols = [r[1] for r in _conn.execute('PRAGMA table_info(candidates)').fetchall()]
+                if 'logo' not in _cols:
+                    _conn.execute("ALTER TABLE candidates ADD COLUMN logo TEXT DEFAULT ''")
+                    _conn.commit()
+
             from app.blueprints import auth
 
             if User.query.filter_by(role='admin').first() is None:

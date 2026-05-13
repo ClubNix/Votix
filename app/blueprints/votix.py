@@ -150,6 +150,13 @@ def candidates():
     return render_template('candidates.html', candidates=all_candidates)
 
 
+_ALLOWED_LOGO_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
+
+
+def _allowed_logo(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in _ALLOWED_LOGO_EXTENSIONS
+
+
 @votix.route('/register-candidate', methods=['GET', 'POST'])
 @login_required
 @technician_required
@@ -158,9 +165,19 @@ def register_candidate():
         name = request.form['name']
         eligible = True if request.form.get('eligible') else False
 
+        logo_filename = ''
+        logo_file = request.files.get('logo')
+        if logo_file and logo_file.filename:
+            if not _allowed_logo(logo_file.filename):
+                flash('Format de logo invalide. Utilisez PNG, JPG, JPEG, GIF ou WEBP.', 'danger')
+                return render_template('register_candidate.html')
+            ext = logo_file.filename.rsplit('.', 1)[1].lower()
+            logo_filename = f'{uuid.uuid4()}.{ext}'
+            logo_file.save(os.path.join(current_app.config['FILE_UPLOADS'], logo_filename))
+
         try:
             with DatabaseHandler('app/var/db.sqlite') as db:
-                db.add_candidate(Candidate(name=name, eligible=eligible))
+                db.add_candidate(Candidate(name=name, eligible=eligible, logo=logo_filename))
         except Exception as e:
             flash(f'Une erreur est survenue lors de l\'ajout du candidat : {e}', 'danger')
             return render_template('register_candidate.html')

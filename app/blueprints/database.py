@@ -74,8 +74,8 @@ class DatabaseHandler:
         return self.cursor.fetchone()
 
     def add_candidate(self, candidate: Candidate):
-        self.cursor.execute('INSERT INTO candidates (name, eligible) VALUES (?, ?)',
-                            (candidate.name, candidate.eligible))
+        self.cursor.execute('INSERT INTO candidates (name, eligible, logo) VALUES (?, ?, ?)',
+                            (candidate.name, candidate.eligible, candidate.logo or ''))
         self.conn.commit()
         database_logger.info(f"Added candidate {candidate.name}")
 
