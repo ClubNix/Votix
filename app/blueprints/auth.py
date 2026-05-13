@@ -4,7 +4,7 @@ from functools import wraps
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user
-from getpass import getpass
+import click
 
 from ..models import User
 from .. import db
@@ -35,9 +35,9 @@ def technician_required(f: Callable[[ParamSpec("_PWrapped")], object]) -> object
 
 
 def create_user(role: str):
-    email = input(f'Enter {role} email: ')
-    password = getpass(f'Enter {role} password: ')
-    username = input(f'Enter {role} username: ')
+    email = click.prompt(f'Enter {role} email')
+    password = click.prompt(f'Enter {role} password', hide_input=True, confirmation_prompt=True)
+    username = click.prompt(f'Enter {role} username')
     new_user = User(
         email=email,
         username=username,
