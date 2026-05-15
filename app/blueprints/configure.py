@@ -9,10 +9,13 @@ from .mail_sender import send_invitation_email, send_link_email, send_reminder_e
 from ..models import Voter
 
 import os
+import time
 import logging
+import threading
 
-PARIS_TZ   = ZoneInfo('Europe/Paris')
-DOTENV_PATH = './app/.env'
+PARIS_TZ         = ZoneInfo('Europe/Paris')
+DOTENV_PATH      = './app/.env'
+EMAIL_SEND_DELAY = 1.0  # seconds between each outgoing email to avoid SMTP relay throttling
 
 configure_bp = Blueprint('configure', __name__)
 
@@ -132,6 +135,22 @@ def configure():
 
 # ── Email bulk actions ─────────────────────────────────────────────────────
 
+def _bulk_send(app, send_fn, filter_kwargs: dict, label: str):
+    """Run bulk email sending in a background thread with its own app context."""
+    with app.app_context():
+        voters = Voter.query.filter_by(**filter_kwargs).all()
+        count, errors = 0, 0
+        for voter in voters:
+            try:
+                send_fn(voter)
+                count += 1
+            except Exception as e:
+                configure_logger.error(f"Failed to send {label} to {voter.email}: {e}")
+                errors += 1
+            time.sleep(EMAIL_SEND_DELAY)
+        configure_logger.info(f"Bulk {label} complete: {count} sent, {errors} error(s)")
+
+
 @configure_bp.route('/send-test-email', methods=['POST'])
 @login_required
 @admin_required
@@ -148,19 +167,10 @@ def send_test_email():
 @login_required
 @admin_required
 def send_invitations():
-    voters = Voter.query.all()
-    count, errors = 0, 0
-    for voter in voters:
-        try:
-            send_invitation_email(voter)
-            count += 1
-        except Exception as e:
-            configure_logger.error(f"Failed to send invitation to {voter.email}: {e}")
-            errors += 1
-    if errors:
-        flash(f'{count} invitation(s) envoyée(s), {errors} échec(s).', 'warning')
-    else:
-        flash(f'{count} invitation(s) envoyée(s) avec succès.', 'success')
+    total = Voter.query.filter_by(invitation_sent=False).count()
+    app = current_app._get_current_object()
+    threading.Thread(target=_bulk_send, args=(app, send_invitation_email, {'invitation_sent': False}, 'invitation'), daemon=True).start()
+    flash(f'Envoi de {total} invitation(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
     return redirect(url_for('configure.configure') + '?tab=3')
 
 
@@ -168,19 +178,10 @@ def send_invitations():
 @login_required
 @admin_required
 def send_links():
-    voters = Voter.query.all()
-    count, errors = 0, 0
-    for voter in voters:
-        try:
-            send_link_email(voter)
-            count += 1
-        except Exception as e:
-            configure_logger.error(f"Failed to send link to {voter.email}: {e}")
-            errors += 1
-    if errors:
-        flash(f'{count} lien(s) de vote envoyé(s), {errors} échec(s).', 'warning')
-    else:
-        flash(f'{count} lien(s) de vote envoyé(s) avec succès.', 'success')
+    total = Voter.query.filter_by(link_sent=False).count()
+    app = current_app._get_current_object()
+    threading.Thread(target=_bulk_send, args=(app, send_link_email, {'link_sent': False}, 'link'), daemon=True).start()
+    flash(f'Envoi de {total} lien(s) de vote lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
     return redirect(url_for('configure.configure') + '?tab=3')
 
 
@@ -188,17 +189,8 @@ def send_links():
 @login_required
 @admin_required
 def send_reminders():
-    voters = Voter.query.filter_by(voted=False).all()
-    count, errors = 0, 0
-    for voter in voters:
-        try:
-            send_reminder_email(voter)
-            count += 1
-        except Exception as e:
-            configure_logger.error(f"Failed to send reminder to {voter.email}: {e}")
-            errors += 1
-    if errors:
-        flash(f'{count} rappel(s) envoyé(s), {errors} échec(s).', 'warning')
-    else:
-        flash(f'{count} rappel(s) envoyé(s) aux électeurs n\'ayant pas encore voté.', 'success')
+    total = Voter.query.filter_by(voted=False).count()
+    app = current_app._get_current_object()
+    threading.Thread(target=_bulk_send, args=(app, send_reminder_email, {'voted': False}, 'reminder'), daemon=True).start()
+    flash(f'Envoi de {total} rappel(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
     return redirect(url_for('configure.configure') + '?tab=3')
