@@ -37,6 +37,7 @@
                         <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Promotion</th>
                         <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:center;">Invitation</th>
                         <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:center;">Lien</th>
+                        <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:center;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,6 +68,13 @@
                             {% else %}
                             <i class="bi bi-dash-circle" style="color:var(--text-muted);font-size:1rem;" title="Non envoyé"></i>
                             {% endif %}
+                        </td>
+                        <td style="padding:.85rem 1rem;text-align:center;">
+                            <form method="POST" action="{{ url_for('votix.send_voter_link', voter_id=voter.id) }}" onsubmit="return confirm('Renvoyer le lien de vote à {{ voter.email }} ?');">
+                                <button type="submit" class="btn btn-outline-primary btn-sm" title="Envoyer le lien de vote" style="padding:.2rem .5rem;font-size:.75rem;">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                     {% endfor %}

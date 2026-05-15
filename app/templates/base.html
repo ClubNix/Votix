@@ -26,12 +26,14 @@
                         <i class="bi bi-house-door"></i> Accueil
                     </a>
                 </li>
-                {% if current_user.is_authenticated and current_user.role == 'admin' %}
+                {% if current_user.is_authenticated and current_user.role in ('admin', 'technician') %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('admin.dashboard') }}">
                         <i class="bi bi-speedometer2"></i> Dashboard
                     </a>
                 </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.role == 'admin' %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('configure.configure') }}">
                         <i class="bi bi-gear"></i> Configuration
@@ -41,6 +43,23 @@
                     <a class="nav-link" href="{{ url_for('admin.users') }}">
                         <i class="bi bi-people"></i> Utilisateurs
                     </a>
+                </li>
+                {% endif %}
+                {% if current_user.is_authenticated and current_user.role in ('admin', 'technician') %}
+                <li class="nav-item d-flex align-items-center" style="padding:0 .25rem;">
+                    {% if is_armed %}
+                    <span style="font-size:.72rem;font-weight:700;padding:.22rem .65rem;border-radius:99px;background:#d1fae5;color:#065f46;display:inline-flex;align-items:center;gap:.3rem;">
+                        <i class="bi bi-shield-check"></i> ARMÉ
+                    </span>
+                    {% elif current_user.role == 'admin' %}
+                    <a href="{{ url_for('admin.arm') }}" style="font-size:.72rem;font-weight:700;padding:.22rem .65rem;border-radius:99px;background:#fef2f2;color:#b91c1c;display:inline-flex;align-items:center;gap:.3rem;">
+                        <i class="bi bi-shield-exclamation"></i> NON ARMÉ
+                    </a>
+                    {% else %}
+                    <span style="font-size:.72rem;font-weight:700;padding:.22rem .65rem;border-radius:99px;background:#fef2f2;color:#b91c1c;display:inline-flex;align-items:center;gap:.3rem;">
+                        <i class="bi bi-shield-exclamation"></i> NON ARMÉ
+                    </span>
+                    {% endif %}
                 </li>
                 {% endif %}
                 {% if not current_user.is_authenticated %}

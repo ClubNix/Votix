@@ -6,7 +6,7 @@ from dotenv import set_key, dotenv_values
 
 from .auth import admin_required
 from .mail_sender import send_invitation_email, send_link_email, send_reminder_email, send_admin_test_email
-from ..models import Voter
+from ..models import Voter, User
 
 import os
 import time
@@ -25,6 +25,11 @@ _handler = logging.FileHandler('./app/logs/admin.log')
 _handler.setLevel(logging.INFO)
 _handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
 configure_logger.addHandler(_handler)
+
+
+def _get_admin_email() -> str:
+    admin = User.query.filter_by(role='admin').first()
+    return admin.email if admin else ''
 
 
 def _save(key: str, value: str):
@@ -128,7 +133,7 @@ def configure():
         'smtp_verify_ssl': cfg.get('SMTP_VERIFY_SSL', 'True'),
         'voting_url':      cfg.get('VOTING_URL', ''),
         'valid_domains':   cfg.get('VALID_EMAIL_DOMAINS', ''),
-        'admin_email':     cfg.get('ADMIN_EMAIL', ''),
+        'admin_email':     _get_admin_email(),
     }
     return render_template('configure.html', **ctx)
 
@@ -157,7 +162,7 @@ def _bulk_send(app, send_fn, filter_kwargs: dict, label: str):
 def send_test_email():
     try:
         send_admin_test_email()
-        flash(f"Email de test envoyé à {current_app.config.get('ADMIN_EMAIL', 'l\'admin')}.", 'success')
+        flash(f"Email de test envoyé à {_get_admin_email() or 'l\'admin'}.", 'success')
     except Exception as e:
         flash(f"Erreur lors de l'envoi : {e}", 'danger')
     return redirect(url_for('configure.configure') + '?tab=3')

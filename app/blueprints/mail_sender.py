@@ -9,7 +9,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from app import db
-from ..models import Voter
+from ..models import Voter, User
 
 import os
 import ssl
@@ -188,6 +188,7 @@ def send_admin_test_email():
 
     subject = "[Votix] Email de test — récapitulatif de configuration"
     content = env.get_template('admin-test.html').render(ctx)
-    admin_email = cfg.get('ADMIN_EMAIL', '')
+    admin = User.query.filter_by(role='admin').first()
+    admin_email = admin.email if admin else ''
     send_email(subject, content, admin_email, mime='plain')
     email_logger.info(f"Test email sent to {admin_email}")

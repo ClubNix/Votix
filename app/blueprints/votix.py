@@ -131,6 +131,7 @@ def voters_list():
     all_voters = VoterModel.query.order_by(VoterModel.last_name, VoterModel.first_name).all()
     safe_voters = [
         {
+            'id':              v.id,
             'last_name':       v.last_name,
             'first_name':      v.first_name,
             'email':           v.email,
@@ -141,6 +142,20 @@ def voters_list():
         for v in all_voters
     ]
     return render_template('voters.html', voters=safe_voters)
+
+
+@votix.route('/voters/<int:voter_id>/send-link', methods=['POST'])
+@login_required
+@technician_required
+def send_voter_link(voter_id):
+    from ..models import Voter as VoterModel
+    voter = VoterModel.query.get_or_404(voter_id)
+    try:
+        send_link_email(voter)
+        flash(f'Lien de vote envoyé à {voter.email}.', 'success')
+    except Exception as e:
+        flash(f'Erreur lors de l\'envoi à {voter.email} : {e}', 'danger')
+    return redirect(url_for('votix.voters_list'))
 
 
 @votix.route('/candidates')

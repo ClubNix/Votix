@@ -77,4 +77,9 @@ def create_app():
     app.register_blueprint(votix)
     app.register_blueprint(configure_bp)
 
+    @app.context_processor
+    def inject_globals():
+        pubkey_path = os.path.join(os.path.dirname(__file__), 'var', 'pubkey.pem')
+        return {'is_armed': os.path.isfile(pubkey_path)}
+
     return app

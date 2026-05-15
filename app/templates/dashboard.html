@@ -16,6 +16,21 @@
     {% endif %}
 {% endwith %}
 
+<!-- ARM status -->
+<div class="alert {% if is_armed %}alert-success{% else %}alert-danger{% endif %}" style="margin-bottom:1.5rem;">
+    <i class="bi bi-{% if is_armed %}shield-check-fill{% else %}shield-exclamation-fill{% endif %}"></i>
+    {% if is_armed %}
+        Application <strong>armée</strong> — La clé publique RSA est en place, le système est prêt pour le vote.
+    {% else %}
+        Application <strong>non armée</strong> —
+        {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin.arm') }}" style="color:inherit;font-weight:700;">Générez les clés cryptographiques</a> avant de lancer le vote.
+        {% else %}
+            Contactez un administrateur pour armer le système avant le vote.
+        {% endif %}
+    {% endif %}
+</div>
+
 <!-- Statistics -->
 <div class="row g-3 mb-4">
     <div class="col-12 col-sm-4">
