@@ -5,6 +5,7 @@ from flask import Blueprint, render_template, redirect, url_for, request, flash
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import login_user, login_required, logout_user
 import click
+import readline  # noqa: F401 — enables backspace/line-editing in click.prompt()
 
 from ..models import User
 from .. import db

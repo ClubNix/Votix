@@ -64,7 +64,7 @@
                                 <img src="{{ url_for('static', filename='uploads/' + candidate[3]) }}"
                                      alt="Logo {{ candidate[1] }}"
                                      class="candidate-avatar"
-                                     style="object-fit:contain;background:#f9fafb;border-radius:6px;">
+                                     style="object-fit:cover;background:#f9fafb;border-radius:50%;">
                                 {% else %}
                                 <div class="candidate-avatar">{{ candidate[1][0] | upper }}</div>
                                 {% endif %}
@@ -79,7 +79,7 @@
                                 <img src="{{ url_for('static', filename='uploads/' + candidate[3]) }}"
                                      alt="Logo {{ candidate[1] }}"
                                      class="candidate-avatar candidate-avatar-ineligible"
-                                     style="object-fit:contain;border-radius:6px;">
+                                     style="object-fit:cover;border-radius:50%;">
                                 {% else %}
                                 <div class="candidate-avatar candidate-avatar-ineligible">{{ candidate[1][0] | upper }}</div>
                                 {% endif %}

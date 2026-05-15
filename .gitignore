@@ -16,3 +16,6 @@ dependency/
 
 *.csv
 app/var/*
+
+data/
+logs/
