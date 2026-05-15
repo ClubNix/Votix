@@ -10,3 +10,4 @@ click
 rsa
 cryptography
 gunicorn
+Pillow

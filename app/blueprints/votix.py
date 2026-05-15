@@ -15,6 +15,8 @@ import csv
 import os
 import time
 
+from PIL import Image
+
 
 votix = Blueprint('votix', __name__)
 
@@ -157,6 +159,14 @@ def _allowed_logo(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in _ALLOWED_LOGO_EXTENSIONS
 
 
+def _save_compressed_logo(file_stream, dest_path: str) -> None:
+    img = Image.open(file_stream)
+    if img.mode not in ('RGB', 'RGBA'):
+        img = img.convert('RGBA')
+    img.thumbnail((400, 400), Image.LANCZOS)
+    img.save(dest_path, format='WEBP', quality=80, method=6)
+
+
 @votix.route('/register-candidate', methods=['GET', 'POST'])
 @login_required
 @technician_required
@@ -171,9 +181,8 @@ def register_candidate():
             if not _allowed_logo(logo_file.filename):
                 flash('Format de logo invalide. Utilisez PNG, JPG, JPEG, GIF ou WEBP.', 'danger')
                 return render_template('register_candidate.html')
-            ext = logo_file.filename.rsplit('.', 1)[1].lower()
-            logo_filename = f'{uuid.uuid4()}.{ext}'
-            logo_file.save(os.path.join(current_app.config['FILE_UPLOADS'], logo_filename))
+            logo_filename = f'{uuid.uuid4()}.webp'
+            _save_compressed_logo(logo_file, os.path.join(current_app.config['FILE_UPLOADS'], logo_filename))
 
         try:
             with DatabaseHandler('app/var/db.sqlite') as db:
@@ -225,9 +234,8 @@ def edit_candidate(candidate_id):
                         os.remove(os.path.join(current_app.config['FILE_UPLOADS'], current_logo))
                     except FileNotFoundError:
                         pass
-                ext = logo_file.filename.rsplit('.', 1)[1].lower()
-                logo_filename = f'{uuid.uuid4()}.{ext}'
-                logo_file.save(os.path.join(current_app.config['FILE_UPLOADS'], logo_filename))
+                logo_filename = f'{uuid.uuid4()}.webp'
+                _save_compressed_logo(logo_file, os.path.join(current_app.config['FILE_UPLOADS'], logo_filename))
 
         with DatabaseHandler('app/var/db.sqlite') as db:
             db.update_candidate(candidate_id, name, eligible, logo_filename)
