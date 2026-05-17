@@ -5,7 +5,7 @@ WORKDIR /app
 
 COPY ./ /app
 
-RUN pip install --no-cache-dir -r ./app/requirements.txt
+RUN pip install --no-cache-dir -r ./app/requirements.txt --root-user-action
 
 EXPOSE 5000
 
