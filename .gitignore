@@ -19,3 +19,5 @@ app/var/*
 
 data/
 logs/
+
+app/.env
