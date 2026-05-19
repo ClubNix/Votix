@@ -52,8 +52,11 @@ class DatabaseHandler:
     def add_voter(self, voter: Voter):
         self.cursor.execute('INSERT INTO voters (last_name, first_name, email, promotion, voted, link_string, '
                             'secret, invitation_sent, link_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-                            (voter.last_name, voter.first_name, voter.email, voter.promotion, voter.voted,
-                             voter.link_string, voter.secret, voter.invitation_sent, voter.link_sent))
+                            (voter.last_name, voter.first_name, voter.email, voter.promotion,
+                             1 if voter.voted else 0,
+                             voter.link_string, voter.secret,
+                             1 if voter.invitation_sent else 0,
+                             1 if voter.link_sent else 0))
         database_logger.info(f"Added voter {voter.email}")
         self.conn.commit()
 

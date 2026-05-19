@@ -140,10 +140,10 @@ def configure():
 
 # ── Email bulk actions ─────────────────────────────────────────────────────
 
-def _bulk_send(app, send_fn, filter_kwargs: dict, label: str):
+def _bulk_send(app, send_fn, filter_expr, label: str):
     """Run bulk email sending in a background thread with its own app context."""
     with app.app_context():
-        voters = Voter.query.filter_by(**filter_kwargs).all()
+        voters = Voter.query.filter(filter_expr).all()
         count, errors = 0, 0
         for voter in voters:
             try:
@@ -172,9 +172,9 @@ def send_test_email():
 @login_required
 @admin_required
 def send_invitations():
-    total = Voter.query.filter_by(invitation_sent=False).count()
+    total = Voter.query.filter(Voter.invitation_sent.isnot(True)).count()
     app = current_app._get_current_object()
-    threading.Thread(target=_bulk_send, args=(app, send_invitation_email, {'invitation_sent': False}, 'invitation'), daemon=True).start()
+    threading.Thread(target=_bulk_send, args=(app, send_invitation_email, Voter.invitation_sent.isnot(True), 'invitation'), daemon=True).start()
     flash(f'Envoi de {total} invitation(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
     return redirect(url_for('configure.configure') + '?tab=3')
 
@@ -183,9 +183,9 @@ def send_invitations():
 @login_required
 @admin_required
 def send_links():
-    total = Voter.query.filter_by(link_sent=False).count()
+    total = Voter.query.filter(Voter.link_sent.isnot(True)).count()
     app = current_app._get_current_object()
-    threading.Thread(target=_bulk_send, args=(app, send_link_email, {'link_sent': False}, 'link'), daemon=True).start()
+    threading.Thread(target=_bulk_send, args=(app, send_link_email, Voter.link_sent.isnot(True), 'link'), daemon=True).start()
     flash(f'Envoi de {total} lien(s) de vote lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
     return redirect(url_for('configure.configure') + '?tab=3')
 
@@ -194,8 +194,8 @@ def send_links():
 @login_required
 @admin_required
 def send_reminders():
-    total = Voter.query.filter_by(voted=False).count()
+    total = Voter.query.filter(Voter.voted.isnot(True)).count()
     app = current_app._get_current_object()
-    threading.Thread(target=_bulk_send, args=(app, send_reminder_email, {'voted': False}, 'reminder'), daemon=True).start()
+    threading.Thread(target=_bulk_send, args=(app, send_reminder_email, Voter.voted.isnot(True), 'reminder'), daemon=True).start()
     flash(f'Envoi de {total} rappel(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
     return redirect(url_for('configure.configure') + '?tab=3')
