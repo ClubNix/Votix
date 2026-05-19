@@ -102,6 +102,11 @@ class DatabaseHandler:
         self.cursor.execute('SELECT promotion, COUNT(*) FROM voters WHERE voted = 1 GROUP BY promotion')
         return self.cursor.fetchall()
 
+    def delete_voter(self, voter_id: int):
+        self.cursor.execute('DELETE FROM voters WHERE id = ?', (voter_id,))
+        self.conn.commit()
+        database_logger.info(f"Deleted voter {voter_id}")
+
     def add_vote(self, voter: Voter, ballot: bytes):
         self.cursor.execute('UPDATE voters SET ballot = ? WHERE id = ?', (ballot, voter.id,))
         self.cursor.execute('UPDATE voters SET voted = 1 WHERE id = ?', (voter.id,))

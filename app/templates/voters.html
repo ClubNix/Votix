@@ -70,11 +70,18 @@
                             {% endif %}
                         </td>
                         <td style="padding:.85rem 1rem;text-align:center;">
-                            <form method="POST" action="{{ url_for('votix.send_voter_link', voter_id=voter.id) }}" onsubmit="return confirm('Renvoyer le lien de vote à {{ voter.email }} ?');">
-                                <button type="submit" class="btn btn-outline-primary btn-sm" title="Envoyer le lien de vote" style="padding:.2rem .5rem;font-size:.75rem;">
-                                    <i class="bi bi-send"></i>
-                                </button>
-                            </form>
+                            <div style="display:flex;gap:.4rem;justify-content:center;">
+                                <form method="POST" action="{{ url_for('votix.send_voter_link', voter_id=voter.id) }}" onsubmit="return confirm('Renvoyer le lien de vote à {{ voter.email }} ?');">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm" title="Envoyer le lien de vote" style="padding:.2rem .5rem;font-size:.75rem;">
+                                        <i class="bi bi-send"></i>
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ url_for('votix.delete_voter', voter_id=voter.id) }}" onsubmit="return confirm('Supprimer définitivement l\'électeur {{ voter.email }} ?');">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm" title="Supprimer l\'électeur" style="padding:.2rem .5rem;font-size:.75rem;">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     {% endfor %}

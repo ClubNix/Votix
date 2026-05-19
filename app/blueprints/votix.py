@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, flash, current_app, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from dotenv import load_dotenv, dotenv_values
 
 from .database import DatabaseHandler
@@ -162,6 +162,20 @@ def send_voter_link(voter_id):
         flash(f'Lien de vote envoyé à {voter.email}.', 'success')
     except Exception as e:
         flash(f'Erreur lors de l\'envoi à {voter.email} : {e}', 'danger')
+    return redirect(url_for('votix.voters_list'))
+
+
+@votix.route('/voters/<int:voter_id>/delete', methods=['POST'])
+@login_required
+@admin_required
+def delete_voter(voter_id):
+    from ..models import Voter as VoterModel
+    voter = VoterModel.query.get_or_404(voter_id)
+    email = voter.email
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        db.delete_voter(voter_id)
+    votix_logger.info(f"Voter deleted: {email} (id={voter_id}) by {current_user.email}")
+    flash(f'Électeur {email} supprimé.', 'success')
     return redirect(url_for('votix.voters_list'))
 
 
