@@ -14,6 +14,7 @@ import logging
 import csv
 import os
 import time
+import sqlite3
 
 from PIL import Image
 
@@ -98,23 +99,29 @@ def import_voters():
             try:
                 filepath = os.path.join(current_app.config['FILE_UPLOADS'], f'{uuid.uuid4()}.csv')
                 file.save(filepath)
+                skipped = []
                 with DatabaseHandler('app/var/db.sqlite') as db:
                     with open(filepath, 'r') as f:
                         reader = csv.reader(f)
                         next(reader)
                         for row in reader:
                             last_name, first_name, email, promotion = row
-
-                            link_string = str(uuid.uuid4())
-                            secret = str(random.randint(0, 9999)).zfill(4)
-                            db.add_voter(Voter(
-                                last_name=last_name, first_name=first_name, email=email, promotion=promotion,
-                                link_string=link_string, secret=secret)
-                            )
+                            try:
+                                link_string = str(uuid.uuid4())
+                                secret = str(random.randint(0, 9999)).zfill(4)
+                                db.add_voter(Voter(
+                                    last_name=last_name, first_name=first_name, email=email, promotion=promotion,
+                                    link_string=link_string, secret=secret)
+                                )
+                            except sqlite3.IntegrityError:
+                                votix_logger.warning(f"Skipped duplicate voter during import: {email}")
+                                skipped.append(email)
             except Exception as e:
                 flash('Une erreur est survenue lors de l\'importation des électeurs.', 'danger')
                 votix_logger.error(f"An error occurred while importing voters: {e}")
                 return render_template('import_voters.html', list=promotion_list)
+            if skipped:
+                flash(f'{len(skipped)} électeur(s) ignoré(s) car déjà existant(s) : {", ".join(skipped)}.', 'warning')
 
             votix_logger.info('Voters imported successfully via {file.filename}')
             flash('Électeurs importés avec succès.', 'success')
