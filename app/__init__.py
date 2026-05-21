@@ -79,7 +79,12 @@ def create_app():
 
     @app.context_processor
     def inject_globals():
+        from dotenv import dotenv_values as _dv
         pubkey_path = os.path.join(os.path.dirname(__file__), 'var', 'pubkey.pem')
-        return {'is_armed': os.path.isfile(pubkey_path)}
+        cfg = _dv('./app/.env')
+        return {
+            'is_armed':         os.path.isfile(pubkey_path),
+            'association_name': cfg.get('ASSOCIATION_NAME', ''),
+        }
 
     return app

@@ -21,7 +21,12 @@
 <!-- Tab navigation -->
 <ul class="nav nav-tabs mb-4" id="configTabs" role="tablist" style="border-bottom:2px solid var(--border);">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="tab-voting-btn" data-bs-toggle="tab" data-bs-target="#tab-voting" type="button" role="tab">
+        <button class="nav-link active" id="tab-association-btn" data-bs-toggle="tab" data-bs-target="#tab-association" type="button" role="tab">
+            <i class="bi bi-building me-1"></i>Association
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-voting-btn" data-bs-toggle="tab" data-bs-target="#tab-voting" type="button" role="tab">
             <i class="bi bi-calendar-range me-1"></i>Période de vote
         </button>
     </li>
@@ -44,8 +49,36 @@
 
 <div class="tab-content" id="configTabsContent">
 
+    <!-- ── Association ──────────────────────────────────────── -->
+    <div class="tab-pane fade show active" id="tab-association" role="tabpanel">
+        <div class="card" style="max-width:600px;">
+            <div class="card-header">
+                <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+                    <i class="bi bi-building"></i>
+                </div>
+                <span class="card-title">Nom de l'association</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/configure">
+                    <input type="hidden" name="section" value="association">
+                    <input type="hidden" name="tab" value="0">
+                    <div class="mb-form">
+                        <label for="association_name" class="form-label">Nom de l'association</label>
+                        <input type="text" id="association_name" name="association_name"
+                               class="form-control" value="{{ association_name }}"
+                               placeholder="Bureau des Élèves d'ESIEE Paris">
+                        <span class="form-text">Affiché dans les emails envoyés aux électeurs.</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2"></i> Enregistrer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ── Période de vote ────────────────────────────────── -->
-    <div class="tab-pane fade show active" id="tab-voting" role="tabpanel">
+    <div class="tab-pane fade" id="tab-voting" role="tabpanel">
         <div class="card" style="max-width:600px;">
             <div class="card-header">
                 <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
@@ -56,7 +89,7 @@
             <div class="card-body">
                 <form method="POST" action="/configure">
                     <input type="hidden" name="section" value="voting">
-                    <input type="hidden" name="tab" value="0">
+                    <input type="hidden" name="tab" value="1">
                     <div class="mb-form">
                         <label for="voting_start" class="form-label">
                             <i class="bi bi-play-circle me-1"></i>Début du vote
@@ -86,7 +119,7 @@
         </div>
     </div>
 
-    <!-- ── SMTP ──────────────────────────────────────────── -->
+    <!-- ── SMTP ──────────────────────────────────────────────── -->
     <div class="tab-pane fade" id="tab-smtp" role="tabpanel">
         <div class="card" style="max-width:600px;">
             <div class="card-header">
@@ -98,7 +131,7 @@
             <div class="card-body">
                 <form method="POST" action="/configure">
                     <input type="hidden" name="section" value="smtp">
-                    <input type="hidden" name="tab" value="1">
+                    <input type="hidden" name="tab" value="2">
                     <div class="row g-3 mb-form">
                         <div class="col-8">
                             <label for="smtp_server" class="form-label">Serveur</label>
@@ -167,7 +200,7 @@
                     <div class="card-body">
                         <form method="POST" action="/configure">
                             <input type="hidden" name="section" value="url">
-                            <input type="hidden" name="tab" value="2">
+                            <input type="hidden" name="tab" value="3">
                             <div class="mb-form">
                                 <label for="voting_url" class="form-label">URL de base</label>
                                 <input type="url" id="voting_url" name="voting_url"
@@ -194,7 +227,7 @@
                     <div class="card-body">
                         <form method="POST" action="/configure">
                             <input type="hidden" name="section" value="domains">
-                            <input type="hidden" name="tab" value="2">
+                            <input type="hidden" name="tab" value="3">
                             <div class="mb-form">
                                 <label for="valid_domains" class="form-label">Domaines (séparés par des virgules)</label>
                                 <input type="text" id="valid_domains" name="valid_domains"

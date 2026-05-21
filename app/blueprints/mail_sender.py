@@ -115,9 +115,10 @@ def send_invitation_email(voter: Voter):
     cfg = dotenv_values(DOTENV_PATH)
     subject = f"Bonjour {voter.first_name}, vous avez été invité(e) à voter"
     html_content = env.get_template('invitation.html').render({
-        'first_name':   voter.first_name,
-        'voting_start': _fmt_vote_date(cfg.get('VOTING_START', 0)),
-        'voting_end':   _fmt_vote_date(cfg.get('VOTING_END', 0)),
+        'first_name':       voter.first_name,
+        'voting_start':     _fmt_vote_date(cfg.get('VOTING_START', 0)),
+        'voting_end':       _fmt_vote_date(cfg.get('VOTING_END', 0)),
+        'association_name': cfg.get('ASSOCIATION_NAME', ''),
     })
     send_email(subject, html_content, voter.email)
     email_logger.info(f"Invitation email sent to {voter.email}")
@@ -129,11 +130,12 @@ def send_link_email(voter: Voter):
     cfg = dotenv_values(DOTENV_PATH)
     subject = f"{voter.first_name}, votre lien de vote"
     html_content = env.get_template('send-link.html').render({
-        'first_name':   voter.first_name,
-        'voting_link':  f"{cfg.get('VOTING_URL', '')}/{voter.link_string}",
-        'secret_code':  voter.secret,
-        'voting_start': _fmt_vote_date(cfg.get('VOTING_START', 0)),
-        'voting_end':   _fmt_vote_date(cfg.get('VOTING_END', 0)),
+        'first_name':       voter.first_name,
+        'voting_link':      f"{cfg.get('VOTING_URL', '')}/{voter.link_string}",
+        'secret_code':      voter.secret,
+        'voting_start':     _fmt_vote_date(cfg.get('VOTING_START', 0)),
+        'voting_end':       _fmt_vote_date(cfg.get('VOTING_END', 0)),
+        'association_name': cfg.get('ASSOCIATION_NAME', ''),
     })
     send_email(subject, html_content, voter.email)
     email_logger.info(f"Link email sent to {voter.email}")
@@ -145,10 +147,11 @@ def send_reminder_email(voter: Voter):
     cfg = dotenv_values(DOTENV_PATH)
     subject = f"{voter.first_name}, il est temps de voter !"
     html_content = env.get_template('reminder.html').render({
-        'first_name':  voter.first_name,
-        'voting_link': f"{cfg.get('VOTING_URL', '')}/{voter.link_string}",
-        'secret_code': voter.secret,
-        'voting_end':  _fmt_vote_date(cfg.get('VOTING_END', 0)),
+        'first_name':       voter.first_name,
+        'voting_link':      f"{cfg.get('VOTING_URL', '')}/{voter.link_string}",
+        'secret_code':      voter.secret,
+        'voting_end':       _fmt_vote_date(cfg.get('VOTING_END', 0)),
+        'association_name': cfg.get('ASSOCIATION_NAME', ''),
     })
     send_email(subject, html_content, voter.email)
     email_logger.info(f"Reminder email sent to {voter.email}")
@@ -164,6 +167,9 @@ def send_admin_test_email():
         except Exception:
             return str(ts)
 
+    admin = User.query.filter_by(role='admin').first()
+    admin_email = admin.email if admin else ''
+
     smtp_pwd_raw = cfg.get('SMTP_PASSWORD', '')
     smtp_pwd_masked = smtp_pwd_raw[:3] + '*' * max(0, len(smtp_pwd_raw) - 3) if smtp_pwd_raw else ''
 
@@ -171,24 +177,23 @@ def send_admin_test_email():
     valid_domains_list = [d.strip() for d in valid_domains_raw.split(',') if d.strip()]
 
     ctx = {
-        'voting_start':   _fmt_ts(cfg.get('VOTING_START', 0)),
-        'voting_end':     _fmt_ts(cfg.get('VOTING_END', 0)),
-        'smtp_server':    cfg.get('SMTP_SERVER', ''),
-        'smtp_port':      cfg.get('SMTP_PORT', ''),
-        'smtp_username':  cfg.get('SMTP_USERNAME', ''),
-        'smtp_password':  smtp_pwd_masked,
-        'smtp_from':      cfg.get('SMTP_FROM', ''),
-        'smtp_reply_to':  cfg.get('SMTP_REPLY_TO', ''),
-        'smtp_verify_ssl': cfg.get('SMTP_VERIFY_SSL', ''),
-        'voting_url':     cfg.get('VOTING_URL', ''),
-        'valid_domains':  ', '.join(valid_domains_list),
-        'admin_email':    cfg.get('ADMIN_EMAIL', ''),
-        'sent_at':        datetime.now(tz=PARIS_TZ).strftime('%d/%m/%Y %H:%M:%S'),
+        'association_name': cfg.get('ASSOCIATION_NAME', ''),
+        'admin_email':      admin_email,
+        'voting_start':     _fmt_ts(cfg.get('VOTING_START', 0)),
+        'voting_end':       _fmt_ts(cfg.get('VOTING_END', 0)),
+        'smtp_server':      cfg.get('SMTP_SERVER', ''),
+        'smtp_port':        cfg.get('SMTP_PORT', ''),
+        'smtp_username':    cfg.get('SMTP_USERNAME', ''),
+        'smtp_password':    smtp_pwd_masked,
+        'smtp_from':        cfg.get('SMTP_FROM', ''),
+        'smtp_reply_to':    cfg.get('SMTP_REPLY_TO', ''),
+        'smtp_verify_ssl':  cfg.get('SMTP_VERIFY_SSL', ''),
+        'voting_url':       cfg.get('VOTING_URL', ''),
+        'valid_domains':    ', '.join(valid_domains_list),
+        'sent_at':          datetime.now(tz=PARIS_TZ).strftime('%d/%m/%Y %H:%M:%S'),
     }
 
     subject = "[Votix] Email de test — récapitulatif de configuration"
     content = env.get_template('admin-test.html').render(ctx)
-    admin = User.query.filter_by(role='admin').first()
-    admin_email = admin.email if admin else ''
     send_email(subject, content, admin_email, mime='plain')
     email_logger.info(f"Test email sent to {admin_email}")

@@ -60,7 +60,16 @@ def configure():
     if request.method == 'POST':
         section = request.form.get('section')
 
-        if section == 'voting':
+        if section == 'association':
+            try:
+                name = request.form.get('association_name', '').strip()
+                _save('ASSOCIATION_NAME', name)
+                configure_logger.info(f"Association name updated: {name}")
+                flash('Nom de l\'association mis à jour avec succès.', 'success')
+            except Exception as e:
+                flash(f'Erreur : {e}', 'danger')
+
+        elif section == 'voting':
             try:
                 start_str = request.form['voting_start']
                 end_str   = request.form['voting_end']
@@ -68,7 +77,6 @@ def configure():
                 end_ts    = int(datetime.strptime(end_str,   '%Y-%m-%dT%H:%M').replace(tzinfo=PARIS_TZ).timestamp())
                 _save('VOTING_START', str(start_ts))
                 _save('VOTING_END',   str(end_ts))
-                # Re-cast to int for the routes that read from app.config
                 current_app.config['VOTING_START'] = start_ts
                 current_app.config['VOTING_END']   = end_ts
                 configure_logger.info(f"Voting period updated: {start_str} → {end_str}")
@@ -122,6 +130,7 @@ def configure():
     cfg = _env()
 
     ctx = {
+        'association_name': cfg.get('ASSOCIATION_NAME', ''),
         'voting_start':    _fmt_ts(cfg.get('VOTING_START', 0)),
         'voting_end':      _fmt_ts(cfg.get('VOTING_END', 0)),
         'smtp_server':     cfg.get('SMTP_SERVER', ''),
@@ -165,7 +174,7 @@ def send_test_email():
         flash(f"Email de test envoyé à {_get_admin_email() or 'l\'admin'}.", 'success')
     except Exception as e:
         flash(f"Erreur lors de l'envoi : {e}", 'danger')
-    return redirect(url_for('configure.configure') + '?tab=3')
+    return redirect(url_for('configure.configure') + '?tab=4')
 
 
 @configure_bp.route('/send-invitations', methods=['POST'])
@@ -176,7 +185,7 @@ def send_invitations():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_invitation_email, Voter.invitation_sent.isnot(True), 'invitation'), daemon=True).start()
     flash(f'Envoi de {total} invitation(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=3')
+    return redirect(url_for('configure.configure') + '?tab=4')
 
 
 @configure_bp.route('/send-links', methods=['POST'])
@@ -187,7 +196,7 @@ def send_links():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_link_email, Voter.link_sent.isnot(True), 'link'), daemon=True).start()
     flash(f'Envoi de {total} lien(s) de vote lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=3')
+    return redirect(url_for('configure.configure') + '?tab=4')
 
 
 @configure_bp.route('/send-reminders', methods=['POST'])
@@ -198,4 +207,4 @@ def send_reminders():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_reminder_email, Voter.voted.isnot(True), 'reminder'), daemon=True).start()
     flash(f'Envoi de {total} rappel(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=3')
+    return redirect(url_for('configure.configure') + '?tab=4')

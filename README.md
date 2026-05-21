@@ -52,7 +52,7 @@ $EDITOR app/.env          # fill in at minimum SECRET_KEY and SMTP_* values
 docker compose up -d
 
 # 4. Create the first admin user
-docker compose exec votix python cli.py create_user --role admin
+docker compose exec votix python cli.py create-user --role admin
 ```
 
 The application is now reachable at `http://localhost:5000`.
@@ -73,6 +73,7 @@ All runtime settings live in `app/.env`. Copy `app/.env.example` as a starting p
 
 | Variable | Description | Example |
 | --- | --- | --- |
+| `ASSOCIATION_NAME` | Name of the association | `Bureau des Elèves d'ESIEE Paris` |
 | `SECRET_KEY` | Flask session secret — change this | `a-long-random-string` |
 | `VOTING_URL` | Public base URL used in voting-link emails | `https://votix.example.com/vote` |
 | `VOTING_START` | Unix timestamp for when voting opens | `1779400801` |
