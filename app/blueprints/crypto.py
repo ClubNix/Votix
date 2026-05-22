@@ -45,13 +45,15 @@ def encrypt_ballot(ballot: str, pubkey_pem: bytes, voter_uuid: str):
     return encrypted_ballot
 
 
-def decrypt_ballot(encrypted_ballot: bytes, encrypted_privkey: bytes, passphrase: str):
-    private_key = serialization.load_pem_private_key(
+def load_private_key(encrypted_privkey: bytes, passphrase: str):
+    return serialization.load_pem_private_key(
         encrypted_privkey,
         password=passphrase.encode(),
         backend=default_backend()
     )
 
+
+def decrypt_ballot(encrypted_ballot: bytes, private_key):
     ballot = private_key.decrypt(
         encrypted_ballot,
         padding.OAEP(
@@ -60,7 +62,4 @@ def decrypt_ballot(encrypted_ballot: bytes, encrypted_privkey: bytes, passphrase
             label=None
         )
     )
-
-    ballot = ballot.decode('utf-8')
-
-    return ballot
+    return ballot.decode('utf-8')

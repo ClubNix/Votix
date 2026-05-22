@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 
 from .auth import technician_required, admin_required
 from .votix import DatabaseHandler
-from .crypto import generate_rsa_keys, decrypt_ballot
+from .crypto import generate_rsa_keys, load_private_key, decrypt_ballot
 from ..models import User, Voter, Candidate
 from .. import db
 
@@ -100,9 +100,11 @@ def deliberate():
             for candidate in candidates:
                 results[candidate[0]] = {'name': candidate[1], 'eligible': bool(candidate[2]), 'votes': 0}
 
+            private_key = load_private_key(privkey, passphrase)
+
             for vote in votes:
                 encrypted_ballot = hex(int.from_bytes(vote[0], 'big'))[2:].zfill(512)
-                ballot = decrypt_ballot(bytes.fromhex(encrypted_ballot), privkey, passphrase)
+                ballot = decrypt_ballot(bytes.fromhex(encrypted_ballot), private_key)
                 ballot = ballot.split('/')
                 results[int(ballot[0])]['votes'] += 1
 
