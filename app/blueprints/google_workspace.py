@@ -5,7 +5,7 @@ import hashlib
 import base64
 import secrets
 
-from flask import Blueprint, redirect, request, url_for, jsonify, flash, session
+from flask import Blueprint, redirect, request, url_for, jsonify, flash
 from flask_login import login_required
 from google_auth_oauthlib.flow import Flow
 from google.oauth2.credentials import Credentials
@@ -28,6 +28,7 @@ SCOPES = [
 ]
 
 TOKEN_PATH = os.path.join(os.path.dirname(__file__), '..', 'var', 'google_token.json')
+STATE_PATH = os.path.join(os.path.dirname(__file__), '..', 'var', 'google_oauth_state.json')
 
 
 def _client_config():
@@ -82,6 +83,21 @@ def is_connected():
     return os.path.exists(TOKEN_PATH)
 
 
+def _save_oauth_state(state, code_verifier):
+    with open(STATE_PATH, 'w') as f:
+        json.dump({'state': state, 'code_verifier': code_verifier}, f)
+
+
+def _pop_oauth_state():
+    """Read and immediately delete the stored OAuth state (one-time use)."""
+    if not os.path.exists(STATE_PATH):
+        return None, None
+    with open(STATE_PATH) as f:
+        data = json.load(f)
+    os.remove(STATE_PATH)
+    return data.get('state'), data.get('code_verifier')
+
+
 def _pkce_pair():
     """Generate a PKCE code_verifier and its S256 code_challenge."""
     verifier = base64.urlsafe_b64encode(secrets.token_bytes(32)).rstrip(b'=').decode()
@@ -104,29 +120,27 @@ def google_auth():
         code_challenge=code_challenge,
         code_challenge_method='S256',
     )
-    session['google_oauth_state'] = state
-    session['google_code_verifier'] = code_verifier
+    _save_oauth_state(state, code_verifier)
     return redirect(authorization_url)
 
 
 @google_ws.route('/auth/google/callback')
-@login_required
-@admin_required
 def google_callback():
-    flow = Flow.from_client_config(
-        _client_config(),
-        scopes=SCOPES,
-        state=session.get('google_oauth_state'),
-    )
+    """No @login_required here — the session cookie is unreliable across the
+    cross-site OAuth redirect when running behind a proxy. Security is ensured
+    by the state file (written only by the admin-protected /auth/google route)."""
+    saved_state, code_verifier = _pop_oauth_state()
+    if saved_state is None or saved_state != request.args.get('state'):
+        flash('Paramètre de sécurité invalide. Recommencez la connexion.', 'danger')
+        return redirect(url_for('configure.configure') + '?tab=5')
+
+    flow = Flow.from_client_config(_client_config(), scopes=SCOPES, state=saved_state)
     flow.redirect_uri = url_for('google_ws.google_callback', _external=True)
     try:
         callback_url = request.url
         if request.headers.get('X-Forwarded-Proto') == 'https':
             callback_url = callback_url.replace('http://', 'https://', 1)
-        flow.fetch_token(
-            authorization_response=callback_url,
-            code_verifier=session.pop('google_code_verifier', None),
-        )
+        flow.fetch_token(authorization_response=callback_url, code_verifier=code_verifier)
         _save_credentials(flow.credentials)
         flash('Google Workspace connecté avec succès.', 'success')
     except Exception as e:
