@@ -220,6 +220,7 @@ main {
 .stat-icon.blue   { background: var(--primary-light); color: var(--primary); }
 .stat-icon.green  { background: #d1fae5; color: #059669; }
 .stat-icon.purple { background: #ede9fe; color: #7c3aed; }
+.stat-icon.orange { background: #ffedd5; color: #ea580c; }
 
 .stat-value {
     font-size: 1.9rem;

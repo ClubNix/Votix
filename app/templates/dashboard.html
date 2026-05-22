@@ -33,7 +33,7 @@
 
 <!-- Statistics -->
 <div class="row g-3 mb-4">
-    <div class="col-12 col-sm-4">
+    <div class="col-6 col-sm-3">
         <div class="stat-card">
             <div class="stat-icon blue"><i class="bi bi-people-fill"></i></div>
             <div>
@@ -42,7 +42,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-4">
+    <div class="col-6 col-sm-3">
         <div class="stat-card">
             <div class="stat-icon purple"><i class="bi bi-person-badge-fill"></i></div>
             <div>
@@ -51,12 +51,27 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-sm-4">
+    <div class="col-6 col-sm-3">
         <div class="stat-card">
             <div class="stat-icon green"><i class="bi bi-check2-circle"></i></div>
             <div>
                 <div class="stat-value">{{ votes if votes else 0 }}</div>
                 <div class="stat-label">Votes enregistrés</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-sm-3">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="bi bi-bar-chart-fill"></i></div>
+            <div>
+                <div class="stat-value">
+                    {% if voters and voters > 0 %}
+                        {{ "%.1f"|format(votes / voters * 100) }}%
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+                <div class="stat-label">Taux de participation</div>
             </div>
         </div>
     </div>

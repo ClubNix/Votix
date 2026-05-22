@@ -70,21 +70,25 @@ def create_app():
     from .blueprints.admin import admin
     from .blueprints.votix import votix
     from .blueprints.configure import configure_bp
+    from .blueprints.google_workspace import google_ws
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
     app.register_blueprint(admin)
     app.register_blueprint(votix)
     app.register_blueprint(configure_bp)
+    app.register_blueprint(google_ws)
 
     @app.context_processor
     def inject_globals():
         from dotenv import dotenv_values as _dv
+        from .blueprints.google_workspace import is_connected as _gw_connected
         pubkey_path = os.path.join(os.path.dirname(__file__), 'var', 'pubkey.pem')
         cfg = _dv('./app/.env')
         return {
-            'is_armed':         os.path.isfile(pubkey_path),
-            'association_name': cfg.get('ASSOCIATION_NAME', ''),
+            'is_armed':          os.path.isfile(pubkey_path),
+            'association_name':  cfg.get('ASSOCIATION_NAME', ''),
+            'google_connected':  _gw_connected(),
         }
 
     return app

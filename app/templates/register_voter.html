@@ -32,6 +32,18 @@
                 <span class="card-title">Informations de l'électeur</span>
             </div>
             <div class="card-body">
+                {% if google_connected %}
+                <div class="mb-form" style="position:relative;">
+                    <label for="gw_search" class="form-label">
+                        <i class="bi bi-search me-1" style="color:#1a73e8;"></i>Rechercher dans Google Workspace
+                    </label>
+                    <input type="text" id="gw_search" class="form-control" autocomplete="off"
+                           placeholder="Commencez à taper un nom…">
+                    <div id="gw_results" style="position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:0 4px 16px rgba(0,0,0,.1);z-index:200;display:none;max-height:220px;overflow-y:auto;"></div>
+                    <span class="form-text">Sélectionnez un résultat pour remplir le formulaire automatiquement.</span>
+                </div>
+                <hr style="border-color:var(--border);margin:1rem 0;">
+                {% endif %}
                 <form method="POST" action="/register-voter">
                     <div class="mb-form">
                         <label for="last_name" class="form-label">Nom</label>
@@ -79,5 +91,63 @@
 
     </div>
 </div>
+
+{% if google_connected %}
+<script>
+(function () {
+    const searchInput = document.getElementById('gw_search');
+    const resultsDiv  = document.getElementById('gw_results');
+    if (!searchInput) return;
+
+    let timer;
+
+    searchInput.addEventListener('input', function () {
+        clearTimeout(timer);
+        const q = this.value.trim();
+        if (q.length < 2) { resultsDiv.style.display = 'none'; return; }
+
+        timer = setTimeout(() => {
+            fetch('/api/search-workspace?q=' + encodeURIComponent(q))
+                .then(r => r.json())
+                .then(data => {
+                    if (!Array.isArray(data) || data.length === 0) {
+                        resultsDiv.style.display = 'none';
+                        return;
+                    }
+                    resultsDiv.innerHTML = data.map(p => `
+                        <div class="gw-item"
+                             data-first="${p.first_name.toLowerCase()}"
+                             data-last="${p.last_name.toLowerCase()}"
+                             data-email="${p.email}"
+                             style="padding:.6rem 1rem;cursor:pointer;border-bottom:1px solid var(--border);font-size:.875rem;">
+                            <strong>${p.display_name}</strong>
+                            <span style="color:var(--text-muted);margin-left:.5rem;">${p.email}</span>
+                        </div>`).join('');
+                    resultsDiv.style.display = 'block';
+
+                    resultsDiv.querySelectorAll('.gw-item').forEach(item => {
+                        item.addEventListener('mouseenter', () => item.style.background = 'var(--bg)');
+                        item.addEventListener('mouseleave', () => item.style.background = '');
+                        item.addEventListener('click', () => {
+                            document.getElementById('last_name').value  = item.dataset.last.toUpperCase();
+                            document.getElementById('first_name').value = item.dataset.first.replace(/(^|[\s-])([^\s-])/g, (_, sep, c) => sep + c.toUpperCase());
+                            document.getElementById('email').value      = item.dataset.email;
+                            searchInput.value = item.querySelector('strong').textContent;
+                            resultsDiv.style.display = 'none';
+                        });
+                    });
+                })
+                .catch(() => { resultsDiv.style.display = 'none'; });
+        }, 300);
+    });
+
+    document.addEventListener('click', e => {
+        if (!searchInput.contains(e.target) && !resultsDiv.contains(e.target)) {
+            resultsDiv.style.display = 'none';
+        }
+    });
+})();
+</script>
+{% endif %}
 
 {% endblock %}
