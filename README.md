@@ -4,13 +4,15 @@ A secure, self-hosted electronic voting application built with Flask. Votix lets
 
 ## Features
 
-- **RSA-encrypted ballots** — votes are encrypted client-side with a 2 048-bit public key; the private key is downloaded and deleted from the server immediately after generation
+- **RSA-encrypted ballots** — votes are encrypted with a 2 048-bit public key; the private key is downloaded and deleted from the server immediately after generation
 - **Unique voting links** — each voter receives a personal UUID-based URL and a 4-digit secret code
 - **Time-gated voting window** — configurable start/end timestamps enforced on every vote request
 - **Email workflows** — send invitations, voting links, and reminders in bulk via SMTP (background threads, rate-limited)
 - **Email domain whitelist** — restrict registration to specific organisational domains
 - **Candidate management** — add, edit, and delete candidates with optional logo upload (auto-converted to WebP)
-- **CSV voter import** — bulk-import voters from a spreadsheet
+- **CSV voter import** — bulk-import voters from a spreadsheet, including building assignment
+- **Building management** — define buildings with a custom Bootstrap icon and colour; homepage participation stats are split per building; voters not assigned to any building appear in a separate card
+- **Google Workspace integration** — connect a Google Workspace account to enable email auto-complete when registering voters individually
 - **Role-based access** — `admin` and `technician` roles with separate permission levels
 - **Deliberation UI** — upload the encrypted private key at deliberation time to decrypt and tally votes in the browser
 - **CLI tools** — batch email sending, voter import, user creation, and reset from the command line
@@ -87,6 +89,8 @@ All runtime settings live in `app/.env`. Copy `app/.env.example` as a starting p
 | `SMTP_FROM` | Sender address | `no-reply@example.com` |
 | `SMTP_REPLY_TO` | Reply-to address | `admin@example.com` |
 | `SMTP_VERIFY_SSL` | Verify SSL certificate (`True`/`False`) | `True` |
+| `GOOGLE_CLIENT_ID` | OAuth2 client ID for Google Workspace integration | *(from Google Cloud Console)* |
+| `GOOGLE_CLIENT_SECRET` | OAuth2 client secret for Google Workspace integration | *(from Google Cloud Console)* |
 
 Most of these can also be updated at runtime from the `/configure` admin page without restarting the application.
 
@@ -95,15 +99,19 @@ Most of these can also be updated at runtime from the `/configure` admin page wi
 ### 1. Setup
 
 1. Log in as **admin** and go to `/configure` to set the voting period, SMTP settings, and the public voting URL.
-2. Register candidates at `/register-candidate` (technician or admin).
-3. Import voters via CSV at `/import-voters`, or register them individually at `/register-voter`.
+2. *(Optional)* Go to `/buildings` to create the buildings your voters belong to (e.g. campus sites or departments). Each building gets a Bootstrap icon and a colour; participation statistics on the homepage are split per building.
+3. Register candidates at `/register-candidate` (technician or admin).
+4. Import voters via CSV at `/import-voters`, or register them individually at `/register-voter`.
 
 CSV format (with header row):
 
 ```csv
-last_name,first_name,email,promotion
-Dupont,Alice,alice.dupont@esiee.fr,E3
+last_name,first_name,email,promotion,building
+Dupont,Alice,alice.dupont@esiee.fr,E3,Perrault
+Martin,Bob,bob.martin@esiee.fr,E2,
 ```
+
+The `building` column is optional. If left empty, the voter appears in the **Non assigné** card on the homepage. If no buildings are configured at all, a single aggregate card is shown instead.
 
 ### 2. ARM the election
 
@@ -118,7 +126,7 @@ Go to `/arm` (admin only) and click **Arm**. The application will:
 
 ### 3. Send emails
 
-From `/configure → Emails` (or the CLI) you can send:
+From `/configure → Envoi des emails` (or the CLI) you can send:
 
 - **Invitations** — notify voters that an election is coming.
 - **Voting links** — send each voter their personal link + secret code.
@@ -135,6 +143,17 @@ After voting closes, go to `/deliberate` (admin only):
 1. Upload the encrypted private key file.
 2. Enter the passphrase saved during the ARM phase.
 3. The results are displayed on screen. The uploaded key file is deleted immediately.
+
+## Google Workspace integration
+
+Votix can connect to a Google Workspace account to provide email auto-complete when registering voters individually at `/register-voter`.
+
+1. Create an OAuth2 client (type **Web application**) in the Google Cloud Console and enable the **People API** and **Admin SDK Directory API**.
+2. Add the application's callback URL (`https://<host>/auth/google/callback`) to the authorised redirect URIs.
+3. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in `app/.env`.
+4. Go to `/configure → Google Workspace` and click **Connecter un compte Google Workspace**.
+
+Once connected, a search box appears on the voter registration form. The connection token is stored in `app/var/google_token.json` and can be revoked from the same configure tab.
 
 ## CLI reference
 
@@ -164,14 +183,14 @@ python cli.py <command>
 | Role | Capabilities |
 | --- | --- |
 | `admin` | Everything: configure, arm, deliberate, manage users, reset, send bulk emails |
-| `technician` | Register voters and candidates, view dashboard and voter list, send individual voting links |
+| `technician` | Register voters and candidates, manage buildings, view dashboard and voter list, send individual voting links |
 
 ## Data persistence (Docker)
 
 The `compose.yml` mounts two host directories:
 
 ```text
-./data   →  /app/app/var       (SQLite database, RSA public key)
+./data   →  /app/app/var       (SQLite database, RSA public key, Google token)
 ./logs   →  /app/app/logs      (rotating log files)
 ./data/uploads → /app/app/static/uploads  (candidate logos)
 ```
@@ -183,7 +202,7 @@ Back up `./data/db.sqlite` regularly. The private key is never stored here — i
 Separate log files are written under `logs/`:
 
 | File | Contents |
-|---|---|
+| --- | --- |
 | `app.log` | General application events |
 | `admin.log` | Admin and configuration actions (ARM, deliberation, user management) |
 | `votix.log` | Voter and candidate operations |
