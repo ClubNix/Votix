@@ -132,7 +132,7 @@ def google_callback():
     saved_state, code_verifier = _pop_oauth_state()
     if saved_state is None or saved_state != request.args.get('state'):
         flash('Paramètre de sécurité invalide. Recommencez la connexion.', 'danger')
-        return redirect(url_for('configure.configure') + '?tab=5')
+        return redirect(url_for('configure.configure') + '?tab=4')
 
     flow = Flow.from_client_config(_client_config(), scopes=SCOPES, state=saved_state)
     flow.redirect_uri = url_for('google_ws.google_callback', _external=True)
@@ -146,7 +146,7 @@ def google_callback():
     except Exception as e:
         logger.error(f"Google OAuth callback error: {e}")
         flash(f'Erreur lors de la connexion Google : {e}', 'danger')
-    return redirect(url_for('configure.configure') + '?tab=5')
+    return redirect(url_for('configure.configure') + '?tab=4')
 
 
 @google_ws.route('/auth/google/disconnect', methods=['POST'])
@@ -156,7 +156,7 @@ def google_disconnect():
     if os.path.exists(TOKEN_PATH):
         os.remove(TOKEN_PATH)
     flash('Google Workspace déconnecté.', 'success')
-    return redirect(url_for('configure.configure') + '?tab=5')
+    return redirect(url_for('configure.configure') + '?tab=4')
 
 
 @google_ws.route('/api/search-workspace')

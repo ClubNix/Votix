@@ -33,4 +33,11 @@ URL de vote          : {{ voting_url }}
 Domaines autorisés   : {{ valid_domains }}
 
 ---------------------------------------------------------
+GOOGLE WORKSPACE
+---------------------------------------------------------
+Statut    : {% if gw_connected %}Connecté{% else %}Non connecté{% endif %}
+Client ID : {{ gw_client_id }}
+Scopes    : {{ gw_scopes }}
+
+---------------------------------------------------------
 Votix — {{ sent_at }}

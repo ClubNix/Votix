@@ -1,0 +1,275 @@
+{% extends "base.html" %}
+{% block title %}Votix — Bâtiments{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1>Bâtiments</h1>
+    <p>Gérez les bâtiments associés aux électeurs et aux utilisateurs.</p>
+</div>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <i class="bi bi-{% if category == 'danger' %}x-circle{% elif category == 'success' %}check-circle{% elif category == 'warning' %}exclamation-triangle{% else %}info-circle{% endif %}"></i>
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="row g-4">
+
+    <!-- Building list -->
+    <div class="col-12 col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
+                    <i class="bi bi-building"></i>
+                </div>
+                <span class="card-title">Bâtiments existants</span>
+                <span class="ms-auto section-badge blue">{{ buildings | length }}</span>
+            </div>
+            <div class="card-body" style="padding:0;">
+                {% if buildings %}
+                <table style="width:100%;border-collapse:collapse;">
+                    <thead>
+                        <tr style="border-bottom:1px solid var(--border);background:var(--bg);">
+                            <th style="padding:.75rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Icône</th>
+                            <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Nom</th>
+                            <th style="padding:.75rem 1rem;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for building in buildings %}
+                        {# building = (id, name, icon, color) #}
+                        {% set bcolor = building[3] or '#2563eb' %}
+                        <tr style="border-bottom:1px solid var(--border);{% if loop.last %}border-bottom:none;{% endif %}">
+                            <td style="padding:.85rem 1.5rem;">
+                                <div style="width:2rem;height:2rem;border-radius:50%;background:{{ bcolor }}20;color:{{ bcolor }};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <i class="bi bi-{{ building[2] }}" style="font-size:1rem;"></i>
+                                </div>
+                            </td>
+                            <td style="padding:.85rem 1rem;">
+                                <span style="font-weight:600;font-size:.9rem;">{{ building[1] }}</span>
+                            </td>
+                            <td style="padding:.85rem 1rem;text-align:right;">
+                                <form method="POST" action="{{ url_for('buildings.delete_building', building_id=building[0]) }}"
+                                      onsubmit="return confirm('Supprimer le bâtiment « {{ building[1] }} » ?')">
+                                    <button type="submit" class="btn btn-sm"
+                                            style="background:var(--danger-light);color:var(--danger);border:none;"
+                                            title="Supprimer">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <div style="padding:2.5rem;text-align:center;color:var(--text-muted);">
+                    <i class="bi bi-building" style="font-size:2rem;display:block;margin-bottom:.5rem;"></i>
+                    Aucun bâtiment configuré.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Add building form -->
+    <div class="col-12 col-lg-5">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon" style="background:#d1fae5;color:#059669;">
+                    <i class="bi bi-plus-square"></i>
+                </div>
+                <span class="card-title">Ajouter un bâtiment</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('buildings.buildings') }}" id="add-building-form">
+                    <input type="hidden" name="icon" id="selected-icon" value="building">
+
+                    <div class="mb-form">
+                        <label for="name" class="form-label">Nom du bâtiment</label>
+                        <input type="text" id="name" name="name" class="form-control"
+                               placeholder="ex. Perrault, Copernic…" required autocomplete="off">
+                    </div>
+
+                    <!-- ── Icon picker ──────────────────────────────── -->
+                    <div class="mb-form">
+                        <label class="form-label">Icône</label>
+
+                        <!-- Preview -->
+                        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:.75rem;">
+                            <div id="icon-preview" style="width:2.5rem;height:2.5rem;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:.2s;">
+                                <i class="bi bi-building" style="font-size:1.2rem;" id="icon-preview-i"></i>
+                            </div>
+                            <div>
+                                <span id="icon-preview-name" style="font-size:.8rem;color:var(--text-muted);display:block;">building</span>
+                                <span style="font-size:.75rem;color:var(--text-muted);">Cliquez une icône ci-dessous pour la sélectionner</span>
+                            </div>
+                        </div>
+
+                        <!-- Search -->
+                        <input type="text" id="icon-search" class="form-control"
+                               placeholder="Filtrer les icônes…"
+                               style="margin-bottom:.6rem;font-size:.85rem;"
+                               autocomplete="off">
+
+                        <!-- Icon grid -->
+                        <div id="icon-grid" style="display:grid;grid-template-columns:repeat(6,1fr);gap:.35rem;max-height:220px;overflow-y:auto;padding:.25rem;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg);"></div>
+                    </div>
+
+                    <!-- ── Color picker ─────────────────────────────── -->
+                    <div class="mb-form">
+                        <label class="form-label">Couleur</label>
+
+                        <!-- Preset swatches -->
+                        <div id="color-swatches" style="display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.65rem;"></div>
+
+                        <!-- Custom color -->
+                        <div style="display:flex;align-items:center;gap:.6rem;">
+                            <input type="color" id="color-custom" name="color" value="#2563eb"
+                                   style="width:2.2rem;height:2.2rem;border:2px solid var(--border);border-radius:var(--radius-sm);padding:2px;cursor:pointer;background:none;">
+                            <label for="color-custom" style="font-size:.82rem;color:var(--text-muted);cursor:pointer;">
+                                Couleur personnalisée
+                            </label>
+                            <span id="color-hex" style="font-size:.78rem;color:var(--text-muted);font-family:monospace;">#2563eb</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="bi bi-plus-lg"></i>
+                        Ajouter le bâtiment
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ── Icon picker ──────────────────────────────────────────────
+const ICONS = [
+    'building','building-fill','buildings','buildings-fill',
+    'house','house-fill','house-door','house-door-fill',
+    'hospital','hospital-fill',
+    'bank','bank2',
+    'tower',
+    'geo-alt','geo-alt-fill',
+    'map','map-fill',
+    'compass','compass-fill',
+    'flag','flag-fill',
+    'pin','pin-fill','pin-map','pin-map-fill',
+    'mortarboard','mortarboard-fill',
+    'people','people-fill',
+    'person-workspace',
+    'briefcase','briefcase-fill',
+    'tools','wrench',
+    'boxes','box-seam',
+    'archive','archive-fill',
+    'layers','layers-fill',
+    'signpost','signpost-fill','signpost-2','signpost-2-fill',
+    'star','star-fill',
+    'heart','heart-fill',
+    'lightning','lightning-fill',
+    'grid','grid-fill',
+    'list-ul','list-columns',
+];
+
+let selectedIcon  = 'building';
+let selectedColor = '#2563eb';
+
+function updatePreview() {
+    const preview = document.getElementById('icon-preview');
+    const previewI = document.getElementById('icon-preview-i');
+    preview.style.background = selectedColor + '20';
+    preview.style.color      = selectedColor;
+    previewI.className       = `bi bi-${selectedIcon}`;
+    document.getElementById('icon-preview-name').textContent = selectedIcon;
+}
+
+function renderGrid(filter) {
+    const grid     = document.getElementById('icon-grid');
+    const filtered = filter ? ICONS.filter(ic => ic.includes(filter.toLowerCase())) : ICONS;
+    grid.innerHTML = filtered.map(ic => `
+        <button type="button" class="icon-btn" data-icon="${ic}" title="${ic}"
+                style="aspect-ratio:1;border:2px solid ${ic === selectedIcon ? selectedColor : 'transparent'};
+                       border-radius:var(--radius-sm);
+                       background:${ic === selectedIcon ? selectedColor + '20' : 'transparent'};
+                       cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s;">
+            <i class="bi bi-${ic}" style="font-size:1.1rem;color:${ic === selectedIcon ? selectedColor : 'var(--text-muted)'};pointer-events:none;"></i>
+        </button>`).join('');
+
+    grid.querySelectorAll('.icon-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            selectedIcon = btn.dataset.icon;
+            document.getElementById('selected-icon').value = selectedIcon;
+            updatePreview();
+            renderGrid(document.getElementById('icon-search').value);
+        });
+        btn.addEventListener('mouseenter', () => {
+            if (btn.dataset.icon !== selectedIcon) {
+                btn.style.background = selectedColor + '15';
+                btn.querySelector('i').style.color = selectedColor;
+            }
+        });
+        btn.addEventListener('mouseleave', () => {
+            if (btn.dataset.icon !== selectedIcon) {
+                btn.style.background = 'transparent';
+                btn.querySelector('i').style.color = 'var(--text-muted)';
+            }
+        });
+    });
+}
+
+document.getElementById('icon-search').addEventListener('input', function() {
+    renderGrid(this.value);
+});
+
+// ── Color picker ─────────────────────────────────────────────
+const PRESETS = [
+    '#2563eb','#7c3aed','#059669','#d97706',
+    '#dc2626','#0891b2','#db2777','#65a30d',
+    '#ea580c','#475569','#1e293b','#0f172a',
+];
+
+function applyColor(hex) {
+    selectedColor = hex;
+    document.getElementById('color-custom').value = hex;
+    document.getElementById('color-hex').textContent = hex;
+    // update swatch borders
+    document.querySelectorAll('.color-swatch').forEach(sw => {
+        sw.style.outline = sw.dataset.color === hex
+            ? `3px solid ${hex}`
+            : '2px solid transparent';
+        sw.style.outlineOffset = '2px';
+    });
+    updatePreview();
+    renderGrid(document.getElementById('icon-search').value);
+}
+
+const swatchContainer = document.getElementById('color-swatches');
+PRESETS.forEach(hex => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'color-swatch';
+    btn.dataset.color = hex;
+    btn.title = hex;
+    btn.style.cssText = `width:1.75rem;height:1.75rem;border-radius:50%;background:${hex};border:none;cursor:pointer;transition:.12s;outline:2px solid transparent;outline-offset:2px;`;
+    btn.addEventListener('click', () => applyColor(hex));
+    swatchContainer.appendChild(btn);
+});
+
+document.getElementById('color-custom').addEventListener('input', function() {
+    applyColor(this.value);
+});
+
+// Init
+applyColor('#2563eb');
+renderGrid('');
+</script>
+
+{% endblock %}

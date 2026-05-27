@@ -53,10 +53,29 @@
                 <span class="card-title">Importer le fichier CSV</span>
             </div>
             <div class="card-body">
-                <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:1rem;">
+                <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:.75rem;">
                     Le fichier CSV doit contenir les colonnes :
-                    <code>last_name</code>, <code>first_name</code>, <code>email</code>, <code>promotion</code>.
+                    <code>last_name</code>, <code>first_name</code>, <code>email</code>, <code>promotion</code>, <code>building</code>.
                 </p>
+                {% if building_list %}
+                <div style="font-size:.82rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .9rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.5rem;">
+                    <i class="bi bi-info-circle" style="color:var(--primary);flex-shrink:0;margin-top:.05rem;"></i>
+                    <span>
+                        La colonne <code>building</code> doit correspondre exactement à un bâtiment existant :
+                        {% for b in building_list %}
+                        <code>{{ b }}</code>{% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                    </span>
+                </div>
+                {% else %}
+                <div style="font-size:.82rem;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius-sm);padding:.6rem .9rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:.5rem;">
+                    <i class="bi bi-exclamation-triangle-fill" style="color:var(--danger);flex-shrink:0;margin-top:.05rem;"></i>
+                    <span>
+                        Aucun bâtiment n'est encore configuré. La colonne <code>building</code> sera ignorée.
+                        <a href="{{ url_for('buildings.buildings') }}" style="font-weight:600;color:var(--danger);">Créer des bâtiments →</a>
+                    </span>
+                </div>
+                {% endif %}
                 <a href="/static/defaults/voters.csv" download
                    class="btn btn-outline-secondary btn-sm"
                    style="margin-bottom:1.25rem;">

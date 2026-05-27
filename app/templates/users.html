@@ -38,6 +38,7 @@
                             <th style="padding:.75rem 1.5rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Utilisateur</th>
                             <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Email</th>
                             <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Rôle</th>
+                            <th style="padding:.75rem 1rem;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);text-align:left;">Bâtiment</th>
                             <th style="padding:.75rem 1rem;"></th>
                         </tr>
                     </thead>
@@ -58,6 +59,18 @@
                                 <span class="section-badge red"><i class="bi bi-shield-fill me-1"></i>Admin</span>
                                 {% else %}
                                 <span class="section-badge blue"><i class="bi bi-wrench me-1"></i>Technicien</span>
+                                {% endif %}
+                            </td>
+                            <td style="padding:.85rem 1rem;">
+                                {% if user.building %}
+                                {% set binfo = building_icons.get(user.building, {}) %}
+                                {% set bicon = binfo.get('icon', 'building') %}
+                                {% set bcolor = binfo.get('color', '#2563eb') %}
+                                <span style="display:inline-flex;align-items:center;gap:.35rem;font-size:.75rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:.25rem .7rem;border-radius:99px;background:{{ bcolor }}20;color:{{ bcolor }};">
+                                    <i class="bi bi-{{ bicon }}"></i>{{ user.building }}
+                                </span>
+                                {% else %}
+                                <span style="color:var(--text-muted);font-size:.8rem;">—</span>
                                 {% endif %}
                             </td>
                             <td style="padding:.85rem 1rem;text-align:right;">
@@ -117,6 +130,15 @@
                         <label for="password" class="form-label">Mot de passe</label>
                         <input type="password" id="password" name="password" class="form-control"
                                placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+                    <div class="mb-form">
+                        <label for="building" class="form-label">Bâtiment <span style="color:var(--text-muted);font-size:.8rem;">(informatif)</span></label>
+                        <select id="building" name="building" class="form-select">
+                            <option value="">Non renseigné</option>
+                            {% for b in building_list %}
+                            <option value="{{ b }}">{{ b }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
                     <div class="mb-form">
                         <label class="form-label">Rôle</label>

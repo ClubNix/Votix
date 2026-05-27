@@ -33,6 +33,13 @@
                     </a>
                 </li>
                 {% endif %}
+                {% if current_user.is_authenticated and current_user.role in ('admin', 'technician') %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('buildings.buildings') }}">
+                        <i class="bi bi-building"></i> Bâtiments
+                    </a>
+                </li>
+                {% endif %}
                 {% if current_user.is_authenticated and current_user.role == 'admin' %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('configure.configure') }}">

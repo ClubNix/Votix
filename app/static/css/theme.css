@@ -254,6 +254,7 @@ main {
 .section-badge.blue   { background: var(--primary-light); color: var(--primary); }
 .section-badge.green  { background: #d1fae5; color: #059669; }
 .section-badge.red    { background: #fef2f2; color: #b91c1c; }
+.section-badge.yellow { background: #fef3c7; color: #d97706; }
 
 /* ── Hero / Index ────────────────────────────────────────── */
 .hero {

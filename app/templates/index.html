@@ -26,33 +26,44 @@
     {% endif %}
 {% endwith %}
 
-{% if percentages %}
-<div class="card" style="max-width:660px;margin:0 auto;">
-    <div class="card-header">
-        <div class="card-icon" style="background:var(--primary-light);color:var(--primary);">
-            <i class="bi bi-bar-chart-fill"></i>
+{% if building_stats %}
+<div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;">
+    {% for building_name, data in building_stats.items() %}
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon" style="background:{{ data.color }}20;color:{{ data.color }};">
+                <i class="bi bi-{{ data.icon }}"></i>
+            </div>
+            <span class="card-title">{{ data.label }}</span>
         </div>
-        <span class="card-title">Participation par promotion</span>
-    </div>
-    <div class="card-body">
-        {% for prom, percentage in percentages.items() %}
-        <div class="promo-row">
-            <span class="promo-label">{{ prom }}</span>
-            <div class="promo-bar-wrap">
-                <div class="progress">
-                    <div class="progress-bar"
-                         role="progressbar"
-                         style="width: {{ percentage }}%"
-                         aria-valuenow="{{ percentage }}"
-                         aria-valuemin="0"
-                         aria-valuemax="100">
+        <div class="card-body">
+            {% if data.percentages %}
+            {% for prom, percentage in data.percentages.items() %}
+            <div class="promo-row">
+                <span class="promo-label">{{ prom }}</span>
+                <div class="promo-bar-wrap">
+                    <div class="progress">
+                        <div class="progress-bar"
+                             role="progressbar"
+                             style="width: {{ percentage }}%;background:{{ data.color }};"
+                             aria-valuenow="{{ percentage }}"
+                             aria-valuemin="0"
+                             aria-valuemax="100">
+                        </div>
                     </div>
                 </div>
+                <span class="promo-pct">{{ percentage }}%</span>
             </div>
-            <span class="promo-pct">{{ percentage }}%</span>
+            {% endfor %}
+            {% else %}
+            <div style="padding:1.5rem 0;text-align:center;font-size:.9rem;" style="color:{{ data.color }};">
+                <i class="bi bi-{{ data.icon }}" style="display:block;font-size:1.5rem;margin-bottom:.4rem;color:{{ data.color }};opacity:.5;"></i>
+                Aucun électeur inscrit pour ce bâtiment.
+            </div>
+            {% endif %}
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
 </div>
 {% else %}
 <div class="card" style="max-width:480px;margin:0 auto;text-align:center;">

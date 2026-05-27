@@ -127,6 +127,8 @@ def users():
         password = request.form.get('password', '')
         role     = request.form.get('role', '')
 
+        building = request.form.get('building', '').strip()
+
         if not all([username, email, password, role]):
             flash('Tous les champs sont obligatoires.', 'danger')
             return redirect(url_for('admin.users'))
@@ -144,6 +146,7 @@ def users():
             email=email,
             password=generate_password_hash(password, method='scrypt'),
             role=role,
+            building=building,
         )
         db.session.add(new_user)
         db.session.commit()
@@ -152,7 +155,10 @@ def users():
         return redirect(url_for('admin.users'))
 
     all_users = User.query.order_by(User.role, User.username).all()
-    return render_template('users.html', users=all_users)
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        building_list  = db.get_building_names()
+        building_icons = db.get_buildings_with_icon()
+    return render_template('users.html', users=all_users, building_list=building_list, building_icons=building_icons)
 
 
 @admin.route('/users/<int:user_id>/delete', methods=['POST'])

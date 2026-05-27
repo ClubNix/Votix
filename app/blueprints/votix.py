@@ -39,32 +39,36 @@ votix_logger.addHandler(handler)
 @login_required
 @technician_required
 def register_voter():
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        building_list = db.get_building_names()
+
     if request.method == 'POST':
         last_name = request.form['last_name'].lower()
         first_name = request.form['first_name'].lower()
         email = request.form['email']
         promotion = request.form['promotion']
+        building = request.form.get('building', '')
 
         send_email = bool(request.form.get('send_email'))
 
         if not validate_email_domain(email):
             flash('Adresse email invalide ou domaine non autorisé.', 'danger')
-            return render_template('register_voter.html', list=promotion_list)
+            return render_template('register_voter.html', list=promotion_list, building_list=building_list)
 
         with DatabaseHandler('app/var/db.sqlite') as db:
             if db.get_voter_by_email(email) is not None:
                 flash('Un électeur avec cette adresse email existe déjà.', 'danger')
-                return render_template('register_voter.html', list=promotion_list)
+                return render_template('register_voter.html', list=promotion_list, building_list=building_list)
 
             try:
                 link_string = str(uuid.uuid4())
                 secret = str(random.randint(0, 9999)).zfill(4)
                 db.add_voter(Voter(last_name=last_name, first_name=first_name, email=email, promotion=promotion,
-                                   voted=False, link_string=link_string, secret=secret, invitation_sent=False,
-                                   link_sent=False))
+                                   building=building, voted=False, link_string=link_string, secret=secret,
+                                   invitation_sent=False, link_sent=False))
             except Exception as e:
                 flash(f'Une erreur est survenue lors de l\'ajout de l\'électeur : {e}', 'danger')
-                return render_template('register_voter.html', list=promotion_list)
+                return render_template('register_voter.html', list=promotion_list, building_list=building_list)
 
         if not send_email:
             flash('Électeur ajouté. Le lien de vote n\'a pas été envoyé.', 'success')
@@ -80,20 +84,23 @@ def register_voter():
                 votix_logger.error(f"Failed to send link email to {email}: {e}")
                 flash('Électeur ajouté, mais l\'envoi du lien de vote a échoué.', 'warning')
 
-        return render_template('register_voter.html', list=promotion_list)
+        return render_template('register_voter.html', list=promotion_list, building_list=building_list)
     else:
-        return render_template('register_voter.html', list=promotion_list)
+        return render_template('register_voter.html', list=promotion_list, building_list=building_list)
 
 
 @votix.route('/import-voters', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def import_voters():
+    with DatabaseHandler('app/var/db.sqlite') as db:
+        building_list = db.get_building_names()
+
     if request.method == 'POST':
         file = request.files['file']
         if file.filename == '':
             flash('Aucun fichier sélectionné.', 'danger')
-            return render_template('import_voters.html', list=promotion_list)
+            return render_template('import_voters.html', list=promotion_list, building_list=building_list)
 
         if file:
             try:
@@ -105,13 +112,14 @@ def import_voters():
                         reader = csv.reader(f)
                         next(reader)
                         for row in reader:
-                            last_name, first_name, email, promotion = row
+                            last_name, first_name, email, promotion = row[0], row[1], row[2], row[3]
+                            building = row[4] if len(row) > 4 else ''
                             try:
                                 link_string = str(uuid.uuid4())
                                 secret = str(random.randint(0, 9999)).zfill(4)
                                 db.add_voter(Voter(
                                     last_name=last_name, first_name=first_name, email=email, promotion=promotion,
-                                    link_string=link_string, secret=secret)
+                                    building=building, link_string=link_string, secret=secret)
                                 )
                             except sqlite3.IntegrityError:
                                 votix_logger.warning(f"Skipped duplicate voter during import: {email}")
@@ -119,15 +127,15 @@ def import_voters():
             except Exception as e:
                 flash('Une erreur est survenue lors de l\'importation des électeurs.', 'danger')
                 votix_logger.error(f"An error occurred while importing voters: {e}")
-                return render_template('import_voters.html', list=promotion_list)
+                return render_template('import_voters.html', list=promotion_list, building_list=building_list)
             if skipped:
                 flash(f'{len(skipped)} électeur(s) ignoré(s) car déjà existant(s) : {", ".join(skipped)}.', 'warning')
 
             votix_logger.info('Voters imported successfully via {file.filename}')
             flash('Électeurs importés avec succès.', 'success')
-            return render_template('import_voters.html', list=promotion_list)
+            return render_template('import_voters.html', list=promotion_list, building_list=building_list)
     else:
-        return render_template('import_voters.html', list=promotion_list)
+        return render_template('import_voters.html', list=promotion_list, building_list=building_list)
 
 
 @votix.route('/voters')
@@ -143,12 +151,15 @@ def voters_list():
             'first_name':      v.first_name,
             'email':           v.email,
             'promotion':       v.promotion,
+            'building':        v.building or '',
             'invitation_sent': v.invitation_sent,
             'link_sent':       v.link_sent,
         }
         for v in all_voters
     ]
-    return render_template('voters.html', voters=safe_voters)
+    with DatabaseHandler('app/var/db.sqlite') as db2:
+        building_icons = db2.get_buildings_with_icon()
+    return render_template('voters.html', voters=safe_voters, building_icons=building_icons)
 
 
 @votix.route('/voters/<int:voter_id>/send-link', methods=['POST'])

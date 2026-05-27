@@ -174,7 +174,7 @@ def send_test_email():
         flash(f"Email de test envoyé à {_get_admin_email() or 'l\'admin'}.", 'success')
     except Exception as e:
         flash(f"Erreur lors de l'envoi : {e}", 'danger')
-    return redirect(url_for('configure.configure') + '?tab=4')
+    return redirect(url_for('configure.configure') + '?tab=5')
 
 
 @configure_bp.route('/send-invitations', methods=['POST'])
@@ -185,7 +185,7 @@ def send_invitations():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_invitation_email, Voter.invitation_sent.isnot(True), 'invitation'), daemon=True).start()
     flash(f'Envoi de {total} invitation(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=4')
+    return redirect(url_for('configure.configure') + '?tab=5')
 
 
 @configure_bp.route('/send-links', methods=['POST'])
@@ -196,7 +196,7 @@ def send_links():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_link_email, Voter.link_sent.isnot(True), 'link'), daemon=True).start()
     flash(f'Envoi de {total} lien(s) de vote lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=4')
+    return redirect(url_for('configure.configure') + '?tab=5')
 
 
 @configure_bp.route('/send-reminders', methods=['POST'])
@@ -207,4 +207,4 @@ def send_reminders():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_reminder_email, Voter.voted.isnot(True), 'reminder'), daemon=True).start()
     flash(f'Envoi de {total} rappel(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=4')
+    return redirect(url_for('configure.configure') + '?tab=5')

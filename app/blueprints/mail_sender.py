@@ -176,6 +176,21 @@ def send_admin_test_email():
     valid_domains_raw = cfg.get('VALID_EMAIL_DOMAINS', '')
     valid_domains_list = [d.strip() for d in valid_domains_raw.split(',') if d.strip()]
 
+    # Google Workspace — imported lazily to avoid circular-import at module load
+    from .google_workspace import is_connected as _gw_is_connected, get_credentials as _gw_get_credentials
+
+    gw_connected = _gw_is_connected()
+    gw_client_id = cfg.get('GOOGLE_CLIENT_ID', '—')
+    gw_scopes    = []
+    gw_account   = '—'
+    if gw_connected:
+        try:
+            creds = _gw_get_credentials()
+            if creds:
+                gw_scopes = [s.split('/')[-1] for s in (creds.scopes or [])]
+        except Exception:
+            pass
+
     ctx = {
         'association_name': cfg.get('ASSOCIATION_NAME', ''),
         'admin_email':      admin_email,
@@ -190,6 +205,9 @@ def send_admin_test_email():
         'smtp_verify_ssl':  cfg.get('SMTP_VERIFY_SSL', ''),
         'voting_url':       cfg.get('VOTING_URL', ''),
         'valid_domains':    ', '.join(valid_domains_list),
+        'gw_connected':     gw_connected,
+        'gw_client_id':     gw_client_id,
+        'gw_scopes':        ', '.join(gw_scopes) if gw_scopes else '—',
         'sent_at':          datetime.now(tz=PARIS_TZ).strftime('%d/%m/%Y %H:%M:%S'),
     }
 

@@ -36,7 +36,7 @@ def create_app():
 
     db.init_app(app)
 
-    from .models import User
+    from .models import User, Building
 
     with app.app_context():
         try:
@@ -49,6 +49,27 @@ def create_app():
                 _cols = [r[1] for r in _conn.execute('PRAGMA table_info(candidates)').fetchall()]
                 if 'logo' not in _cols:
                     _conn.execute("ALTER TABLE candidates ADD COLUMN logo TEXT DEFAULT ''")
+                    _conn.commit()
+
+                # Migrate: add building column to voters if missing
+                _cols = [r[1] for r in _conn.execute('PRAGMA table_info(voters)').fetchall()]
+                if 'building' not in _cols:
+                    _conn.execute("ALTER TABLE voters ADD COLUMN building TEXT DEFAULT ''")
+                    _conn.commit()
+
+                # Migrate: add building column to users if missing
+                _cols = [r[1] for r in _conn.execute('PRAGMA table_info(users)').fetchall()]
+                if 'building' not in _cols:
+                    _conn.execute("ALTER TABLE users ADD COLUMN building TEXT DEFAULT ''")
+                    _conn.commit()
+
+                # Migrate: add icon / color columns to buildings if missing
+                _cols = [r[1] for r in _conn.execute('PRAGMA table_info(buildings)').fetchall()]
+                if 'icon' not in _cols:
+                    _conn.execute("ALTER TABLE buildings ADD COLUMN icon TEXT DEFAULT 'building'")
+                    _conn.commit()
+                if 'color' not in _cols:
+                    _conn.execute("ALTER TABLE buildings ADD COLUMN color TEXT DEFAULT '#2563eb'")
                     _conn.commit()
 
             from app.blueprints import auth
@@ -73,6 +94,7 @@ def create_app():
     from .blueprints.votix import votix
     from .blueprints.configure import configure_bp
     from .blueprints.google_workspace import google_ws
+    from .blueprints.buildings import buildings_bp
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
@@ -80,6 +102,7 @@ def create_app():
     app.register_blueprint(votix)
     app.register_blueprint(configure_bp)
     app.register_blueprint(google_ws)
+    app.register_blueprint(buildings_bp)
 
     @app.context_processor
     def inject_globals():

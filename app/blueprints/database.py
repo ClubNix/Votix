@@ -50,9 +50,10 @@ class DatabaseHandler:
         return Voter.query.filter_by(link_string=link_string).first()
 
     def add_voter(self, voter: Voter):
-        self.cursor.execute('INSERT INTO voters (last_name, first_name, email, promotion, voted, link_string, '
-                            'secret, invitation_sent, link_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        self.cursor.execute('INSERT INTO voters (last_name, first_name, email, promotion, building, voted, link_string, '
+                            'secret, invitation_sent, link_sent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
                             (voter.last_name, voter.first_name, voter.email, voter.promotion,
+                             voter.building or '',
                              1 if voter.voted else 0,
                              voter.link_string, voter.secret,
                              1 if voter.invitation_sent else 0,
@@ -105,10 +106,70 @@ class DatabaseHandler:
         self.cursor.execute('SELECT promotion, COUNT(*) FROM voters WHERE voted = 1 GROUP BY promotion')
         return self.cursor.fetchall()
 
+    def count_voters_by_promotion_and_building(self, building: str):
+        self.cursor.execute('SELECT promotion, COUNT(*) FROM voters WHERE building = ? GROUP BY promotion', (building,))
+        return self.cursor.fetchall()
+
+    def count_votes_by_promotion_and_building(self, building: str):
+        self.cursor.execute('SELECT promotion, COUNT(*) FROM voters WHERE voted = 1 AND building = ? GROUP BY promotion', (building,))
+        return self.cursor.fetchall()
+
+    def count_voters_by_promotion_unassigned(self, known_buildings: list):
+        """Voters whose building is empty or not in known_buildings."""
+        if not known_buildings:
+            return []
+        placeholders = ','.join('?' * len(known_buildings))
+        self.cursor.execute(
+            f"SELECT promotion, COUNT(*) FROM voters "
+            f"WHERE building = '' OR building IS NULL OR building NOT IN ({placeholders}) "
+            f"GROUP BY promotion",
+            known_buildings,
+        )
+        return self.cursor.fetchall()
+
+    def count_votes_by_promotion_unassigned(self, known_buildings: list):
+        """Votes from voters whose building is empty or not in known_buildings."""
+        if not known_buildings:
+            return []
+        placeholders = ','.join('?' * len(known_buildings))
+        self.cursor.execute(
+            f"SELECT promotion, COUNT(*) FROM voters "
+            f"WHERE voted = 1 AND (building = '' OR building IS NULL OR building NOT IN ({placeholders})) "
+            f"GROUP BY promotion",
+            known_buildings,
+        )
+        return self.cursor.fetchall()
+
     def delete_voter(self, voter_id: int):
         self.cursor.execute('DELETE FROM voters WHERE id = ?', (voter_id,))
         self.conn.commit()
         database_logger.info(f"Deleted voter {voter_id}")
+
+    # ── Buildings ──────────────────────────────────────────────────────────
+
+    def get_buildings(self):
+        """Return list of (id, name, icon, color) tuples ordered by name."""
+        self.cursor.execute('SELECT id, name, icon, color FROM buildings ORDER BY name')
+        return self.cursor.fetchall()
+
+    def get_building_names(self) -> list[str]:
+        self.cursor.execute('SELECT name FROM buildings ORDER BY name')
+        return [row[0] for row in self.cursor.fetchall()]
+
+    def get_buildings_with_icon(self) -> dict[str, dict]:
+        """Return {name: {'icon': ..., 'color': ...}} mapping for use in templates."""
+        self.cursor.execute('SELECT name, icon, color FROM buildings ORDER BY name')
+        return {row[0]: {'icon': row[1], 'color': row[2] or '#2563eb'} for row in self.cursor.fetchall()}
+
+    def add_building(self, name: str, icon: str = 'building', color: str = '#2563eb'):
+        self.cursor.execute('INSERT INTO buildings (name, icon, color) VALUES (?, ?, ?)', (name, icon, color))
+        self.conn.commit()
+        database_logger.info(f"Added building {name}")
+
+    def delete_building(self, building_id: int):
+        self.cursor.execute('DELETE FROM buildings WHERE id = ?', (building_id,))
+        self.conn.commit()
+        database_logger.info(f"Deleted building {building_id}")
 
     def add_vote(self, voter: Voter, ballot: bytes):
         self.cursor.execute('UPDATE voters SET ballot = ? WHERE id = ?', (ballot, voter.id,))
