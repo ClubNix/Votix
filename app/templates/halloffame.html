@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Votix — Palmarès{% endblock %}
+{% block content %}
+
+<div class="page-header">
+    <h1><i class="bi bi-trophy" style="color:#d97706;"></i> Palmarès</h1>
+    <p>Historique des élections du bureau associatif.</p>
+</div>
+
+{% if error %}
+<div class="alert alert-warning" style="max-width:640px;">
+    <i class="bi bi-exclamation-triangle"></i>
+    Impossible de charger les données depuis GitHub.
+    {% if years %}Les données affichées peuvent être en cache.{% endif %}
+</div>
+{% endif %}
+
+{% if not years %}
+<div class="card" style="max-width:480px;margin:0 auto;text-align:center;">
+    <div class="card-body" style="padding:2.5rem 1.5rem;">
+        <i class="bi bi-cloud-slash" style="font-size:2.5rem;color:var(--text-muted);"></i>
+        <p style="margin:.8rem 0 0;color:var(--text-muted);font-size:.95rem;">
+            Aucune donnée disponible pour le moment.
+        </p>
+    </div>
+</div>
+{% else %}
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.25rem;">
+{% for y in years %}
+<div class="card">
+    <div class="card-header" style="align-items:flex-start;">
+        <div class="card-icon" style="background:{{ y.winner_color }}20;color:{{ y.winner_color }};flex-shrink:0;">
+            <i class="bi bi-trophy-fill"></i>
+        </div>
+        <div style="min-width:0;flex:1;">
+            <div style="display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;">
+                <span class="card-title" style="font-size:1.05rem;">{{ y.year }}</span>
+                <span style="font-weight:700;color:{{ y.winner_color }};font-size:.95rem;white-space:nowrap;">{{ y.winner }}</span>
+            </div>
+            <span style="font-size:.78rem;color:var(--text-muted);">
+                <i class="bi bi-people me-1"></i>{{ y.voters }} électeurs
+            </span>
+        </div>
+    </div>
+    <div class="card-body" style="padding-top:.5rem;">
+        {% for c in y.candidates %}
+        <div style="margin-bottom:.7rem;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.25rem;gap:.5rem;">
+                <span style="font-size:.85rem;font-weight:600;display:flex;align-items:center;gap:.35rem;">
+                    {{ c.name }}
+                    {% if not c.electable %}
+                    <span style="font-size:.68rem;background:#f3f4f6;color:#6b7280;border-radius:4px;padding:.1rem .35rem;font-weight:500;">non éligible</span>
+                    {% endif %}
+                    {% if c.name == y.winner %}
+                    <i class="bi bi-crown-fill" style="font-size:.7rem;color:{{ c.color }};"></i>
+                    {% endif %}
+                </span>
+                <span style="font-size:.8rem;color:var(--text-muted);white-space:nowrap;">{{ c.votes }} <span style="opacity:.7;">({{ c.percentage }}%)</span></span>
+            </div>
+            <div class="progress" style="height:7px;border-radius:4px;">
+                <div class="progress-bar" role="progressbar"
+                     style="width:{{ c.percentage }}%;background:{{ c.color }};{% if not c.electable %}opacity:.5;{% endif %}"
+                     aria-valuenow="{{ c.percentage }}" aria-valuemin="0" aria-valuemax="100">
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+</div>
+
+{% endif %}
+
+{% endblock %}

@@ -123,6 +123,19 @@ def configure():
             except Exception as e:
                 flash(f'Erreur : {e}', 'danger')
 
+        elif section == 'halloffame':
+            try:
+                enabled = 'True' if request.form.get('halloffame_enabled') else 'False'
+                url     = request.form.get('halloffame_url', '').strip()
+                ttl     = request.form.get('halloffame_cache_ttl', '3600').strip()
+                _save('HALLOFFAME_ENABLED', enabled)
+                _save('HALLOFFAME_URL', url)
+                _save('HALLOFFAME_CACHE_TTL', ttl)
+                configure_logger.info(f"Hall of fame config updated: enabled={enabled}, url={url}, ttl={ttl}")
+                flash('Configuration Palmarès mise à jour avec succès.', 'success')
+            except Exception as e:
+                flash(f'Erreur : {e}', 'danger')
+
         tab = request.form.get('tab', '0')
         return redirect(url_for('configure.configure') + f'?tab={tab}')
 
@@ -140,9 +153,12 @@ def configure():
         'smtp_from':       cfg.get('SMTP_FROM', ''),
         'smtp_reply_to':   cfg.get('SMTP_REPLY_TO', ''),
         'smtp_verify_ssl': cfg.get('SMTP_VERIFY_SSL', 'True'),
-        'voting_url':      cfg.get('VOTING_URL', ''),
-        'valid_domains':   cfg.get('VALID_EMAIL_DOMAINS', ''),
-        'admin_email':     _get_admin_email(),
+        'voting_url':           cfg.get('VOTING_URL', ''),
+        'valid_domains':        cfg.get('VALID_EMAIL_DOMAINS', ''),
+        'admin_email':          _get_admin_email(),
+        'halloffame_enabled':   cfg.get('HALLOFFAME_ENABLED', 'True'),
+        'halloffame_url':       cfg.get('HALLOFFAME_URL', 'https://raw.githubusercontent.com/ClubNix/votix-data-esiee/main/data/halloffame.yml'),
+        'halloffame_cache_ttl': cfg.get('HALLOFFAME_CACHE_TTL', '3600'),
     }
     return render_template('configure.html', **ctx)
 
@@ -174,7 +190,7 @@ def send_test_email():
         flash(f"Email de test envoyé à {_get_admin_email() or 'l\'admin'}.", 'success')
     except Exception as e:
         flash(f"Erreur lors de l'envoi : {e}", 'danger')
-    return redirect(url_for('configure.configure') + '?tab=5')
+    return redirect(url_for('configure.configure') + '?tab=6')
 
 
 @configure_bp.route('/send-invitations', methods=['POST'])
@@ -185,7 +201,7 @@ def send_invitations():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_invitation_email, Voter.invitation_sent.isnot(True), 'invitation'), daemon=True).start()
     flash(f'Envoi de {total} invitation(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=5')
+    return redirect(url_for('configure.configure') + '?tab=6')
 
 
 @configure_bp.route('/send-links', methods=['POST'])
@@ -196,7 +212,7 @@ def send_links():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_link_email, Voter.link_sent.isnot(True), 'link'), daemon=True).start()
     flash(f'Envoi de {total} lien(s) de vote lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=5')
+    return redirect(url_for('configure.configure') + '?tab=6')
 
 
 @configure_bp.route('/send-reminders', methods=['POST'])
@@ -207,4 +223,4 @@ def send_reminders():
     app = current_app._get_current_object()
     threading.Thread(target=_bulk_send, args=(app, send_reminder_email, Voter.voted.isnot(True), 'reminder'), daemon=True).start()
     flash(f'Envoi de {total} rappel(s) lancé en arrière-plan. Consultez les logs pour le résultat.', 'info')
-    return redirect(url_for('configure.configure') + '?tab=5')
+    return redirect(url_for('configure.configure') + '?tab=6')

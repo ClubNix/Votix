@@ -95,6 +95,7 @@ def create_app():
     from .blueprints.configure import configure_bp
     from .blueprints.google_workspace import google_ws
     from .blueprints.buildings import buildings_bp
+    from .blueprints.halloffame import halloffame_bp
 
     app.register_blueprint(main)
     app.register_blueprint(auth)
@@ -103,6 +104,7 @@ def create_app():
     app.register_blueprint(configure_bp)
     app.register_blueprint(google_ws)
     app.register_blueprint(buildings_bp)
+    app.register_blueprint(halloffame_bp)
 
     @app.context_processor
     def inject_globals():
@@ -111,9 +113,10 @@ def create_app():
         pubkey_path = os.path.join(os.path.dirname(__file__), 'var', 'pubkey.pem')
         cfg = _dv('./app/.env')
         return {
-            'is_armed':          os.path.isfile(pubkey_path),
-            'association_name':  cfg.get('ASSOCIATION_NAME', ''),
-            'google_connected':  _gw_connected(),
+            'is_armed':           os.path.isfile(pubkey_path),
+            'association_name':   cfg.get('ASSOCIATION_NAME', ''),
+            'google_connected':   _gw_connected(),
+            'halloffame_enabled': cfg.get('HALLOFFAME_ENABLED', 'True').lower() == 'true',
         }
 
     return app

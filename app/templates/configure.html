@@ -46,6 +46,11 @@
         </button>
     </li>
     <li class="nav-item" role="presentation">
+        <button class="nav-link" id="tab-halloffame-btn" data-bs-toggle="tab" data-bs-target="#tab-halloffame" type="button" role="tab">
+            <i class="bi bi-trophy me-1"></i>Palmarès
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
         <button class="nav-link" id="tab-emails-btn" data-bs-toggle="tab" data-bs-target="#tab-emails" type="button" role="tab">
             <i class="bi bi-send me-1"></i>Envoi des emails
         </button>
@@ -289,6 +294,50 @@
         </div>
     </div>
 
+    <!-- ── Palmarès ──────────────────────────────────────── -->
+    <div class="tab-pane fade" id="tab-halloffame" role="tabpanel">
+        <div class="card" style="max-width:600px;">
+            <div class="card-header">
+                <div class="card-icon" style="background:#fef3c7;color:#d97706;">
+                    <i class="bi bi-trophy"></i>
+                </div>
+                <span class="card-title">Palmarès</span>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="/configure">
+                    <input type="hidden" name="section" value="halloffame">
+                    <input type="hidden" name="tab" value="5">
+                    <div class="mb-form" style="padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);">
+                        <div class="form-check">
+                            <input type="checkbox" id="halloffame_enabled" name="halloffame_enabled"
+                                   class="form-check-input" value="True"
+                                   {% if halloffame_enabled != 'False' %}checked{% endif %}>
+                            <label for="halloffame_enabled" class="form-check-label">
+                                <strong>Afficher la page Palmarès</strong>
+                            </label>
+                        </div>
+                        <span class="form-text">Désactivez cette option si votre association n'a pas d'historique de votes.</span>
+                    </div>
+                    <div class="mb-form">
+                        <label for="halloffame_url" class="form-label">URL du fichier YAML</label>
+                        <input type="url" id="halloffame_url" name="halloffame_url"
+                               class="form-control" value="{{ halloffame_url }}">
+                        <span class="form-text">URL brute vers le fichier <code>halloffame.yml</code> (GitHub raw ou autre).</span>
+                    </div>
+                    <div class="mb-form">
+                        <label for="halloffame_cache_ttl" class="form-label">Durée du cache (secondes)</label>
+                        <input type="number" id="halloffame_cache_ttl" name="halloffame_cache_ttl"
+                               class="form-control" value="{{ halloffame_cache_ttl }}" min="60" style="max-width:160px;">
+                        <span class="form-text">Le fichier distant est rechargé au plus une fois par cette durée. Minimum 60 s.</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check2"></i> Enregistrer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- ── Envoi des emails ───────────────────────────────── -->
     <div class="tab-pane fade" id="tab-emails" role="tabpanel">
         <div class="row g-3">
@@ -376,7 +425,7 @@
                         </p>
                         <form method="POST" action="/send-reminders">
                             <button type="submit" class="btn btn-outline-secondary btn-sm"
-                                    onclick="return confirm('Envoyer les rappels aux électeurs n\\'ayant pas voté ?')">
+                                    onclick="return confirm('Envoyer les rappels aux électeurs n&#39;ayant pas voté ?')">
                                 <i class="bi bi-send"></i> Envoyer les rappels
                             </button>
                         </form>

@@ -3,6 +3,7 @@ flask-sqlalchemy
 flask-login
 werkzeug
 requests
+pyyaml
 urllib3
 email-validator
 python-dotenv
