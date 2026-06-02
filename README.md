@@ -13,6 +13,7 @@ A secure, self-hosted electronic voting application built with Flask. Votix lets
 - **CSV voter import** — bulk-import voters from a spreadsheet, including building assignment
 - **Building management** — define buildings with a custom Bootstrap icon and colour; homepage participation stats are split per building; voters not assigned to any building appear in a separate card
 - **Google Workspace integration** — connect a Google Workspace account to enable email auto-complete when registering voters individually
+- **Palmarès** — public page showing the history of past elections, loaded from a remote YAML file (GitHub or other); can be enabled/disabled and configured from the admin panel
 - **Role-based access** — `admin` and `technician` roles with separate permission levels
 - **Deliberation UI** — upload the encrypted private key at deliberation time to decrypt and tally votes in the browser
 - **CLI tools** — batch email sending, voter import, user creation, and reset from the command line
@@ -91,6 +92,9 @@ All runtime settings live in `app/.env`. Copy `app/.env.example` as a starting p
 | `SMTP_VERIFY_SSL` | Verify SSL certificate (`True`/`False`) | `True` |
 | `GOOGLE_CLIENT_ID` | OAuth2 client ID for Google Workspace integration | *(from Google Cloud Console)* |
 | `GOOGLE_CLIENT_SECRET` | OAuth2 client secret for Google Workspace integration | *(from Google Cloud Console)* |
+| `HALLOFFAME_ENABLED` | Show the Palmarès page (`True`/`False`) — disable for associations without vote history | `True` |
+| `HALLOFFAME_URL` | Raw URL of the `halloffame.yml` file | *(GitHub raw URL)* |
+| `HALLOFFAME_CACHE_TTL` | How long (seconds) to cache the remote YAML before re-fetching | `3600` |
 
 Most of these can also be updated at runtime from the `/configure` admin page without restarting the application.
 
@@ -143,6 +147,33 @@ After voting closes, go to `/deliberate` (admin only):
 1. Upload the encrypted private key file.
 2. Enter the passphrase saved during the ARM phase.
 3. The results are displayed on screen. The uploaded key file is deleted immediately.
+
+## Palmarès (vote history)
+
+The `/palmares` page displays the history of past elections loaded from a remote YAML file. It is public (no login required) and is enabled by default.
+
+**YAML format** (hosted externally, e.g. on GitHub):
+
+```yaml
+archives:
+  2026:
+    year: 2026
+    winner: Azur
+    voters: 607
+    candidates:
+      - name: Azur
+        votes: 358
+        color: '#79aee4'
+        electable: true
+        votable: true
+      - name: Blanc
+        votes: 22
+        color: '#eeeeee'
+        electable: false
+        votable: true
+```
+
+Configure the URL, cache duration, and enable/disable toggle from `/configure → Palmarès`. The remote file is fetched at most once per cache period and the cache is invalidated automatically when the URL is changed. Set `HALLOFFAME_ENABLED=False` (or uncheck the option in the admin panel) to hide the page entirely for associations that have no vote history.
 
 ## Google Workspace integration
 
