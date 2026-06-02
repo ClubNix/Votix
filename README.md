@@ -1,5 +1,7 @@
 # Votix
 
+![Votix](app/static/images/votix.png)
+
 A secure, self-hosted electronic voting application built with Flask. Votix lets you run end-to-end encrypted elections: ballots are encrypted with an RSA public key at the moment of the vote, and the private key never touches the server after the ARM phase — ensuring that results can only be revealed by the administrator who holds the key offline.
 
 ## Features
