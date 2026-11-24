@@ -77,8 +77,11 @@ def send_email(subject: str, body: str, recipient: str, mime: str = 'html'):
     smtp_verify_ssl = cfg.get('SMTP_VERIFY_SSL', 'True')
 
     ctx = ssl.create_default_context()
-    ctx.check_hostname = False
     if str(smtp_verify_ssl) == 'False':
+        # Explicit opt-out only: verification of both chain and hostname is
+        # otherwise always enforced by the default context.
+        email_logger.warning('SMTP_VERIFY_SSL=False: TLS certificate verification is disabled')
+        ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
 
     if mime == 'html':
