@@ -14,6 +14,8 @@ from ..models import Voter, User
 import os
 import ssl
 import logging
+
+from .logutil import SafeFormatter
 import smtplib
 
 
@@ -32,7 +34,7 @@ email_logger = logging.getLogger(__name__)
 email_logger.setLevel(logging.INFO)
 handler = logging.FileHandler('./app/logs/email.log')
 handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(message)s')
+formatter = SafeFormatter()
 handler.setFormatter(formatter)
 email_logger.addHandler(handler)
 

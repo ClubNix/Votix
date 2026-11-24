@@ -13,6 +13,8 @@ import uuid
 import hmac
 import secrets
 import logging
+
+from .logutil import SafeFormatter
 import csv
 import os
 import time
@@ -32,7 +34,7 @@ votix_logger = logging.getLogger(__name__)
 votix_logger.setLevel(logging.INFO)
 handler = logging.FileHandler('./app/logs/votix.log')
 handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(message)s')
+formatter = SafeFormatter()
 handler.setFormatter(formatter)
 votix_logger.addHandler(handler)
 

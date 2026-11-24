@@ -4,7 +4,16 @@ from flask_login import login_required
 from .auth import admin_required, technician_required
 from .database import DatabaseHandler
 
+import re
 import logging
+
+from .logutil import SafeFormatter
+
+
+# Bootstrap Icons names (e.g. "building", "house-door") and #rrggbb colors,
+# as produced by the icon picker and <input type="color">.
+_ICON_RE  = re.compile(r'[a-z0-9]+(?:-[a-z0-9]+)*')
+_COLOR_RE = re.compile(r'#[0-9a-fA-F]{6}')
 
 
 buildings_bp = Blueprint('buildings', __name__)
@@ -13,7 +22,7 @@ buildings_logger = logging.getLogger(__name__)
 buildings_logger.setLevel(logging.INFO)
 _handler = logging.FileHandler('./app/logs/admin.log')
 _handler.setLevel(logging.INFO)
-_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+_handler.setFormatter(SafeFormatter())
 buildings_logger.addHandler(_handler)
 
 
@@ -27,6 +36,9 @@ def buildings():
         color = request.form.get('color', '#2563eb').strip() or '#2563eb'
         if not name:
             flash('Le nom du bâtiment ne peut pas être vide.', 'danger')
+            return redirect(url_for('buildings.buildings'))
+        if not _ICON_RE.fullmatch(icon) or not _COLOR_RE.fullmatch(color):
+            flash('Icône ou couleur invalide.', 'danger')
             return redirect(url_for('buildings.buildings'))
         try:
             with DatabaseHandler('app/var/db.sqlite') as db:

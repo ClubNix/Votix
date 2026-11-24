@@ -11,6 +11,8 @@ from ..models import Voter, User
 import os
 import time
 import logging
+
+from .logutil import SafeFormatter
 import threading
 
 PARIS_TZ         = ZoneInfo('Europe/Paris')
@@ -23,7 +25,7 @@ configure_logger = logging.getLogger(__name__)
 configure_logger.setLevel(logging.INFO)
 _handler = logging.FileHandler('./app/logs/admin.log')
 _handler.setLevel(logging.INFO)
-_handler.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+_handler.setFormatter(SafeFormatter())
 configure_logger.addHandler(_handler)
 
 
