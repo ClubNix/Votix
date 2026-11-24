@@ -14,11 +14,30 @@ csrf = CSRFProtect()
 load_dotenv(dotenv_path='./app/.env', override=True)
 
 
+_PLACEHOLDER_SECRETS = {'changeme', 'a-long-random-string', 'secret', 'dev'}
+_MIN_SECRET_LENGTH = 32
+
+
+def _require_secret_key(value):
+    """Refuse to start with a missing, placeholder or short SECRET_KEY.
+
+    The key signs the session cookie that carries the logged-in user id, so a
+    guessable value lets anyone forge an admin session.
+    """
+    if not value or value.strip().lower() in _PLACEHOLDER_SECRETS or len(value) < _MIN_SECRET_LENGTH:
+        raise RuntimeError(
+            'SECRET_KEY is missing, a placeholder, or shorter than '
+            f'{_MIN_SECRET_LENGTH} characters. Generate one with: '
+            'python3 -c "import secrets; print(secrets.token_hex(32))"'
+        )
+    return value
+
+
 def create_app():
     app = Flask(__name__)
     app.wsgi_app = ProxyFix(app.wsgi_app, x_proto=1, x_host=1)
 
-    app.config['SECRET_KEY']    = os.getenv('SECRET_KEY')
+    app.config['SECRET_KEY']    = _require_secret_key(os.getenv('SECRET_KEY'))
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(os.path.dirname(__file__), "var", "db.sqlite")}'
     app.config['FILE_UPLOADS']  = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
 

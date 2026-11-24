@@ -79,7 +79,8 @@ All runtime settings live in `app/.env`. Copy `app/.env.example` as a starting p
 | Variable | Description | Example |
 | --- | --- | --- |
 | `ASSOCIATION_NAME` | Name of the association | `Bureau des Elèves d'ESIEE Paris` |
-| `SECRET_KEY` | Flask session secret — change this | `a-long-random-string` |
+| `SECRET_KEY` | Flask session secret, at least 32 characters (the app refuses to start otherwise). Generate with `python3 -c "import secrets; print(secrets.token_hex(32))"` | `3f9a…` (64 hex chars) |
+| `SESSION_COOKIE_SECURE` | Mark session cookies `Secure` (set to `True` behind HTTPS) | `False` |
 | `VOTING_URL` | Public base URL used in voting-link emails | `https://votix.example.com/vote` |
 | `VOTING_START` | Unix timestamp for when voting opens | `1779400801` |
 | `VOTING_END` | Unix timestamp for when voting closes | `1779458400` |
