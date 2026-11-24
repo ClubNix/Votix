@@ -12,6 +12,8 @@ import os
 import uuid
 import logging
 
+from .logutil import SafeFormatter
+
 
 admin = Blueprint('admin', __name__)
 
@@ -19,7 +21,7 @@ admin_logger = logging.getLogger(__name__)
 admin_logger.setLevel(logging.INFO)
 handler = logging.FileHandler('./app/logs/admin.log')
 handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(message)s')
+formatter = SafeFormatter()
 handler.setFormatter(formatter)
 admin_logger.addHandler(handler)
 
@@ -41,6 +43,14 @@ def dashboard():
 @admin_required
 def arm():
     if request.method == 'POST':
+        # Regenerating the keypair once ballots exist would make them undecryptable.
+        with DatabaseHandler('app/var/db.sqlite') as dbh:
+            votes_cast = dbh.count_votes()[0]
+        if votes_cast:
+            admin_logger.warning(f'Arm refused: {votes_cast} vote(s) already recorded')
+            flash('Impossible de régénérer les clés : des votes ont déjà été enregistrés.', 'danger')
+            return render_template('arm.html')
+
         passphrase = uuid.uuid4().hex
         pubkey_pem, encrypted_privkey = generate_rsa_keys(passphrase)
 
@@ -155,9 +165,9 @@ def users():
         return redirect(url_for('admin.users'))
 
     all_users = User.query.order_by(User.role, User.username).all()
-    with DatabaseHandler('app/var/db.sqlite') as db:
-        building_list  = db.get_building_names()
-        building_icons = db.get_buildings_with_icon()
+    with DatabaseHandler('app/var/db.sqlite') as dbh:
+        building_list  = dbh.get_building_names()
+        building_icons = dbh.get_buildings_with_icon()
     return render_template('users.html', users=all_users, building_list=building_list, building_icons=building_icons)
 
 

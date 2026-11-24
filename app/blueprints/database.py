@@ -2,12 +2,14 @@ import sqlite3
 from ..models import Voter, Candidate
 import logging
 
+from .logutil import SafeFormatter
+
 
 database_logger = logging.getLogger(__name__)
 database_logger.setLevel(logging.INFO)
 handler = logging.FileHandler('./app/logs/database.log')
 handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(message)s')
+formatter = SafeFormatter()
 handler.setFormatter(formatter)
 database_logger.addHandler(handler)
 

@@ -55,7 +55,8 @@
                             </td>
                             <td style="padding:.85rem 1rem;text-align:right;">
                                 <form method="POST" action="{{ url_for('buildings.delete_building', building_id=building[0]) }}"
-                                      onsubmit="return confirm('Supprimer le bâtiment « {{ building[1] }} » ?')">
+                                      data-confirm="Supprimer le bâtiment « {{ building[1] }} » ?">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-sm"
                                             style="background:var(--danger-light);color:var(--danger);border:none;"
                                             title="Supprimer">
@@ -88,6 +89,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('buildings.buildings') }}" id="add-building-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="icon" id="selected-icon" value="building">
 
                     <div class="mb-form">

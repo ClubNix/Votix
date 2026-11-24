@@ -44,6 +44,7 @@
                     </button>
                 </div>
                 <form method="POST" action="/download-key" style="margin-top:1rem;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-danger btn-full">
                         <i class="bi bi-download"></i>
                         Télécharger la clé privée (.pem)
@@ -66,6 +67,7 @@
                     La clé privée (protégée par passphrase) doit être sauvegardée en lieu sûr.
                 </p>
                 <form method="POST" action="/arm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-primary btn-full">
                         <i class="bi bi-lightning-charge"></i>
                         Générer les clés et armer Votix

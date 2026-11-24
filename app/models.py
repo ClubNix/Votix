@@ -38,6 +38,7 @@ class Voter(db.Model):
     building = db.Column(db.String(50), default='')
     link_string = db.Column(db.String(100), unique=True)
     secret = db.Column(db.String(4))
+    failed_attempts = db.Column(db.Integer, default=0)
     voted = db.Column(db.Boolean, default=0)
     invitation_sent = db.Column(db.Boolean, default=0)
     link_sent = db.Column(db.Boolean, default=0)

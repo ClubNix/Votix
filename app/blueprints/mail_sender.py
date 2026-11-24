@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
 from dotenv import load_dotenv, dotenv_values
 from email_validator import validate_email, EmailNotValidError
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from flask import current_app
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -14,6 +14,8 @@ from ..models import Voter, User
 import os
 import ssl
 import logging
+
+from .logutil import SafeFormatter
 import smtplib
 
 
@@ -32,11 +34,15 @@ email_logger = logging.getLogger(__name__)
 email_logger.setLevel(logging.INFO)
 handler = logging.FileHandler('./app/logs/email.log')
 handler.setLevel(logging.INFO)
-formatter = logging.Formatter('%(asctime)s - %(message)s')
+formatter = SafeFormatter()
 handler.setFormatter(formatter)
 email_logger.addHandler(handler)
 
-env = Environment(loader=FileSystemLoader('./app/templates/mails'))
+# HTML mails embed voter-supplied values (names), so they must be escaped.
+env = Environment(loader=FileSystemLoader('./app/templates/mails'),
+                  autoescape=select_autoescape(enabled_extensions=('html',)))
+# The admin test mail is sent as text/plain: escaping would only mangle it.
+plain_env = Environment(loader=FileSystemLoader('./app/templates/mails'), autoescape=False)
 
 
 def check_email(email: str):
@@ -77,8 +83,11 @@ def send_email(subject: str, body: str, recipient: str, mime: str = 'html'):
     smtp_verify_ssl = cfg.get('SMTP_VERIFY_SSL', 'True')
 
     ctx = ssl.create_default_context()
-    ctx.check_hostname = False
     if str(smtp_verify_ssl) == 'False':
+        # Explicit opt-out only: verification of both chain and hostname is
+        # otherwise always enforced by the default context.
+        email_logger.warning('SMTP_VERIFY_SSL=False: TLS certificate verification is disabled')
+        ctx.check_hostname = False
         ctx.verify_mode = ssl.CERT_NONE
 
     if mime == 'html':
@@ -212,6 +221,6 @@ def send_admin_test_email():
     }
 
     subject = "[Votix] Email de test — récapitulatif de configuration"
-    content = env.get_template('admin-test.html').render(ctx)
+    content = plain_env.get_template('admin-test.html').render(ctx)
     send_email(subject, content, admin_email, mime='plain')
     email_logger.info(f"Test email sent to {admin_email}")

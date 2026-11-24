@@ -70,6 +70,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="/configure">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="section" value="association">
                     <input type="hidden" name="tab" value="0">
                     <div class="mb-form">
@@ -98,6 +99,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="/configure">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="section" value="voting">
                     <input type="hidden" name="tab" value="1">
                     <div class="mb-form">
@@ -140,6 +142,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="/configure">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="section" value="smtp">
                     <input type="hidden" name="tab" value="2">
                     <div class="row g-3 mb-form">
@@ -209,6 +212,7 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="/configure">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="section" value="url">
                             <input type="hidden" name="tab" value="3">
                             <div class="mb-form">
@@ -236,6 +240,7 @@
                     </div>
                     <div class="card-body">
                         <form method="POST" action="/configure">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <input type="hidden" name="section" value="domains">
                             <input type="hidden" name="tab" value="3">
                             <div class="mb-form">
@@ -276,6 +281,7 @@
                     Google Workspace est connecté. La recherche est disponible sur la page d'inscription.
                 </div>
                 <form method="POST" action="{{ url_for('google_ws.google_disconnect') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-outline-danger btn-sm"
                             onclick="return confirm('Déconnecter Google Workspace ?')">
                         <i class="bi bi-box-arrow-right"></i> Déconnecter
@@ -305,6 +311,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="/configure">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <input type="hidden" name="section" value="halloffame">
                     <input type="hidden" name="tab" value="5">
                     <div class="mb-form" style="padding:.85rem;background:var(--bg);border-radius:var(--radius-sm);">
@@ -356,6 +363,7 @@
                             Envoie un email de test à <strong>{{ admin_email }}</strong> pour vérifier la configuration SMTP.
                         </p>
                         <form method="POST" action="/send-test-email">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-send"></i> Envoyer l'email de test
                             </button>
@@ -378,6 +386,7 @@
                             Notifie tous les électeurs inscrits qu'ils ont été ajoutés à la liste de vote.
                         </p>
                         <form method="POST" action="/send-invitations">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-outline-primary btn-sm"
                                     onclick="return confirm('Envoyer les invitations à tous les électeurs ?')">
                                 <i class="bi bi-send"></i> Envoyer les invitations
@@ -401,6 +410,7 @@
                             Envoie à chaque électeur son lien de vote unique et son code secret.
                         </p>
                         <form method="POST" action="/send-links">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-outline-primary btn-sm"
                                     onclick="return confirm('Envoyer les liens de vote à tous les électeurs ?')">
                                 <i class="bi bi-send"></i> Envoyer les liens
@@ -424,6 +434,7 @@
                             Envoie un rappel uniquement aux électeurs qui n'ont pas encore voté.
                         </p>
                         <form method="POST" action="/send-reminders">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                             <button type="submit" class="btn btn-outline-secondary btn-sm"
                                     onclick="return confirm('Envoyer les rappels aux électeurs n&#39;ayant pas voté ?')">
                                 <i class="bi bi-send"></i> Envoyer les rappels

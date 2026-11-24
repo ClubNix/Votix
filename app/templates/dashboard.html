@@ -156,6 +156,7 @@
                 </p>
                 <form method="POST" action="{{ url_for('admin.reset') }}"
                       onsubmit="return confirm('Réinitialiser l\'application ?\n\nCette action supprimera TOUS les électeurs, candidats et votes, ainsi que les comptes secondaires.\n\nSeul le premier compte administrateur sera conservé.\n\nCette action est IRRÉVERSIBLE.') && confirm('Dernière confirmation : êtes-vous certain(e) ?')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <button type="submit" class="btn btn-sm"
                             style="background:var(--danger-light);color:var(--danger);border:1px solid var(--danger);width:100%;">
                         <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser l'application

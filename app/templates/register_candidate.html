@@ -33,6 +33,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="/register-candidate" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-form">
                         <label for="name" class="form-label">Nom de la liste</label>
                         <input type="text" id="name" name="name" class="form-control"
