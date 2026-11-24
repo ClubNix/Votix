@@ -6,10 +6,12 @@ from .database import DatabaseHandler
 from .mail_sender import validate_email_domain, send_link_email
 from .auth import admin_required, technician_required
 from ..models import Voter, Candidate
+from .. import db as sa_db
 from .crypto import encrypt_ballot
 
 import uuid
-import random
+import hmac
+import secrets
 import logging
 import csv
 import os
@@ -33,6 +35,19 @@ handler.setLevel(logging.INFO)
 formatter = logging.Formatter('%(asctime)s - %(message)s')
 handler.setFormatter(formatter)
 votix_logger.addHandler(handler)
+
+# A voting link is locked after this many wrong secret codes. An admin or
+# technician re-sending the link from /voters unlocks it.
+MAX_SECRET_ATTEMPTS = 10
+
+
+def generate_secret() -> str:
+    """4-digit voter secret drawn from a cryptographically secure source."""
+    return f'{secrets.randbelow(10000):04d}'
+
+
+def check_secret(expected, provided) -> bool:
+    return hmac.compare_digest(str(expected or '').encode(), str(provided or '').encode())
 
 
 @votix.route('/register-voter', methods=['GET', 'POST'])
@@ -62,7 +77,7 @@ def register_voter():
 
             try:
                 link_string = str(uuid.uuid4())
-                secret = str(random.randint(0, 9999)).zfill(4)
+                secret = generate_secret()
                 db.add_voter(Voter(last_name=last_name, first_name=first_name, email=email, promotion=promotion,
                                    building=building, voted=False, link_string=link_string, secret=secret,
                                    invitation_sent=False, link_sent=False))
@@ -116,7 +131,7 @@ def import_voters():
                             building = row[4] if len(row) > 4 else ''
                             try:
                                 link_string = str(uuid.uuid4())
-                                secret = str(random.randint(0, 9999)).zfill(4)
+                                secret = generate_secret()
                                 db.add_voter(Voter(
                                     last_name=last_name, first_name=first_name, email=email, promotion=promotion,
                                     building=building, link_string=link_string, secret=secret)
@@ -169,6 +184,7 @@ def send_voter_link(voter_id):
     from ..models import Voter as VoterModel
     voter = VoterModel.query.get_or_404(voter_id)
     try:
+        voter.failed_attempts = 0  # re-sending the link unlocks it (committed by send_link_email)
         send_link_email(voter)
         flash(f'Lien de vote envoyé à {voter.email}.', 'success')
     except Exception as e:
@@ -340,6 +356,10 @@ def vote(link_string):
         if voter.voted:
             flash('Cet électeur a déjà voté.', 'danger')
             return render_template('index.html')
+        if (voter.failed_attempts or 0) >= MAX_SECRET_ATTEMPTS:
+            flash('Ce lien de vote est bloqué après trop de codes erronés. '
+                  'Contactez les organisateurs pour recevoir un nouveau lien.', 'danger')
+            return render_template('index.html')
 
         if request.method == 'POST':
             candidate_id = int(request.form['candidate'])
@@ -355,7 +375,12 @@ def vote(link_string):
             if not secret_code:
                 flash('Le code secret est requis.', 'danger')
                 return render_template('vote.html', voter=voter, candidates=candidates)
-            if voter.secret != secret_code:
+            if not check_secret(voter.secret, secret_code):
+                # Atomic increment: gunicorn runs several workers.
+                Voter.query.filter_by(id=voter.id).update(
+                    {Voter.failed_attempts: sa_db.func.coalesce(Voter.failed_attempts, 0) + 1})
+                sa_db.session.commit()
+                votix_logger.warning(f"Wrong secret code for voter id={voter.id}")
                 flash('Code secret invalide.', 'danger')
                 return render_template('vote.html', voter=voter, candidates=candidates)
 

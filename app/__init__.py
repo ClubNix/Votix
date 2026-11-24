@@ -89,6 +89,9 @@ def create_app():
                 if 'building' not in _cols:
                     _conn.execute("ALTER TABLE voters ADD COLUMN building TEXT DEFAULT ''")
                     _conn.commit()
+                if 'failed_attempts' not in _cols:
+                    _conn.execute("ALTER TABLE voters ADD COLUMN failed_attempts INTEGER DEFAULT 0")
+                    _conn.commit()
 
                 # Migrate: add building column to users if missing
                 _cols = [r[1] for r in _conn.execute('PRAGMA table_info(users)').fetchall()]

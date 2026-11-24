@@ -2,12 +2,12 @@ from dotenv import dotenv_values
 
 from app.blueprints import mail_sender, auth
 from app.blueprints.database import DatabaseHandler
+from app.blueprints.votix import generate_secret
 from app.models import Voter
 from start import app
 
 import csv
 import uuid
-import random
 import click
 import os
 
@@ -112,7 +112,7 @@ def import_voters(file, send_link):
                     try:
                         last_name, first_name, email, promotion = row
                         link_string = str(uuid.uuid4())
-                        secret = str(random.randint(0, 9999)).zfill(4)
+                        secret = generate_secret()
                         db.add_voter(Voter(
                             last_name=last_name, first_name=first_name,
                             email=email, promotion=promotion,
