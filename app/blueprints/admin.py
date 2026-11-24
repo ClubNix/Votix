@@ -165,9 +165,9 @@ def users():
         return redirect(url_for('admin.users'))
 
     all_users = User.query.order_by(User.role, User.username).all()
-    with DatabaseHandler('app/var/db.sqlite') as db:
-        building_list  = db.get_building_names()
-        building_icons = db.get_buildings_with_icon()
+    with DatabaseHandler('app/var/db.sqlite') as dbh:
+        building_list  = dbh.get_building_names()
+        building_icons = dbh.get_buildings_with_icon()
     return render_template('users.html', users=all_users, building_list=building_list, building_icons=building_icons)
 
 
