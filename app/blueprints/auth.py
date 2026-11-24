@@ -14,6 +14,10 @@ from .mail_sender import validate_email
 
 auth = Blueprint('auth', __name__)
 
+# Checked against when the email is unknown, so that both paths run the same
+# scrypt verification and take the same time (no account enumeration).
+_DUMMY_PASSWORD_HASH = generate_password_hash('votix-dummy-password', method='scrypt')
+
 
 def admin_required(f: Callable[[ParamSpec("_PWrapped")], object]) -> object:
     @wraps(f)
@@ -62,7 +66,8 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        if not user or not check_password_hash(user.password, password):
+        password_ok = check_password_hash(user.password if user else _DUMMY_PASSWORD_HASH, password or '')
+        if not user or not password_ok:
             flash('Identifiants incorrects, veuillez réessayer.')
             return redirect(url_for('auth.login'))
 
