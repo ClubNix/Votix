@@ -21,3 +21,6 @@ data/
 logs/
 
 app/.env
+__pycache__/
+*.pyc
+.pytest_cache/
