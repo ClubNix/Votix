@@ -1,0 +1,30 @@
+# VCS / CI / editor files
+.git
+.github
+.gitignore
+.vscode
+.idea
+*.swp
+
+# Tests and local tooling
+tests
+pytest.ini
+requirements-dev.txt
+.pytest_cache
+__pycache__
+**/__pycache__
+*.pyc
+.venv
+
+# Local runtime data and secrets: never bake them into the image
+app/.env
+app/var/*
+app/logs/*
+app/static/uploads/*
+data
+logs
+CLAUDE-SECURITY-*
+
+# Compose files are not needed inside the image
+docker-compose*.yml
+compose.yml

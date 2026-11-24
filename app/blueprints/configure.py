@@ -36,7 +36,9 @@ def _get_admin_email() -> str:
 
 def _save(key: str, value: str):
     """Write to .env, os.environ, and app.config in one shot."""
-    set_key(DOTENV_PATH, key, value)
+    # follow_symlinks: in the Docker image app/.env is a symlink into the
+    # mounted data volume, and the file must be rewritten there.
+    set_key(DOTENV_PATH, key, value, follow_symlinks=True)
     os.environ[key] = value
     current_app.config[key] = value
 
