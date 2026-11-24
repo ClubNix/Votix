@@ -55,7 +55,7 @@
                             </td>
                             <td style="padding:.85rem 1rem;text-align:right;">
                                 <form method="POST" action="{{ url_for('buildings.delete_building', building_id=building[0]) }}"
-                                      onsubmit="return confirm('Supprimer le bâtiment « {{ building[1] }} » ?')">
+                                      data-confirm="Supprimer le bâtiment « {{ building[1] }} » ?">
                                     <button type="submit" class="btn btn-sm"
                                             style="background:var(--danger-light);color:var(--danger);border:none;"
                                             title="Supprimer">

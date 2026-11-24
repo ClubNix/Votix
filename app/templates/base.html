@@ -113,6 +113,16 @@
 <script>
     document.getElementById('current-time').textContent = new Date().toLocaleString('fr-FR');
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Confirmation prompts for forms carrying a data-confirm attribute.
+    // The message is read from the (HTML-escaped) attribute instead of being
+    // interpolated into inline JavaScript, so user data cannot break out of it.
+    document.addEventListener('submit', function (e) {
+        var msg = e.target.dataset ? e.target.dataset.confirm : undefined;
+        if (msg && !confirm(msg)) {
+            e.preventDefault();
+        }
+    });
 </script>
 </body>
 </html>

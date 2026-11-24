@@ -76,7 +76,7 @@
                             </a>
                             <form method="POST"
                                   action="{{ url_for('votix.delete_candidate', candidate_id=candidate[0]) }}"
-                                  onsubmit="return confirm('Supprimer « {{ candidate[1] }} » ? Cette action est irréversible.');">
+                                  data-confirm="Supprimer « {{ candidate[1] }} » ? Cette action est irréversible.">
                                 <button type="submit"
                                         class="btn btn-sm"
                                         style="padding:.3rem .65rem;font-size:.8rem;background:var(--danger-light);border:1px solid var(--danger);color:var(--danger);">

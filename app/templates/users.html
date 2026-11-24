@@ -76,7 +76,7 @@
                             <td style="padding:.85rem 1rem;text-align:right;">
                                 {% if user.id != current_user.id %}
                                 <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}"
-                                      onsubmit="return confirm('Supprimer {{ user.username }} ?')">
+                                      data-confirm="Supprimer {{ user.username }} ?">
                                     <button type="submit" class="btn btn-sm"
                                             style="background:var(--danger-light);color:var(--danger);border:none;"
                                             title="Supprimer">
