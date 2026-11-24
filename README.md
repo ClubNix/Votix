@@ -19,7 +19,8 @@ A secure, self-hosted electronic voting application built with Flask. Votix lets
 - **Role-based access** — `admin` and `technician` roles with separate permission levels
 - **Deliberation UI** — upload the encrypted private key at deliberation time to decrypt and tally votes in the browser
 - **CLI tools** — batch email sending, voter import, user creation, and reset from the command line
-- **Docker-ready** — single `compose.yml` for production deployment with Gunicorn
+- **Docker-ready** — prebuilt image on GitHub Container Registry (`docker-compose.yml`), or build it yourself (`docker-compose.build.yml`)
+- **Tested** — pytest suite run by GitHub Actions on every commit
 
 ## Security model
 
@@ -40,20 +41,24 @@ Deliberation     Admin uploads the encrypted private key + passphrase.
 ## Requirements
 
 - Docker and Docker Compose, **or**
-- Python 3.10+ with `pip`
+- Python 3.12+ with `pip`
 
 ## Quick start with Docker Compose
 
+The `Docker image` GitHub workflow publishes the image to `ghcr.io/clubnix/votix`
+(`latest` follows `main`, `vX.Y.Z` tags publish versioned images).
+
 ```bash
-# 1. Clone the repository
-git clone https://github.com/Isnubi/votix.git
-cd votix
+# 1. Get the compose file and the example configuration
+git clone https://github.com/ClubNix/Votix.git
+cd Votix
 
-# 2. Configure the environment
-cp app/.env.example app/.env
-$EDITOR app/.env          # fill in at minimum SECRET_KEY and SMTP_* values
+# 2. Configure the environment — in Docker the configuration lives in the data volume
+mkdir -p data logs
+cp app/.env.example data/.env
+$EDITOR data/.env         # fill in at minimum SECRET_KEY and SMTP_* values
 
-# 3. Start the stack
+# 3. Start the stack with the published image
 docker compose up -d
 
 # 4. Create the first admin user
@@ -61,6 +66,16 @@ docker compose exec votix python cli.py create-user --role admin
 ```
 
 The application is now reachable at `http://localhost:5000`.
+
+To build the image from your local sources instead of pulling it:
+
+```bash
+docker compose -f docker-compose.build.yml up -d --build
+```
+
+> Upgrading from a version where the configuration was in `app/.env` and baked
+> into the image: move it to `data/.env`. The image no longer contains any
+> `.env`, database, logs or uploads from the build directory.
 
 ## Running locally (without Docker)
 
@@ -71,6 +86,17 @@ cp app/.env.example app/.env
 python cli.py create_user --role admin
 gunicorn -w 4 -b 0.0.0.0:5000 start:app
 ```
+
+## Running the tests
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests
+```
+
+The tests run against a temporary copy of the application, so your local
+database, keys, logs and `.env` are never modified. GitHub Actions runs them on
+every push and pull request (`.github/workflows/tests.yml`).
 
 ## Configuration
 
@@ -221,15 +247,15 @@ python cli.py <command>
 
 ## Data persistence (Docker)
 
-The `compose.yml` mounts two host directories:
+Both compose files mount the same host directories:
 
 ```text
-./data   →  /app/app/var       (SQLite database, RSA public key, Google token)
+./data   →  /app/app/var       (.env configuration, SQLite database, RSA public key, Google token)
 ./logs   →  /app/app/logs      (rotating log files)
 ./data/uploads → /app/app/static/uploads  (candidate logos)
 ```
 
-Back up `./data/db.sqlite` regularly. The private key is never stored here — it lives only on the admin's machine.
+Back up `./data/db.sqlite` and `./data/.env` regularly. The private key is never stored here — it lives only on the admin's machine.
 
 ## Logs
 

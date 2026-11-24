@@ -1,0 +1,20 @@
+# Builds the Votix image from the local sources.
+#   docker compose -f docker-compose.build.yml up -d --build
+#
+# Configuration is read from ./data/.env (copy app/.env.example there).
+services:
+  votix:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ghcr.io/clubnix/votix:local
+
+    ports:
+      - 5000:5000
+
+    volumes:
+      - ./data:/app/app/var
+      - ./data/uploads:/app/app/static/uploads
+      - ./logs:/app/app/logs
+
+    restart: unless-stopped

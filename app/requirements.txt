@@ -7,7 +7,7 @@ requests
 pyyaml
 urllib3
 email-validator
-python-dotenv
+python-dotenv>=1.1
 click
 rsa
 cryptography

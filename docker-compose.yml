@@ -1,0 +1,19 @@
+# Runs the published Votix image (built by the "Docker image" GitHub workflow).
+#   docker compose up -d
+#
+# Configuration is read from ./data/.env (copy app/.env.example there).
+# Set VOTIX_TAG to pin a version, e.g. VOTIX_TAG=1.2.0 docker compose up -d
+services:
+  votix:
+    image: ghcr.io/clubnix/votix:${VOTIX_TAG:-latest}
+    pull_policy: always
+
+    ports:
+      - 5000:5000
+
+    volumes:
+      - ./data:/app/app/var
+      - ./data/uploads:/app/app/static/uploads
+      - ./logs:/app/app/logs
+
+    restart: unless-stopped
