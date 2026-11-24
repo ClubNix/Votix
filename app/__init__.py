@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_wtf.csrf import CSRFProtect
 from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 
@@ -8,6 +9,7 @@ import os
 
 
 db = SQLAlchemy()
+csrf = CSRFProtect()
 
 load_dotenv(dotenv_path='./app/.env', override=True)
 
@@ -19,6 +21,17 @@ def create_app():
     app.config['SECRET_KEY']    = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{os.path.join(os.path.dirname(__file__), "var", "db.sqlite")}'
     app.config['FILE_UPLOADS']  = os.path.join(os.path.dirname(__file__), 'static', 'uploads')
+
+    # Cross-site request protection: every state-changing request must carry
+    # a CSRF token, and session cookies are not sent on cross-site POSTs.
+    app.config['WTF_CSRF_TIME_LIMIT']      = None  # token valid for the whole session
+    app.config['SESSION_COOKIE_SAMESITE']  = 'Lax'
+    app.config['REMEMBER_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_HTTPONLY']  = True
+    app.config['REMEMBER_COOKIE_HTTPONLY'] = True
+    _secure_cookies = os.getenv('SESSION_COOKIE_SECURE', 'False').lower() == 'true'
+    app.config['SESSION_COOKIE_SECURE']    = _secure_cookies
+    app.config['REMEMBER_COOKIE_SECURE']   = _secure_cookies
 
     # Runtime-mutable config (editable via /configure without restart)
     app.config['VOTING_URL']    = os.getenv('VOTING_URL', '')
@@ -35,6 +48,7 @@ def create_app():
     app.config['SMTP_VERIFY_SSL'] = os.getenv('SMTP_VERIFY_SSL', 'True')
 
     db.init_app(app)
+    csrf.init_app(app)
 
     from .models import User, Building
 

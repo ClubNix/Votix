@@ -84,6 +84,7 @@
                 </a>
 
                 <form method="POST" action="/import-voters" enctype="multipart/form-data" id="import-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="file-drop" id="drop-zone">
                         <input type="file" id="file" name="file" accept=".csv" required
                                onchange="handleFileSelect(this)">

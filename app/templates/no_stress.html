@@ -65,6 +65,7 @@
                     Fournissez la clé privée RSA et la passphrase pour déchiffrer les bulletins de vote.
                 </p>
                 <form method="POST" action="/deliberate" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-form">
                         <label for="file" class="form-label">
                             <i class="bi bi-file-earmark-lock me-1"></i>Clé privée (.pem)

@@ -45,6 +45,7 @@
                 <hr style="border-color:var(--border);margin:1rem 0;">
                 {% endif %}
                 <form method="POST" action="/register-voter">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-form">
                         <label for="last_name" class="form-label">Nom</label>
                         <input type="text" id="last_name" name="last_name" class="form-control"

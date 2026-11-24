@@ -41,6 +41,14 @@ def dashboard():
 @admin_required
 def arm():
     if request.method == 'POST':
+        # Regenerating the keypair once ballots exist would make them undecryptable.
+        with DatabaseHandler('app/var/db.sqlite') as dbh:
+            votes_cast = dbh.count_votes()[0]
+        if votes_cast:
+            admin_logger.warning(f'Arm refused: {votes_cast} vote(s) already recorded')
+            flash('Impossible de régénérer les clés : des votes ont déjà été enregistrés.', 'danger')
+            return render_template('arm.html')
+
         passphrase = uuid.uuid4().hex
         pubkey_pem, encrypted_privkey = generate_rsa_keys(passphrase)
 

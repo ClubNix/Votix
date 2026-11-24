@@ -33,6 +33,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('votix.vote', link_string=voter.link_string) }}" id="vote-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="mb-form">
                         <label for="secret" class="form-label">

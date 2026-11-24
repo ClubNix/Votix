@@ -77,6 +77,7 @@
                                 {% if user.id != current_user.id %}
                                 <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}"
                                       data-confirm="Supprimer {{ user.username }} ?">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-sm"
                                             style="background:var(--danger-light);color:var(--danger);border:none;"
                                             title="Supprimer">
@@ -116,6 +117,7 @@
             </div>
             <div class="card-body">
                 <form method="POST" action="{{ url_for('admin.users') }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="mb-form">
                         <label for="username" class="form-label">Nom d'utilisateur</label>
                         <input type="text" id="username" name="username" class="form-control"

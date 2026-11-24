@@ -35,6 +35,7 @@
                 <form method="POST"
                       action="{{ url_for('votix.edit_candidate', candidate_id=candidate[0]) }}"
                       enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="mb-form">
                         <label for="name" class="form-label">Nom de la liste</label>
